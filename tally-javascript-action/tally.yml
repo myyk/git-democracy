@@ -6,7 +6,7 @@ inputs:
     description: Comment id of comment containing votes
     required: true
 outputs:
-  fors:
+  for:
     description: The number for the change
   against:
     description: The number against the change
