@@ -26,12 +26,18 @@ jobs:
     - name: Run a one-line script
       run: echo Get out and vote!
 
+    - name: Get PR id
+      id: ids
+    - run: |
+        pull_number=$(jq --raw-output .pull_request.number "${{ GITHUB_EVENT_PATH }}")
+        echo "::set-env name=pr-id::${pull_number}"
+
     # Find the comment holding votes
     - name: Find Comment
       uses: peter-evans/find-comment@v1
       id: fc
       with:
-        issue-number: 1
+        issue-number:  ${{ steps.ids.outputs.pr-id }}
         body-includes: Current Voting Result
     - run: echo ${{ steps.fc.outputs.comment-id }}
 
