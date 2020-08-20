@@ -31,7 +31,7 @@ jobs:
       uses: peter-evans/find-comment@v1
       id: fc
       with:
-        issue-number:  ${{ github.event.number }}
+        issue-number: ${{ github.event.number }}
         body-includes: Current Voting Result
     - run: echo ${{ steps.fc.outputs.comment-id }}
 
