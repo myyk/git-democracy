@@ -16,7 +16,7 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `![Current Voting Result](${{ github.server_url }}/${{ github.repository }}/workflows/Voting/badge.svg?branch=${{ github.head_ref }})`
+            body: `![Current Voting Result](${{ github.server_url }}/${{ github.repository }}/workflows/Voting/badge.svg?branch=${{ github.head_ref }})\nVote on this comment with 👍 or 👎.`
           })
       env:
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
