@@ -18,7 +18,7 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `[![Current Voting Result]](${{ GITHUB_SERVER_URL }}/{{ github.repository }}/workflows/Voting/badge.svg?branch=${GITHUB_REF})`
+            body: `[![Current Voting Result]](${{ github }}/{{ github.repository }}/workflows/Voting/badge.svg?branch=${GITHUB_REF})`
           })
       env:
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
