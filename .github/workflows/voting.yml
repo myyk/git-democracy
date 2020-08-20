@@ -28,7 +28,7 @@ jobs:
 
     - name: Get PR id
       id: ids
-    - run: |
+      run: |
         pull_number=$(jq --raw-output .pull_request.number "${{ GITHUB_EVENT_PATH }}")
         echo "::set-env name=pr-id::${pull_number}"
 
