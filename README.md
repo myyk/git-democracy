@@ -1,3 +1,3 @@
 # git-democracy
 
-![latest master vote](https://github.com/myyk/git-democracy/workflows/.github/workflows/blank.yml/badge.svg)
+![Voting](https://github.com/myyk/git-democracy/workflows/Voting/badge.svg)
