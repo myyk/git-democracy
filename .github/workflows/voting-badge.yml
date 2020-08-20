@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: comment on PR with Voting badge
-      uses: actions/github-script@v1
+      uses: actions/github-script@v2
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
