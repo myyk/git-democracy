@@ -26,8 +26,27 @@ jobs:
     - name: Run a one-line script
       run: echo Get out and vote!
 
-    # Runs a set of commands using the runners shell
-    - name: Run a multi-line script
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+    # Find the comment holding votes
+    - name: Find Comment
+      uses: peter-evans/find-comment@v1
+      id: fc
+      with:
+        issue-number: ${{ github.event.number }}
+        body-includes: Current Voting Result
+    - run: echo ${{ steps.fc.outputs.comment-id }}
+
+    # Update the vote comment with the tallies
+    - name: Update comment
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        edit-mode: replace
+        comment-id: ${{ steps.fc.outputs.comment-id }}
+        body: |
+          `![Current Voting Result](${{ github.server_url }}/${{ github.repository }}/workflows/Voting/badge.svg?branch=${{ github.head_ref }})\nVote on this comment with 👍 or 👎.`
+          
+          Vote Summary:
+            0 👍
+            0 👎
+            
+          Acceptance Criteria:
+            ???
