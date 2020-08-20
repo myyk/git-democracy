@@ -1,1 +1,15 @@
-
+name: Tally
+author: Myyk
+description: Tally votes on PR
+inputs:
+  comment-id:
+    description: Comment id of comment containing votes
+    required: true
+outputs:
+  fors:
+    description: The number for the change
+  against:
+    description: The number against the change
+runs:
+  using: node12
+  main: index.js
