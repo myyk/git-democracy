@@ -30,4 +30,6 @@ jobs:
     - name: Run a multi-line script
       run: |
         echo Add other actions to build,
+        # fail this step
+        exit -1
         echo test, and deploy your project.
