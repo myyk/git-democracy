@@ -1,0 +1,21 @@
+name: Voting Badge
+on: [pull_request_target]
+
+jobs:
+  binder:
+    runs-on: ubuntu-latest
+    steps:
+    - name: comment on PR with Voting badge
+      uses: actions/github-script@v1
+      with:
+        github-token: ${{secrets.GITHUB_TOKEN}}
+        script: |
+          github.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `[![Current Voting Result]](${GITHUB_SERVER_URL}/myyk/git-democracy/workflows/Voting/badge.svg?branch=${GITHUB_REF})`
+          })
+      env:
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        PR_HEAD_USERREPO: ${{ github.event.pull_request.head.repo.full_name }}
