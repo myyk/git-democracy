@@ -5,10 +5,6 @@ jobs:
   voting-badge:
     runs-on: ubuntu-latest
     steps:
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: echo "$GITHUB_CONTEXT"
     - name: comment on PR with Voting badge
       uses: actions/github-script@v1
       with:
@@ -18,7 +14,7 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner,
             repo: context.repo.repo,
-            body: `[![Current Voting Result]]{{ github.server_url }}/{{ github.repository }}/workflows/Voting/badge.svg?branch=${github.head_ref})`
+            body: `![Current Voting Result](${{ github.server_url }}/${{ github.repository }}/workflows/Voting/badge.svg?branch=${{ github.head_ref }})`
           })
       env:
         PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
