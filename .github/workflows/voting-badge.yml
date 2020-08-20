@@ -2,7 +2,7 @@ name: Voting Badge
 on: [pull_request]
 
 jobs:
-  binder:
+  voting-badge:
     runs-on: ubuntu-latest
     steps:
     - name: comment on PR with Voting badge
