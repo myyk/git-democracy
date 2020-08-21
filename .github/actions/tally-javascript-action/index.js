@@ -13,7 +13,7 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
       await octokit.reactions.listForPullRequestReviewComment({
         owner: repo[0],
         repo: repo[1],
-        comment_id: comment_id,
+        comment_id: commentId,
         content: reaction,
       });
       // TODO: will need to follow get later pages if there are a lot of reactions
