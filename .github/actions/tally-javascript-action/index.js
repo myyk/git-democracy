@@ -62,10 +62,12 @@ async function run() {
     const repo = repository.split("/");
     core.debug(`repository: ${repository}`);
 
-    const octokit = github.getOctokit({
+    const octokit = github.getOctokit(
       auth: inputs.token,
-      previews: ['squirrel-girl'],
-    });
+      {
+        previews: ['squirrel-girl'],
+      },
+    );
 
     const reactionsToCount = new Set([forIt, againstIt]);
     const reactionCounts = readReactionsCounts(octokit, repo, inputs.commentId, reactionsToCount)
