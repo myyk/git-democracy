@@ -15,13 +15,9 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
         repo: repo[1],
         comment_id: commentId,
         content: reaction,
-        mediaType: {
-          previews: [
-            'squirrel-girl'
-          ]
-        },
       });
       // TODO: will need to follow get later pages if there are a lot of reactions
+      // TODO: Use this: https://developer.github.com/changes/2016-05-12-reactions-api-preview/
 
       core.info(`Getting '${reaction}' reactions.`);
     })
@@ -66,7 +62,10 @@ async function run() {
     const repo = repository.split("/");
     core.debug(`repository: ${repository}`);
 
-    const octokit = github.getOctokit(inputs.token);
+    const octokit = github.getOctokit({
+      auth: inputs.token,
+      previews: ['squirrel-girl'],
+    });
 
     const reactionsToCount = new Set([forIt, againstIt]);
     const reactionCounts = readReactionsCounts(octokit, repo, inputs.commentId, reactionsToCount)
