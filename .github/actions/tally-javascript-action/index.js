@@ -30,12 +30,12 @@ async function readReactionsCounts(octokit, repo, commentId, reactions) {
       core.info(
         `Response: '${responses[i]}'`
       );
-      map.set(reaction, responses[i].data.length);
+      results.set(reaction, responses[i].data.length);
     } else if (responses[i].status === "rejected") {
       core.info(
         `Reading reactions '${reaction}' from comment id '${comment_id}' failed with ${results[i].reason}.`
       );
-      map.set(reaction, 0);
+      results.set(reaction, 0);
     }
   }
 
@@ -60,7 +60,7 @@ async function run() {
 
     const octokit = github.getOctokit(inputs.token);
 
-    let reactionsToCount = new Set([forIt, againstIt]);
+    const reactionsToCount = new Set([forIt, againstIt]);
     const reactionCounts = readReactionsCounts(octokit, repo, inputs.commentId, reactionsToCount)
 
     core.setOutput("for", reactionCounts.get(forIt));
