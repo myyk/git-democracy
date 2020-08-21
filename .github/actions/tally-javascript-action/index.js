@@ -15,6 +15,11 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
         repo: repo[1],
         comment_id: commentId,
         content: reaction,
+        mediaType: {
+          previews: [
+            'squirrel-girl'
+          ]
+        },
       });
       // TODO: will need to follow get later pages if there are a lot of reactions
 
