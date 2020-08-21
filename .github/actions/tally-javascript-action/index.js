@@ -5,7 +5,9 @@ const github = require('@actions/github');
 const forIt = "+1";
 const againstIt = "-1";
 
-async function readReactionsCounts(octokit, repo, commentId, reactions) {
+async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
+  let reactions = [...reactionsSet];
+
   let responses = await Promise.allSettled(
     reactions.map(async (reaction) => {
       await octokit.reactions.listForPullRequestReviewComment({
