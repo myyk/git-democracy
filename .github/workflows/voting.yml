@@ -34,7 +34,7 @@ jobs:
     - run: echo ${{ steps.fc.outputs.comment-id }}
 
     - name: Tally Votes
-      uses: ./tally-javascript-action
+      uses: ./tally-javascript-action@tally-votes
       id: tally
       with:
         comment-id: ${{ steps.fc.outputs.comment-id }}
