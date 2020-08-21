@@ -27,7 +27,7 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
     let reaction = reactions[i]
     if (responses[i].status === "fulfilled") {
       core.info(
-        `Reading reactions '${reaction}' from comment id '${comment_id}'.`
+        `Reading reactions '${reaction}' from comment id '${commentId}'.`
       );
       core.info(
         `Response: '${responses[i]}'`
@@ -35,7 +35,7 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
       results.set(reaction, responses[i].data.length);
     } else if (responses[i].status === "rejected") {
       core.info(
-        `Reading reactions '${reaction}' from comment id '${comment_id}' failed with ${results[i].reason}.`
+        `Reading reactions '${reaction}' from comment id '${commentId}' failed with ${results[i].reason}.`
       );
       results.set(reaction, 0);
     }
