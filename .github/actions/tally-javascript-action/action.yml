@@ -2,6 +2,9 @@ name: Tally
 author: Myyk
 description: Tally votes on PR
 inputs:
+  token:
+    description: 'GITHUB_TOKEN or a repo scoped PAT.'
+    default: ${{ github.token }}
   comment-id:
     description: Comment id of comment containing votes
     required: true
