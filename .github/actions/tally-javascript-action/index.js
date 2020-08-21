@@ -25,17 +25,18 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
   let results = new Map();
   for (let i = 0, l = responses.length; i < l; i++) {
     let reaction = reactions[i]
-    if (responses[i].status === "fulfilled") {
+    let response = responses[i]
+    if (response.status === "fulfilled") {
       core.info(
         `Reading reactions '${reaction}' from comment id '${commentId}'.`
       );
       core.info(
-        `Response: '${responses[i]}'`
+        `Response: '${response}'`
       );
-      results.set(reaction, responses[i].data.length);
+      results.set(reaction, response.data.length);
     } else if (responses[i].status === "rejected") {
       core.info(
-        `Reading reactions '${reaction}' from comment id '${commentId}' failed with ${results[i].reason}.`
+        `Reading reactions '${reaction}' from comment id '${commentId}' failed with ${response.reason}.`
       );
       results.set(reaction, 0);
     }
