@@ -63,7 +63,7 @@ async function run() {
     core.debug(`repository: ${repository}`);
 
     const octokit = github.getOctokit(
-      auth: inputs.token,
+      inputs.token,
       {
         previews: ['squirrel-girl'],
       },
