@@ -10,12 +10,23 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
 
   let responses = await Promise.allSettled(
     reactions.map(async (reaction) => {
-      await octokit.reactions.listForPullRequestReviewComment({
+      await octokit.request('GET /repos/{owner}/{repo}/comments/{comment_id}/reactions', {
         owner: repo[0],
         repo: repo[1],
         comment_id: commentId,
-        content: reaction,
+        mediaType: {
+          previews: [
+            'squirrel-girl'
+          ]
+        }
       });
+
+      // await octokit.reactions.listForPullRequestReviewComment({
+      //   owner: repo[0],
+      //   repo: repo[1],
+      //   comment_id: commentId,
+      //   content: reaction,
+      // });
       // TODO: will need to follow get later pages if there are a lot of reactions
       // TODO: Use this: https://developer.github.com/changes/2016-05-12-reactions-api-preview/
 
