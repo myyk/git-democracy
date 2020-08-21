@@ -21,7 +21,7 @@ async function readReactionsCounts(octokit, repo, commentId, reactions) {
 
   let results = new Map();
   for (let i = 0, l = responses.length; i < l; i++) {
-    lex reaction = reactions[i]
+    let reaction = reactions[i]
     if (responses[i].status === "fulfilled") {
       core.info(
         `Reading reactions '${reaction}' from comment id '${comment_id}'.`
