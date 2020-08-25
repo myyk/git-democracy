@@ -8,7 +8,7 @@ const againstIt = "-1";
 async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
   let reactions = [...reactionsSet];
 
-  let response = octokit.reactions.listForIssueComment({
+  let response = await octokit.reactions.listForIssueComment({
     owner: repo[0],
     repo: repo[1],
     comment_id: commentId,
@@ -18,7 +18,10 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
       ]
     },
   });
+
   core.info(`listForIssueComment '${response}' response.`);
+
+  let results = payload.data.reactions;
 
   // let responses = await Promise.allSettled(
   //   reactions.map(async (reaction) => {
@@ -50,25 +53,25 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
   //   })
   // );
 
-  let results = new Map();
-  for (let i = 0, l = responses.length; i < l; i++) {
-    let reaction = reactions[i]
-    let response = responses[i]
-    if (response.status === "fulfilled") {
-      core.info(
-        `Reading reactions '${reaction}' from comment id '${commentId}'.`
-      );
-      core.info(
-        `Response: '${response}'`
-      );
-      results.set(reaction, response.data.length);
-    } else if (responses[i].status === "rejected") {
-      core.info(
-        `Reading reactions '${reaction}' from comment id '${commentId}' failed with ${response.reason}.`
-      );
-      results.set(reaction, 0);
-    }
-  }
+  // let results = new Map();
+  // for (let i = 0, l = responses.length; i < l; i++) {
+  //   let reaction = reactions[i]
+  //   let response = responses[i]
+  //   if (response.status === "fulfilled") {
+  //     core.info(
+  //       `Reading reactions '${reaction}' from comment id '${commentId}'.`
+  //     );
+  //     core.info(
+  //       `Response: '${response}'`
+  //     );
+  //     results.set(reaction, response.data.length);
+  //   } else if (responses[i].status === "rejected") {
+  //     core.info(
+  //       `Reading reactions '${reaction}' from comment id '${commentId}' failed with ${response.reason}.`
+  //     );
+  //     results.set(reaction, 0);
+  //   }
+  // }
 
   return results;
 }
@@ -99,8 +102,10 @@ async function run() {
     const reactionsToCount = new Set([forIt, againstIt]);
     const reactionCounts = readReactionsCounts(octokit, repo, inputs.commentId, reactionsToCount)
 
-    core.setOutput("for", reactionCounts.get(forIt));
-    core.setOutput("against", reactionCounts.get(againstIt));
+    // core.setOutput("for", reactionCounts.get(forIt));
+    // core.setOutput("against", reactionCounts.get(againstIt));
+    core.setOutput("for", reactionCounts[forIt]);
+    core.setOutput("against", reactionCounts[againstIt]);
 
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
