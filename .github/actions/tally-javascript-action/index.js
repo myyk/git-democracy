@@ -8,31 +8,47 @@ const againstIt = "-1";
 async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
   let reactions = [...reactionsSet];
 
-  let responses = await Promise.allSettled(
-    reactions.map(async (reaction) => {
-      await octokit.request('GET /repos/{owner}/{repo}/comments/{comment_id}/reactions', {
-        owner: repo[0],
-        repo: repo[1],
-        comment_id: commentId,
-        mediaType: {
-          previews: [
-            'squirrel-girl'
-          ]
-        }
-      });
+  let response = octokit.reactions.listForIssueComment({
+    owner: repo[0],
+    repo: repo[1],
+    comment_id: commentId,
+    mediaType: {
+      previews: [
+        'squirrel-girl'
+      ]
+    },
+  });
+  core.info(`listForIssueComment '${response}' response.`);
 
-      // await octokit.reactions.listForPullRequestReviewComment({
-      //   owner: repo[0],
-      //   repo: repo[1],
-      //   comment_id: commentId,
-      //   content: reaction,
-      // });
-      // TODO: will need to follow get later pages if there are a lot of reactions
-      // TODO: Use this: https://developer.github.com/changes/2016-05-12-reactions-api-preview/
-
-      core.info(`Getting '${reaction}' reactions.`);
-    })
-  );
+  // let responses = await Promise.allSettled(
+  //   reactions.map(async (reaction) => {
+  //     // await octokit.request('GET /repos/{owner}/{repo}/comments/{comment_id}/reactions', {
+  //     //   owner: repo[0],
+  //     //   repo: repo[1],
+  //     //   comment_id: commentId,
+  //     //   mediaType: {
+  //     //     previews: [
+  //     //       'squirrel-girl'
+  //     //     ]
+  //     //   },
+  //     // });
+  //
+  //     await octokit.reactions.listForIssueComment({
+  //       owner: repo[0],
+  //       repo: repo[1],
+  //       comment_id: commentId,
+  //       mediaType: {
+  //         previews: [
+  //           'squirrel-girl'
+  //         ]
+  //       },
+  //     });
+  //     // TODO: will need to follow get later pages if there are a lot of reactions
+  //     // TODO: Use this: https://developer.github.com/changes/2016-05-12-reactions-api-preview/
+  //
+  //     core.info(`Getting '${reaction}' reactions.`);
+  //   })
+  // );
 
   let results = new Map();
   for (let i = 0, l = responses.length; i < l; i++) {
