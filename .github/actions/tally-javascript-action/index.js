@@ -8,7 +8,7 @@ const againstIt = "-1";
 async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
   let reactions = [...reactionsSet];
 
-  let response = await octokit.reactions.listForIssueComment({
+  let response = await octokit.issues.getComment({
     owner: repo[0],
     repo: repo[1],
     comment_id: commentId,
