@@ -10,10 +10,10 @@ async function readReactionsCounts(octokit, repo, commentId) {
     owner: repo[0],
     repo: repo[1],
     comment_id: commentId,
-  }).then(({data}) =>
+  }).then(({ data }) => {
     core.debug(`reactions: ${inspect(data.reactions)}`);
     data.reactions
-  );
+  });
 
   core.info(`reactions '${inspect(reactions)}'`);
   core.info(`+1s '${reactions[forIt]}'`);
