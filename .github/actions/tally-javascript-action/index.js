@@ -2,7 +2,7 @@ const { inspect } = require("util");
 const core = require('@actions/core');
 const github = require('@actions/github');
 const yaml = require('js-yaml');
-const fs = require('fs');
+const fs = require('fs').promises;
 
 const forIt = '+1';
 const againstIt = '-1';
@@ -17,19 +17,30 @@ function readReactionsCounts(octokit, repo, commentId) {
     core.info(`+1s '${data.reactions[forIt]}'`);
     return data.reactions;
   }).catch((reason) => {
-    core.info(`could not get reactions: ${reason}}`);
+    core.info(`could not get reactions: ${reason}`);
     return 0;
   });
 }
 
+// Convert fs.readFile into Promise version of same
+const readFile = util.promisify(fs.readFile);
+
+async function readVotingConfig() {
+  // read voting config
+  return fs
+    .readFile('./.voting.yml', 'utf8')
+    .then((fileContents) => {
+      return yaml.safeLoad(fileContents);
+    }).then((config) => {
+      core.info(`voting config: ${config}`);
+      return config
+    }).catch((reason) => {
+      core.error(`could not read .voting.yml: ${reason}`);
+    });
+}
+
 async function run() {
   try {
-    // read voting config
-    let fileContents = fs.readFileSync('./.voting.yml', 'utf8');
-    let data = yaml.safeLoad(fileContents);
-
-    console.log(data);
-
     // read action inputs
     const inputs = {
       token: core.getInput("token"),
@@ -51,7 +62,11 @@ async function run() {
       },
     );
 
-    const reactionCounts = await readReactionsCounts(octokit, repo, inputs.commentId)
+    const reactionCountsPromise = readReactionsCounts(octokit, repo, inputs.commentId)
+    const votingConfigPromise = readVotingConfig()
+
+    const reactionCounts = await reactionCountsPromise
+    const votingConfig = await votingConfigPromise // TODO: add voting config to action outpus
 
     core.setOutput("for", reactionCounts[forIt]);
     core.setOutput("against", reactionCounts[againstIt]);
