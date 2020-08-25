@@ -29,7 +29,7 @@ async function readVotingConfig() {
     .then((fileContents) => {
       return yaml.safeLoad(fileContents);
     }).then((config) => {
-      core.info(`voting config: ${config}`);
+      core.info(`voting config: ${inspect(config)}`);
       return config
     }).catch((reason) => {
       core.error(`could not read .voting.yml: ${reason}`);
