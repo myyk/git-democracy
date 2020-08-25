@@ -6,19 +6,18 @@ const forIt = '+1';
 const againstIt = '-1';
 
 async function readReactionsCounts(octokit, repo, commentId) {
-  let reactions = await octokit.issues.getComment({
+  return octokit.issues.getComment({
     owner: repo[0],
     repo: repo[1],
     comment_id: commentId,
   }).then(({ data }) => {
-    core.debug(`reactions: ${inspect(data.reactions)}`);
-    data.reactions
+    core.info(`reactions: ${inspect(data.reactions)}`);
+    core.info(`+1s '${data.reactions[forIt]}'`);
+    return data.reactions;
+  }).catch((reason) => {
+    core.info(`could not get reactions: ${reason}}`);
+    return 0;
   });
-
-  core.info(`reactions '${inspect(reactions)}'`);
-  core.info(`+1s '${reactions[forIt]}'`);
-
-  return reactions;
 }
 
 async function run() {
