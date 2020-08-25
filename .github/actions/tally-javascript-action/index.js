@@ -5,25 +5,20 @@ const github = require('@actions/github');
 const forIt = '+1';
 const againstIt = '-1';
 
-async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
-  let reactions = [...reactionsSet];
-
-  let response = await octokit.issues.getComment({
+async function readReactionsCounts(octokit, repo, commentId) {
+  let reactions = await octokit.issues.getComment({
     owner: repo[0],
     repo: repo[1],
     comment_id: commentId,
-    // mediaType: {
-    //   previews: [
-    //     'squirrel-girl'
-    //   ]
-    // },
-  });
+  }).then({data} =>
+    core.debug(`reactions: ${inspect(data.reactions)}`);
+    data.reactions
+  );
 
-  core.info(`issues.getComment '${inspect(response)}' response.`);
-  core.info(`response.data.reactions '${inspect(response.data.reactions)}'`);
-  core.info(`+1s '${response.data.reactions[forIt]}'`);
+  core.info(`reactions '${inspect(reactions)}'`);
+  core.info(`+1s '${reactions[forIt]}'`);
 
-  return response.data.reactions;
+  return reactions;
 }
 
 async function run() {
@@ -49,8 +44,7 @@ async function run() {
       },
     );
 
-    const reactionsToCount = new Set([forIt, againstIt]);
-    const reactionCounts = readReactionsCounts(octokit, repo, inputs.commentId, reactionsToCount)
+    const reactionCounts = await readReactionsCounts(octokit, repo, inputs.commentId)
 
     // core.setOutput("for", reactionCounts.get(forIt));
     // core.setOutput("against", reactionCounts.get(againstIt));
