@@ -2,8 +2,8 @@ const { inspect } = require("util");
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-const forIt = "+1";
-const againstIt = "-1";
+const forIt = '+1';
+const againstIt = '-1';
 
 async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
   let reactions = [...reactionsSet];
@@ -19,61 +19,11 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
     },
   });
 
-  core.info(`listForIssueComment '${inspect(response)}' response.`);
+  core.info(`issues.getComment '${inspect(response)}' response.`);
+  core.info(`response.data.reactions '${inspect(response.data.reactions)}'`);
+  core.info(`+1s '${response.data.reactions[forIt]}'`);
 
-  let results = response.data.reactions;
-
-  // let responses = await Promise.allSettled(
-  //   reactions.map(async (reaction) => {
-  //     // await octokit.request('GET /repos/{owner}/{repo}/comments/{comment_id}/reactions', {
-  //     //   owner: repo[0],
-  //     //   repo: repo[1],
-  //     //   comment_id: commentId,
-  //     //   mediaType: {
-  //     //     previews: [
-  //     //       'squirrel-girl'
-  //     //     ]
-  //     //   },
-  //     // });
-  //
-  //     await octokit.reactions.listForIssueComment({
-  //       owner: repo[0],
-  //       repo: repo[1],
-  //       comment_id: commentId,
-  //       mediaType: {
-  //         previews: [
-  //           'squirrel-girl'
-  //         ]
-  //       },
-  //     });
-  //     // TODO: will need to follow get later pages if there are a lot of reactions
-  //     // TODO: Use this: https://developer.github.com/changes/2016-05-12-reactions-api-preview/
-  //
-  //     core.info(`Getting '${reaction}' reactions.`);
-  //   })
-  // );
-
-  // let results = new Map();
-  // for (let i = 0, l = responses.length; i < l; i++) {
-  //   let reaction = reactions[i]
-  //   let response = responses[i]
-  //   if (response.status === "fulfilled") {
-  //     core.info(
-  //       `Reading reactions '${reaction}' from comment id '${commentId}'.`
-  //     );
-  //     core.info(
-  //       `Response: '${response}'`
-  //     );
-  //     results.set(reaction, response.data.length);
-  //   } else if (responses[i].status === "rejected") {
-  //     core.info(
-  //       `Reading reactions '${reaction}' from comment id '${commentId}' failed with ${response.reason}.`
-  //     );
-  //     results.set(reaction, 0);
-  //   }
-  // }
-
-  return results;
+  return response.data.reactions;
 }
 
 async function run() {
