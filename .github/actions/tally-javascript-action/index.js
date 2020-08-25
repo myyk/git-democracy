@@ -1,6 +1,8 @@
 const { inspect } = require("util");
 const core = require('@actions/core');
 const github = require('@actions/github');
+const yaml = require('js-yaml');
+const fs = require('fs');
 
 const forIt = '+1';
 const againstIt = '-1';
@@ -22,7 +24,13 @@ function readReactionsCounts(octokit, repo, commentId) {
 
 async function run() {
   try {
-    // `comment-id` input defined in action metadata file
+    // read voting config
+    let fileContents = fs.readFileSync('./.voting.yml', 'utf8');
+    let data = yaml.safeLoad(fileContents);
+
+    console.log(data);
+
+    // read action inputs
     const inputs = {
       token: core.getInput("token"),
       repository: core.getInput("repository"),
