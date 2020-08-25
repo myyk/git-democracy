@@ -19,9 +19,9 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
     },
   });
 
-  core.info(`listForIssueComment '${response}' response.`);
+  core.info(`listForIssueComment '${inspect(response)}' response.`);
 
-  let results = payload.data.reactions;
+  let results = response.data.reactions;
 
   // let responses = await Promise.allSettled(
   //   reactions.map(async (reaction) => {
