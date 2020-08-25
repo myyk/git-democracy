@@ -17,7 +17,7 @@ function readReactionsCounts(octokit, repo, commentId) {
     core.info(`+1s '${data.reactions[forIt]}'`);
     return data.reactions;
   }).catch((reason) => {
-    core.info(`could not get reactions: ${reason}`);
+    core.setFailed(`could not get reactions: ${reason}`);
     return 0;
   });
 }
@@ -30,9 +30,17 @@ async function readVotingConfig() {
       return yaml.safeLoad(fileContents);
     }).then((config) => {
       core.info(`voting config: ${inspect(config)}`);
+
+      // TODO: validate config
+      let percentageToApprove = config["percentage-to-approve"]
+      if (percentageToApprove < 0 || percentageToApprove > 100) {
+        core.setFailed(`percentage-to-approve=${percentage-to-approve} but should be between 0 and 100 inclusively.`);
+      }
+
+      // TODO: handle undefined values as 0s?
       return config
     }).catch((reason) => {
-      core.error(`could not read .voting.yml: ${reason}`);
+      core.setFailed(`could not read .voting.yml: ${reason}`);
     });
 }
 
