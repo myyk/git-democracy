@@ -12,11 +12,11 @@ async function readReactionsCounts(octokit, repo, commentId, reactionsSet) {
     owner: repo[0],
     repo: repo[1],
     comment_id: commentId,
-    mediaType: {
-      previews: [
-        'squirrel-girl'
-      ]
-    },
+    // mediaType: {
+    //   previews: [
+    //     'squirrel-girl'
+    //   ]
+    // },
   });
 
   core.info(`issues.getComment '${inspect(response)}' response.`);
