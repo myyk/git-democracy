@@ -22,9 +22,6 @@ function readReactionsCounts(octokit, repo, commentId) {
   });
 }
 
-// Convert fs.readFile into Promise version of same
-const readFile = util.promisify(fs.readFile);
-
 async function readVotingConfig() {
   // read voting config
   return fs
