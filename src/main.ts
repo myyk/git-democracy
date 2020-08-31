@@ -9,7 +9,7 @@ async function run(): Promise<void> {
     const inputs = {
       token: core.getInput("token"),
       repository: core.getInput("repository"),
-      commentId: +(core.getInput("comment-id") as string),
+      commentId: Number(core.getInput("comment-id")),
     };
     core.debug(`Inputs: ${inspect(inputs)}`);
 
