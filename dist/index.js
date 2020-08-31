@@ -1477,28 +1477,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const util_1 = __webpack_require__(669);
 const core = __importStar(__webpack_require__(186));
 const github = __importStar(__webpack_require__(438));
-// import {wait} from './wait'
 const reactions_1 = __webpack_require__(344);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const inputs = {
-                token: core.getInput("token"),
-                repository: core.getInput("repository"),
-                commentId: Number(core.getInput("commentId")),
+                token: core.getInput('token'),
+                repository: core.getInput('repository'),
+                commentId: Number(core.getInput('commentId'))
             };
             core.debug(`Inputs: ${util_1.inspect(inputs)}`);
             const repository = inputs.repository
                 ? inputs.repository
                 : process.env.GITHUB_REPOSITORY;
-            const [owner, repo] = repository.split("/");
+            const [owner, repo] = repository.split('/');
             core.debug(`repository: ${owner}/${repo}`);
             const octokit = github.getOctokit(inputs.token, {
-                previews: ['squirrel-girl'],
+                previews: ['squirrel-girl']
             });
             const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, inputs.commentId);
             // const votingConfigPromise = readVotingConfig()
-            const reactionCounts = yield reactionCountsPromise.catch((reason) => {
+            const reactionCounts = yield reactionCountsPromise.catch(reason => {
                 core.setFailed(`could not get reactions: ${reason}`);
             });
             if (reactionCounts == null) {
@@ -1506,8 +1505,8 @@ function run() {
             }
             console.log(`reactionCounts: ${util_1.inspect(reactionCounts)}`);
             // const votingConfig = await votingConfigPromise // TODO: add voting config to action outpus
-            core.setOutput("for", reactionCounts[reactions_1.forIt]);
-            core.setOutput("against", reactionCounts[reactions_1.againstIt]);
+            core.setOutput('for', reactionCounts[reactions_1.forIt]);
+            core.setOutput('against', reactionCounts[reactions_1.againstIt]);
             // Get the JSON webhook payload for the event that triggered the workflow
             const payload = JSON.stringify(github.context.payload, undefined, 2);
             console.log(`The event payload: ${payload}`);
@@ -2462,18 +2461,20 @@ function readReactionsCounts(octokit, owner, repo, commentId) {
         if (isNaN(commentId)) {
             throw new Error('commentId not a number');
         }
-        return octokit.issues.getComment({
+        return octokit.issues
+            .getComment({
             owner: owner,
             repo: repo,
-            comment_id: commentId,
-        }).then(({ data }) => {
+            comment_id: commentId
+        })
+            .then(({ data }) => {
             console.log(`data: ${util_1.inspect(data)}`);
             const dataWithReactions = data;
             const reactions = dataWithReactions['reactions'];
             console.log(`reactions: ${util_1.inspect(reactions)}`);
             return {
                 [exports.forIt]: reactions[exports.forIt],
-                [exports.againstIt]: reactions[exports.againstIt],
+                [exports.againstIt]: reactions[exports.againstIt]
             };
         });
     });
