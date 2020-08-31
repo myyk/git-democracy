@@ -1,6 +1,4 @@
 import {inspect} from 'util'
-import core from '@actions/core'
-import {IssuesGetCommentResponseData} from '@octokit/types'
 import {Octokit} from '@octokit/rest'
 
 export const forIt = '+1'
