@@ -5,8 +5,10 @@ name: Voting
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
+  # TODO: maybe only need this when creating pull request and not updates after this tool is stable.
   pull_request:
     branches: [ master ]
+  # TODO: This doesn't seem to be the correct event. There might not be one on issue comment reactions.
   issue_comment:
     types: [ edited ]
 
