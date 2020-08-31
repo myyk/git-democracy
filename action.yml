@@ -1,11 +1,20 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: Tally
+author: Myyk
+description: Tally votes on PR
 inputs:
-  milliseconds: # change this
+  token:
+    description: 'GITHUB_TOKEN or a repo scoped PAT.'
+    default: ${{ github.token }}
+  repository:
+    description: 'The full name of the repository in which to tally votes.'
+  comment-id:
+    description: Comment id of comment containing votes.
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+outputs:
+  for:
+    description: The number for the change.
+  against:
+    description: The number against the change.
 runs:
   using: 'node12'
   main: 'dist/index.js'
