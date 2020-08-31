@@ -24,16 +24,16 @@ test('readReactionsCounts can getComment on issue', async () => {
 })
 
 //TODO: E2E test needs some work to complete this successfully. Not sure what's wrong.
-// test('test runs', () => {
-//   // make sure to run with `INPUT_TOKEN=your-token npm test`
-//   process.env['INPUT_REPOSITORY'] = 'myyk/git-democracy'
-//   process.env['INPUT_COMMENT_ID'] = '677573350'
-//   const ip = path.join(__dirname, '..', 'lib', 'main.js')
-//   const options: cp.ExecSyncOptions = {
-//     env: process.env
-//   }
-//   console.log(cp.execSync(`node ${ip}`, options).toString())
-// })
+test('test runs', () => {
+  // make sure to run with `INPUT_TOKEN=your-token npm test`
+  process.env['INPUT_REPOSITORY'] = 'myyk/git-democracy'
+  process.env['INPUT_COMMENT-ID'] = '677573350'
+  const ip = path.join(__dirname, '..', 'lib', 'main.js')
+  const options: cp.ExecSyncOptions = {
+    env: process.env
+  }
+  console.log(cp.execSync(`node ${ip}`, options).toString())
+})
 
 
 // test('wait 500 ms', async () => {

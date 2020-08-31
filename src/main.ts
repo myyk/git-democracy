@@ -12,7 +12,7 @@ async function run(): Promise<void> {
       repository: core.getInput("repository"),
       commentId: Number(core.getInput("comment-id")),
     };
-    core.debug(`Inputs: ${inspect(inputs)}`);
+    console.log(`Inputs: ${inspect(inputs)}`);
 
     const repository = inputs.repository
       ? inputs.repository
