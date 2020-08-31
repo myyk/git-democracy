@@ -1,8 +1,9 @@
 import {inspect} from "util";
 import * as core from '@actions/core'
-import {github} from '@actions/github'
-import {wait} from './wait'
+import * as github from '@actions/github'
+// import {wait} from './wait'
 import {readReactionsCounts} from './reactions'
+import { Octokit } from "@octokit/rest";
 
 async function run(): Promise<void> {
   try {
@@ -24,12 +25,17 @@ async function run(): Promise<void> {
       {
         previews: ['squirrel-girl'],
       },
-    );
+    ) as Octokit;
 
     const reactionCountsPromise = readReactionsCounts(octokit, owner, repo, inputs.commentId)
     // const votingConfigPromise = readVotingConfig()
 
-    const reactionCounts = await reactionCountsPromise
+    const reactionCounts = await reactionCountsPromise.catch((reason) => {
+      core.setFailed(`could not get reactions: ${reason}`);
+    })
+
+    console.log(`reactionCounts: ${inspect(reactionCounts)}`);
+
     // const votingConfig = await votingConfigPromise // TODO: add voting config to action outpus
 
     // core.setOutput("for", reactionCounts[forIt]);

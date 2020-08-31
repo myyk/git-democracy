@@ -5,27 +5,31 @@ import {
 } from "@octokit/types";
 import { Octokit } from "@octokit/rest";
 
-// const forIt = '+1';
-// const againstIt = '-1';
-//
-// interface Reactions {
-//   [forIt]: number; // ok, length is a number
-//   [againstIt]: string; // ok, name is a string
-// }
+const forIt = '+1';
+const againstIt = '-1';
 
-export function readReactionsCounts(octokit: Octokit, owner: string, repo: string, commentId: number): Promise<IssuesGetCommentResponseData | null> {
+interface Reactions {
+  [forIt]: number;
+  [againstIt]: number;
+}
+
+export async function readReactionsCounts(octokit: Octokit, owner: string, repo: string, commentId: number): Promise<Reactions> {
+  if (isNaN(commentId)) {
+    throw new Error('commentId not a number')
+  }
+
   return octokit.issues.getComment({
-    owner: repo[0],
-    repo: repo[1],
+    owner: owner,
+    repo: repo,
     comment_id: commentId,
   }).then(({ data }) => {
-    core.info(`data: ${inspect(data)}`);
-    // core.info(`reactions: ${inspect(data.reactions)}`);
-    // core.info(`+1s '${data.reactions[forIt]}'`);
-    // return data.reactions;
-    return data;
-  }).catch((reason) => {
-    core.setFailed(`could not get reactions: ${reason}`);
-    return null;
+    console.log(`data: ${inspect(data)}`);
+    const dataWithReactions:any = data
+    const reactions = dataWithReactions['reactions'];
+    console.log(`reactions: ${inspect(reactions)}`);
+    return {
+      [forIt]: reactions[forIt],
+      [againstIt]: reactions[againstIt],
+    };
   });
 }
