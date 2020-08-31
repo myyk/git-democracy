@@ -5,8 +5,8 @@ import {
 } from "@octokit/types";
 import { Octokit } from "@octokit/rest";
 
-const forIt = '+1';
-const againstIt = '-1';
+export const forIt = '+1';
+export const againstIt = '-1';
 
 interface Reactions {
   [forIt]: number;

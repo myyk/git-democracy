@@ -2,7 +2,7 @@ import {inspect} from "util";
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 // import {wait} from './wait'
-import {readReactionsCounts} from './reactions'
+import {readReactionsCounts, forIt, againstIt} from './reactions'
 import { Octokit } from "@octokit/rest";
 
 async function run(): Promise<void> {
@@ -10,9 +10,9 @@ async function run(): Promise<void> {
     const inputs = {
       token: core.getInput("token"),
       repository: core.getInput("repository"),
-      commentId: Number(core.getInput("comment-id")),
+      commentId: Number(core.getInput("commentId")),
     };
-    console.log(`Inputs: ${inspect(inputs)}`);
+    core.debug(`Inputs: ${inspect(inputs)}`);
 
     const repository = inputs.repository
       ? inputs.repository
@@ -33,15 +33,16 @@ async function run(): Promise<void> {
     const reactionCounts = await reactionCountsPromise.catch((reason) => {
       core.setFailed(`could not get reactions: ${reason}`);
     })
+    if (reactionCounts == null) {
+      return;
+    }
 
     console.log(`reactionCounts: ${inspect(reactionCounts)}`);
 
     // const votingConfig = await votingConfigPromise // TODO: add voting config to action outpus
 
-    // core.setOutput("for", reactionCounts[forIt]);
-    // core.setOutput("against", reactionCounts[againstIt]);
-    core.setOutput("for", 123);
-    core.setOutput("against", 456);
+    core.setOutput("for", reactionCounts[forIt]);
+    core.setOutput("against", reactionCounts[againstIt]);
 
 
     // Get the JSON webhook payload for the event that triggered the workflow

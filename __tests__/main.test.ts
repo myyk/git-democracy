@@ -27,7 +27,7 @@ test('readReactionsCounts can getComment on issue', async () => {
 test('test runs', () => {
   // make sure to run with `INPUT_TOKEN=your-token npm test`
   process.env['INPUT_REPOSITORY'] = 'myyk/git-democracy'
-  process.env['INPUT_COMMENT-ID'] = '677573350'
+  process.env['INPUT_COMMENTID'] = '677573350'
   const ip = path.join(__dirname, '..', 'lib', 'main.js')
   const options: cp.ExecSyncOptions = {
     env: process.env

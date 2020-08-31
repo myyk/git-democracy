@@ -1485,7 +1485,7 @@ function run() {
             const inputs = {
                 token: core.getInput("token"),
                 repository: core.getInput("repository"),
-                commentId: Number(core.getInput("comment-id")),
+                commentId: Number(core.getInput("commentId")),
             };
             core.debug(`Inputs: ${util_1.inspect(inputs)}`);
             const repository = inputs.repository
@@ -1501,12 +1501,13 @@ function run() {
             const reactionCounts = yield reactionCountsPromise.catch((reason) => {
                 core.setFailed(`could not get reactions: ${reason}`);
             });
+            if (reactionCounts == null) {
+                return;
+            }
             console.log(`reactionCounts: ${util_1.inspect(reactionCounts)}`);
             // const votingConfig = await votingConfigPromise // TODO: add voting config to action outpus
-            // core.setOutput("for", reactionCounts[forIt]);
-            // core.setOutput("against", reactionCounts[againstIt]);
-            core.setOutput("for", 123);
-            core.setOutput("against", 456);
+            core.setOutput("for", reactionCounts[reactions_1.forIt]);
+            core.setOutput("against", reactionCounts[reactions_1.againstIt]);
             // Get the JSON webhook payload for the event that triggered the workflow
             const payload = JSON.stringify(github.context.payload, undefined, 2);
             console.log(`The event payload: ${payload}`);
@@ -2452,10 +2453,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readReactionsCounts = void 0;
+exports.readReactionsCounts = exports.againstIt = exports.forIt = void 0;
 const util_1 = __webpack_require__(669);
-const forIt = '+1';
-const againstIt = '-1';
+exports.forIt = '+1';
+exports.againstIt = '-1';
 function readReactionsCounts(octokit, owner, repo, commentId) {
     return __awaiter(this, void 0, void 0, function* () {
         if (isNaN(commentId)) {
@@ -2471,8 +2472,8 @@ function readReactionsCounts(octokit, owner, repo, commentId) {
             const reactions = dataWithReactions['reactions'];
             console.log(`reactions: ${util_1.inspect(reactions)}`);
             return {
-                [forIt]: reactions[forIt],
-                [againstIt]: reactions[againstIt],
+                [exports.forIt]: reactions[exports.forIt],
+                [exports.againstIt]: reactions[exports.againstIt],
             };
         });
     });
