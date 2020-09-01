@@ -50,7 +50,8 @@ jobs:
         edit-mode: replace
         comment-id: ${{ steps.fc.outputs.comment-id }}
         body: |
-          `![Current Voting Result](${{ github.server_url }}/${{ github.repository }}/workflows/Voting/badge.svg?branch=${{ github.head_ref }})\nVote on this comment with 👍 or 👎.`
+          ![Current Voting Result](${{ github.server_url }}/${{ github.repository }}/workflows/Voting/badge.svg?branch=${{ github.head_ref }})
+          Vote on this comment with 👍 or 👎.
 
           Vote Summary:
             ${{ steps.tally.outputs.for }} 👍
