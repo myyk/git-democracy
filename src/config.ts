@@ -26,7 +26,7 @@ export class Config {
   }
 }
 
-export async function readVotingConfig(path: PathLike): Promise<any>  {
+export async function readVotingConfig(path: PathLike): Promise<Config>  {
   // read voting config
   return fsPromises
     .readFile(path, 'utf8')

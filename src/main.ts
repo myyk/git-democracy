@@ -2,6 +2,7 @@ import {inspect} from 'util'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {readReactionsCounts, forIt, againstIt} from './reactions'
+import {readVotingConfig} from './config'
 import {Octokit} from '@octokit/rest'
 
 async function run(): Promise<void> {
@@ -29,7 +30,7 @@ async function run(): Promise<void> {
       repo,
       inputs.commentId
     )
-    // const votingConfigPromise = readVotingConfig()
+    const votingConfigPromise = readVotingConfig(`./.voting.yml`)
 
     const reactionCounts = await reactionCountsPromise.catch(reason => {
       core.setFailed(`could not get reactions: ${reason}`)
@@ -40,7 +41,12 @@ async function run(): Promise<void> {
 
     console.log(`reactionCounts: ${inspect(reactionCounts)}`)
 
-    // const votingConfig = await votingConfigPromise // TODO: add voting config to action outpus
+    const votingConfig = await votingConfigPromise.catch(reason => {
+      core.setFailed(`could not get voting config: ${reason}`)
+    }) // TODO: add voting config to action outpus
+    if (votingConfig == null) {
+      return
+    }
 
     core.setOutput('for', reactionCounts[forIt])
     core.setOutput('against', reactionCounts[againstIt])
