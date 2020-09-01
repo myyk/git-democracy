@@ -56,7 +56,7 @@ export async function readVotingConfig(path: PathLike): Promise<any>  {
         config.minVotersRequired = 0;
       }
       if (config.minVotingWindowMinutes < 0) {
-        config.minVotersRequired = 0;
+        config.minVotingWindowMinutes = 0;
       }
 
       return config
