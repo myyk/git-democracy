@@ -1,0 +1,5 @@
+---
+# Defines voting rules for the repo to be use with the git-democracy github actions
+  percentageToApprove: 75
+  minVotersRequired: 10
+  minVotingWindowMinutes: 3600
