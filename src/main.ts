@@ -10,7 +10,7 @@ async function run(): Promise<void> {
     const inputs = {
       token: core.getInput('token'),
       repository: core.getInput('repository'),
-      commentId: Number(core.getInput('commentId'))
+      commentId: Number(core.getInput('commentId')) // TODO: Search for this
     }
     core.debug(`Inputs: ${inspect(inputs)}`)
 
@@ -24,6 +24,12 @@ async function run(): Promise<void> {
       previews: ['squirrel-girl']
     }) as Octokit
 
+    // TODO: Look for voting commentID
+    // TODO: If can't find the commentID create new voting comment and return
+
+    // TODO: Read voters file.
+    // TODO: User voters in readReactionsCounts.
+
     const reactionCountsPromise = readReactionsCounts(
       octokit,
       owner,
@@ -32,14 +38,18 @@ async function run(): Promise<void> {
     )
     const votingConfigPromise = readVotingConfig(`./.voting.yml`)
 
-    const reactionCounts = await reactionCountsPromise
-    core.debug(`reactionCounts: ${inspect(reactionCounts)}`)
+    // TODO: Compute voting result.
+    // TODO: Write summary to comment.
+    // TODO: Fail if the vote didn't pass.
+
+    const votes = await reactionCountsPromise
+    core.debug(`reactionCounts: ${inspect(votes)}`)
 
     const votingConfig = await votingConfigPromise
 
     // TODO: add voting config to action outpus
-    core.setOutput('for', reactionCounts[forIt])
-    core.setOutput('against', reactionCounts[againstIt])
+    core.setOutput('for', votes[forIt])
+    core.setOutput('against', votes[againstIt])
     core.setOutput('votingConfig', votingConfig)
 
     // Get the JSON webhook payload for the event that triggered the workflow
