@@ -2510,7 +2510,7 @@ function run() {
             const inputs = {
                 token: core.getInput('token'),
                 repository: core.getInput('repository'),
-                commentId: Number(core.getInput('commentId'))
+                commentId: Number(core.getInput('commentId')) // TODO: Search for this
             };
             core.debug(`Inputs: ${util_1.inspect(inputs)}`);
             const repository = inputs.repository
@@ -2521,14 +2521,21 @@ function run() {
             const octokit = github.getOctokit(inputs.token, {
                 previews: ['squirrel-girl']
             });
+            // TODO: Look for voting commentID
+            // TODO: If can't find the commentID create new voting comment and return
+            // TODO: Read voters file.
+            // TODO: User voters in readReactionsCounts.
             const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, inputs.commentId);
             const votingConfigPromise = config_1.readVotingConfig(`./.voting.yml`);
-            const reactionCounts = yield reactionCountsPromise;
-            core.debug(`reactionCounts: ${util_1.inspect(reactionCounts)}`);
+            // TODO: Compute voting result.
+            // TODO: Write summary to comment.
+            // TODO: Fail if the vote didn't pass.
+            const votes = yield reactionCountsPromise;
+            core.debug(`reactionCounts: ${util_1.inspect(votes)}`);
             const votingConfig = yield votingConfigPromise;
             // TODO: add voting config to action outpus
-            core.setOutput('for', reactionCounts[reactions_1.forIt]);
-            core.setOutput('against', reactionCounts[reactions_1.againstIt]);
+            core.setOutput('for', votes[reactions_1.forIt]);
+            core.setOutput('against', votes[reactions_1.againstIt]);
             core.setOutput('votingConfig', votingConfig);
             // Get the JSON webhook payload for the event that triggered the workflow
             const payload = JSON.stringify(github.context.payload, undefined, 2);
