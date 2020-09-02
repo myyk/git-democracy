@@ -2389,6 +2389,25 @@ module.exports = require("os");
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -2403,18 +2422,7 @@ exports.readVotingConfig = exports.Config = void 0;
 const util_1 = __webpack_require__(669);
 const fs_1 = __webpack_require__(747);
 const js_yaml_1 = __webpack_require__(917);
-// import {PathLike, FileHandle} from 'fs';
-// export class Config {
-//   percentageToApprove: number;
-//   minVotersRequired: number;
-//   minVotingWindowMinutes: number;
-//
-//   constructor(percentageToApprove: number, minVotersRequired: number , minVotingWindowMinutes: number) {
-//     this.percentageToApprove = percentageToApprove;
-//     this.minVotersRequired = minVotersRequired;
-//     this.minVotingWindowMinutes = minVotingWindowMinutes
-//   }
-// }
+const core = __importStar(__webpack_require__(186));
 class Config {
     constructor({ percentageToApprove = 0, minVotersRequired = 0, minVotingWindowMinutes = 0 }) {
         this.percentageToApprove = percentageToApprove;
@@ -2426,34 +2434,30 @@ exports.Config = Config;
 function readVotingConfig(path) {
     return __awaiter(this, void 0, void 0, function* () {
         // read voting config
-        return fs_1.promises
-            .readFile(path, 'utf8')
-            .then((fileContents) => {
-            return js_yaml_1.safeLoad(fileContents);
-        }).then((configData) => {
-            // validate and sanitize values
-            console.log(`voting config: ${util_1.inspect(configData)}`);
-            if (!(configData instanceof Object)) {
-                throw new Error(`config data is not object type`);
+        const fileContents = yield fs_1.promises.readFile(path, 'utf8');
+        const configData = js_yaml_1.safeLoad(fileContents);
+        // validate and sanitize values
+        core.info(`voting config: ${util_1.inspect(configData)}`);
+        if (!(configData instanceof Object)) {
+            throw new Error(`config data is not object type`);
+        }
+        const config = new Config(configData);
+        if (!(config instanceof Config)) {
+            throw new Error('voting yaml is not instance of Config');
+        }
+        {
+            const percentageToApprove = config.percentageToApprove;
+            if (percentageToApprove < 0 || percentageToApprove > 100) {
+                throw new Error(`percentageToApprove=${percentageToApprove} but should be between 0 and 100 inclusively.`);
             }
-            const config = new Config(configData);
-            if (!(config instanceof Config)) {
-                throw new Error('voting yaml is not instance of Config');
-            }
-            {
-                let percentageToApprove = config.percentageToApprove;
-                if (percentageToApprove < 0 || percentageToApprove > 100) {
-                    throw new Error(`percentageToApprove=${percentageToApprove} but should be between 0 and 100 inclusively.`);
-                }
-            }
-            if (config.minVotersRequired < 0) {
-                config.minVotersRequired = 0;
-            }
-            if (config.minVotingWindowMinutes < 0) {
-                config.minVotingWindowMinutes = 0;
-            }
-            return config;
-        });
+        }
+        if (config.minVotersRequired < 0) {
+            config.minVotersRequired = 0;
+        }
+        if (config.minVotingWindowMinutes < 0) {
+            config.minVotingWindowMinutes = 0;
+        }
+        return config;
     });
 }
 exports.readVotingConfig = readVotingConfig;
@@ -2519,24 +2523,16 @@ function run() {
             });
             const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, inputs.commentId);
             const votingConfigPromise = config_1.readVotingConfig(`./.voting.yml`);
-            const reactionCounts = yield reactionCountsPromise.catch(reason => {
-                core.setFailed(`could not get reactions: ${reason}`);
-            });
-            if (reactionCounts == null) {
-                return;
-            }
-            console.log(`reactionCounts: ${util_1.inspect(reactionCounts)}`);
-            const votingConfig = yield votingConfigPromise.catch(reason => {
-                core.setFailed(`could not get voting config: ${reason}`);
-            }); // TODO: add voting config to action outpus
-            if (votingConfig == null) {
-                return;
-            }
+            const reactionCounts = yield reactionCountsPromise;
+            core.debug(`reactionCounts: ${util_1.inspect(reactionCounts)}`);
+            const votingConfig = yield votingConfigPromise;
+            // TODO: add voting config to action outpus
             core.setOutput('for', reactionCounts[reactions_1.forIt]);
             core.setOutput('against', reactionCounts[reactions_1.againstIt]);
+            core.setOutput('votingConfig', votingConfig);
             // Get the JSON webhook payload for the event that triggered the workflow
             const payload = JSON.stringify(github.context.payload, undefined, 2);
-            console.log(`The event payload: ${payload}`);
+            core.debug(`The event payload: ${payload}`);
         }
         catch (error) {
             core.setFailed(error.message);
@@ -5487,6 +5483,25 @@ exports.createTokenAuth = createTokenAuth;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -5499,6 +5514,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.readReactionsCounts = exports.againstIt = exports.forIt = void 0;
 const util_1 = __webpack_require__(669);
+const core = __importStar(__webpack_require__(186));
 exports.forIt = '+1';
 exports.againstIt = '-1';
 function readReactionsCounts(octokit, owner, repo, commentId) {
@@ -5506,22 +5522,19 @@ function readReactionsCounts(octokit, owner, repo, commentId) {
         if (isNaN(commentId)) {
             throw new Error('commentId not a number');
         }
-        return octokit.issues
-            .getComment({
-            owner: owner,
-            repo: repo,
+        const { data } = yield octokit.issues.getComment({
+            owner,
+            repo,
             comment_id: commentId
-        })
-            .then(({ data }) => {
-            console.log(`data: ${util_1.inspect(data)}`);
-            const dataWithReactions = data;
-            const reactions = dataWithReactions['reactions'];
-            console.log(`reactions: ${util_1.inspect(reactions)}`);
-            return {
-                [exports.forIt]: reactions[exports.forIt],
-                [exports.againstIt]: reactions[exports.againstIt]
-            };
         });
+        core.info(`data: ${util_1.inspect(data)}`);
+        const dataWithReactions = data; // eslint-disable-line @typescript-eslint/no-explicit-any
+        const reactions = dataWithReactions['reactions'];
+        core.info(`reactions: ${util_1.inspect(reactions)}`);
+        return {
+            [exports.forIt]: reactions[exports.forIt],
+            [exports.againstIt]: reactions[exports.againstIt]
+        };
     });
 }
 exports.readReactionsCounts = readReactionsCounts;

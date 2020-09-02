@@ -1,19 +1,8 @@
 import {inspect} from 'util'
 import {promises as fsPromises, PathLike} from 'fs'
 import {safeLoad as yamlSafeLoad} from 'js-yaml'
-// import {PathLike, FileHandle} from 'fs';
+import * as core from '@actions/core'
 
-// export class Config {
-//   percentageToApprove: number;
-//   minVotersRequired: number;
-//   minVotingWindowMinutes: number;
-//
-//   constructor(percentageToApprove: number, minVotersRequired: number , minVotingWindowMinutes: number) {
-//     this.percentageToApprove = percentageToApprove;
-//     this.minVotersRequired = minVotersRequired;
-//     this.minVotingWindowMinutes = minVotingWindowMinutes
-//   }
-// }
 export class Config {
   percentageToApprove: number
   minVotersRequired: number
@@ -36,40 +25,36 @@ export class Config {
 
 export async function readVotingConfig(path: PathLike): Promise<Config> {
   // read voting config
-  return fsPromises
-    .readFile(path, 'utf8')
-    .then(fileContents => {
-      return yamlSafeLoad(fileContents)
-    })
-    .then(configData => {
-      // validate and sanitize values
-      console.log(`voting config: ${inspect(configData)}`)
+  const fileContents = await fsPromises.readFile(path, 'utf8')
+  const configData = yamlSafeLoad(fileContents)
 
-      if (!(configData instanceof Object)) {
-        throw new Error(`config data is not object type`)
-      }
+  // validate and sanitize values
+  core.info(`voting config: ${inspect(configData)}`)
 
-      const config = new Config(configData)
-      if (!(config instanceof Config)) {
-        throw new Error('voting yaml is not instance of Config')
-      }
+  if (!(configData instanceof Object)) {
+    throw new Error(`config data is not object type`)
+  }
 
-      {
-        const percentageToApprove = config.percentageToApprove
-        if (percentageToApprove < 0 || percentageToApprove > 100) {
-          throw new Error(
-            `percentageToApprove=${percentageToApprove} but should be between 0 and 100 inclusively.`
-          )
-        }
-      }
+  const config = new Config(configData)
+  if (!(config instanceof Config)) {
+    throw new Error('voting yaml is not instance of Config')
+  }
 
-      if (config.minVotersRequired < 0) {
-        config.minVotersRequired = 0
-      }
-      if (config.minVotingWindowMinutes < 0) {
-        config.minVotingWindowMinutes = 0
-      }
+  {
+    const percentageToApprove = config.percentageToApprove
+    if (percentageToApprove < 0 || percentageToApprove > 100) {
+      throw new Error(
+        `percentageToApprove=${percentageToApprove} but should be between 0 and 100 inclusively.`
+      )
+    }
+  }
 
-      return config
-    })
+  if (config.minVotersRequired < 0) {
+    config.minVotersRequired = 0
+  }
+  if (config.minVotingWindowMinutes < 0) {
+    config.minVotingWindowMinutes = 0
+  }
+
+  return config
 }

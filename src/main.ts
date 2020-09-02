@@ -32,28 +32,19 @@ async function run(): Promise<void> {
     )
     const votingConfigPromise = readVotingConfig(`./.voting.yml`)
 
-    const reactionCounts = await reactionCountsPromise.catch(reason => {
-      core.setFailed(`could not get reactions: ${reason}`)
-    })
-    if (reactionCounts == null) {
-      return
-    }
+    const reactionCounts = await reactionCountsPromise
+    core.debug(`reactionCounts: ${inspect(reactionCounts)}`)
 
-    console.log(`reactionCounts: ${inspect(reactionCounts)}`)
+    const votingConfig = await votingConfigPromise
 
-    const votingConfig = await votingConfigPromise.catch(reason => {
-      core.setFailed(`could not get voting config: ${reason}`)
-    }) // TODO: add voting config to action outpus
-    if (votingConfig == null) {
-      return
-    }
-
+    // TODO: add voting config to action outpus
     core.setOutput('for', reactionCounts[forIt])
     core.setOutput('against', reactionCounts[againstIt])
+    core.setOutput('votingConfig', votingConfig)
 
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
-    console.log(`The event payload: ${payload}`)
+    core.debug(`The event payload: ${payload}`)
   } catch (error) {
     core.setFailed(error.message)
   }
