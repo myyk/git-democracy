@@ -14,8 +14,9 @@ export async function readReactionsCounts(
   octokit: Octokit,
   owner: string,
   repo: string,
-  commentId: number
+  promisedCommentId: Promise<number>
 ): Promise<Reactions> {
+  const commentId = await promisedCommentId
   if (isNaN(commentId)) {
     throw new Error('commentId not a number')
   }

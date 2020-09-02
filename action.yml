@@ -9,15 +9,9 @@ inputs:
     default: ${{ github.token }}
   repository:
     description: 'The full name of the repository in which to tally votes.'
-  commentId:
-    description: Comment id of comment containing votes.
-    required: true
+    default: ${{ github.repository }}
 outputs:
   # TODO: This should probably just do the update of the comment with the voting status and pass/fail the build
-  for:
-    description: The number for the change.
-  against:
-    description: The number against the change.
 runs:
   using: 'node12'
   main: 'dist/index.js'

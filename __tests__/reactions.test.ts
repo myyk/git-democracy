@@ -5,7 +5,7 @@ test('throws invalid number', async () => {
   const input = parseInt('foo', 10)
   const octokit = new Octokit()
   await expect(
-    readReactionsCounts(octokit, 'foo', 'bar', input)
+    readReactionsCounts(octokit, 'foo', 'bar', Promise.resolve(input))
   ).rejects.toThrow('commentId not a number')
 })
 
@@ -20,7 +20,7 @@ test('readReactionsCounts can getComment on issue', async () => {
     octokit,
     'myyk',
     'git-democracy',
-    677573350
+    Promise.resolve(677573350)
   )
   await expect(result).resolves.toHaveProperty('+1', 1)
   await expect(result).resolves.toHaveProperty('-1', 1)

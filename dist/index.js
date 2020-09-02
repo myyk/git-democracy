@@ -2499,9 +2499,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.run = void 0;
 const util_1 = __webpack_require__(669);
 const core = __importStar(__webpack_require__(186));
 const github = __importStar(__webpack_require__(438));
+const comments_1 = __webpack_require__(910);
 const reactions_1 = __webpack_require__(344);
 const config_1 = __webpack_require__(88);
 function run() {
@@ -2509,23 +2511,22 @@ function run() {
         try {
             const inputs = {
                 token: core.getInput('token'),
-                repository: core.getInput('repository'),
-                commentId: Number(core.getInput('commentId')) // TODO: Search for this
+                repository: core.getInput('repository')
             };
             core.debug(`Inputs: ${util_1.inspect(inputs)}`);
-            const repository = inputs.repository
-                ? inputs.repository
-                : process.env.GITHUB_REPOSITORY;
-            const [owner, repo] = repository.split('/');
+            // TODO: perhaps we can get this from `github.context.issue`
+            const [owner, repo] = inputs.repository.split('/');
             core.debug(`repository: ${owner}/${repo}`);
             const octokit = github.getOctokit(inputs.token, {
                 previews: ['squirrel-girl']
             });
-            // TODO: Look for voting commentID
-            // TODO: If can't find the commentID create new voting comment and return
+            const commentId = comments_1.findOrCreateVotingCommentId(octokit, owner, repo, github.context.issue.number, 'Current Voting Result');
+            core.debug(`github.context.issue.number: ${github.context.issue.number}`);
+            core.debug(`commentId: ${yield commentId}`);
+            // TODO: If can't find the commentID create new voting comment
             // TODO: Read voters file.
             // TODO: User voters in readReactionsCounts.
-            const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, inputs.commentId);
+            const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, commentId);
             const votingConfigPromise = config_1.readVotingConfig(`./.voting.yml`);
             // TODO: Compute voting result.
             // TODO: Write summary to comment.
@@ -2533,10 +2534,12 @@ function run() {
             const votes = yield reactionCountsPromise;
             core.debug(`reactionCounts: ${util_1.inspect(votes)}`);
             const votingConfig = yield votingConfigPromise;
-            // TODO: add voting config to action outpus
-            core.setOutput('for', votes[reactions_1.forIt]);
-            core.setOutput('against', votes[reactions_1.againstIt]);
-            core.setOutput('votingConfig', votingConfig);
+            core.debug(`votingConfig: ${util_1.inspect(votingConfig)}`);
+            core.debug(`forIt: ${votes[reactions_1.forIt]}`);
+            core.debug(`againstIt: ${votes[reactions_1.againstIt]}`);
+            // core.setOutput('for', votes[forIt])
+            // core.setOutput('against', votes[againstIt])
+            // core.setOutput('votingConfig', votingConfig)
             // Get the JSON webhook payload for the event that triggered the workflow
             const payload = JSON.stringify(github.context.payload, undefined, 2);
             core.debug(`The event payload: ${payload}`);
@@ -2546,6 +2549,7 @@ function run() {
         }
     });
 }
+exports.run = run;
 run();
 
 
@@ -5524,8 +5528,9 @@ const util_1 = __webpack_require__(669);
 const core = __importStar(__webpack_require__(186));
 exports.forIt = '+1';
 exports.againstIt = '-1';
-function readReactionsCounts(octokit, owner, repo, commentId) {
+function readReactionsCounts(octokit, owner, repo, promisedCommentId) {
     return __awaiter(this, void 0, void 0, function* () {
+        const commentId = yield promisedCommentId;
         if (isNaN(commentId)) {
             throw new Error('commentId not a number');
         }
@@ -9321,6 +9326,81 @@ function isPlainObject(o) {
 }
 
 module.exports = isPlainObject;
+
+
+/***/ }),
+
+/***/ 910:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createVotingCommentId = exports.findOrCreateVotingCommentId = exports.findVotingCommentId = void 0;
+const util_1 = __webpack_require__(669);
+const core = __importStar(__webpack_require__(186));
+function findVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { data: comments } = yield octokit.issues.listComments({
+            owner,
+            repo,
+            issue_number: issueNumber
+        });
+        const comment = comments.find(next => {
+            return next.body.includes(bodyIncludes);
+        });
+        if (!comment) {
+            throw new Error(`cannot find comment on issue = ${issueNumber}`);
+        }
+        core.info(`reactions: ${util_1.inspect(comment)}`);
+        return comment.id;
+    });
+}
+exports.findVotingCommentId = findVotingCommentId;
+function findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const commentId = yield findVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes);
+        if (!commentId) {
+            return createVotingCommentId();
+        }
+        return commentId;
+    });
+}
+exports.findOrCreateVotingCommentId = findOrCreateVotingCommentId;
+function createVotingCommentId() {
+    return __awaiter(this, void 0, void 0, function* () {
+        throw new Error("not implemented yet");
+    });
+}
+exports.createVotingCommentId = createVotingCommentId;
 
 
 /***/ }),

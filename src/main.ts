@@ -1,32 +1,38 @@
 import {inspect} from 'util'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
+import {findOrCreateVotingCommentId} from './comments'
 import {readReactionsCounts, forIt, againstIt} from './reactions'
 import {readVotingConfig} from './config'
 import {Octokit} from '@octokit/rest'
 
-async function run(): Promise<void> {
+export async function run(): Promise<void> {
   try {
     const inputs = {
       token: core.getInput('token'),
-      repository: core.getInput('repository'),
-      commentId: Number(core.getInput('commentId')) // TODO: Search for this
+      repository: core.getInput('repository')
     }
     core.debug(`Inputs: ${inspect(inputs)}`)
 
-    const repository = inputs.repository
-      ? inputs.repository
-      : (process.env.GITHUB_REPOSITORY as string)
-    const [owner, repo] = repository.split('/')
+    // TODO: perhaps we can get this from `github.context.issue`
+    const [owner, repo] = inputs.repository.split('/')
     core.debug(`repository: ${owner}/${repo}`)
 
     const octokit = github.getOctokit(inputs.token, {
       previews: ['squirrel-girl']
     }) as Octokit
 
-    // TODO: Look for voting commentID
-    // TODO: If can't find the commentID create new voting comment and return
+    const commentId = findOrCreateVotingCommentId(
+      octokit,
+      owner,
+      repo,
+      github.context.issue.number,
+      'Current Voting Result',
+    )
+    core.debug(`github.context.issue.number: ${github.context.issue.number}`)
+    core.debug(`commentId: ${await commentId}`)
 
+    // TODO: If can't find the commentID create new voting comment
     // TODO: Read voters file.
     // TODO: User voters in readReactionsCounts.
 
@@ -34,8 +40,9 @@ async function run(): Promise<void> {
       octokit,
       owner,
       repo,
-      inputs.commentId
+      commentId,
     )
+
     const votingConfigPromise = readVotingConfig(`./.voting.yml`)
 
     // TODO: Compute voting result.
@@ -46,11 +53,13 @@ async function run(): Promise<void> {
     core.debug(`reactionCounts: ${inspect(votes)}`)
 
     const votingConfig = await votingConfigPromise
+    core.debug(`votingConfig: ${inspect(votingConfig)}`)
+    core.debug(`forIt: ${votes[forIt]}`)
+    core.debug(`againstIt: ${votes[againstIt]}`)
 
-    // TODO: add voting config to action outpus
-    core.setOutput('for', votes[forIt])
-    core.setOutput('against', votes[againstIt])
-    core.setOutput('votingConfig', votingConfig)
+    // core.setOutput('for', votes[forIt])
+    // core.setOutput('against', votes[againstIt])
+    // core.setOutput('votingConfig', votingConfig)
 
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
