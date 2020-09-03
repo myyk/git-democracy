@@ -64,7 +64,7 @@ export async function run(): Promise<void> {
     const payload = JSON.stringify(github.context.payload, undefined, 2)
     core.debug(`The event payload: ${payload}`)
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed(`error while running action: ${error.message}`)
   }
 }
 

@@ -2544,7 +2544,7 @@ function run() {
             core.debug(`The event payload: ${payload}`);
         }
         catch (error) {
-            core.setFailed(error.message);
+            core.setFailed(`error while running action: ${error.message}`);
         }
     });
 }
