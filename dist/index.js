@@ -2512,7 +2512,8 @@ function run() {
             const inputs = {
                 token: core.getInput('token'),
                 repository: core.getInput('repository'),
-                issueNumber: core.getInput('issueNumber')
+                issueNumber: core.getInput('issueNumber'),
+                serverURL: core.getInput('serverURL')
             };
             core.info(`Inputs: ${util_1.inspect(inputs)}`);
             // TODO: perhaps we can get this from `github.context.issue`
@@ -2525,13 +2526,18 @@ function run() {
                 ? Number(inputs.issueNumber)
                 : github.context.issue.number;
             core.info(`issueNumber: ${issueNumber}`);
-            const commentId = comments_1.findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, 'Current Voting Result');
+            const votingConfigPromise = config_1.readVotingConfig(`./.voting.yml`);
+            const badgeText = 'Current Voting Result';
+            const createCommentBody = comments_1.createVotingCommentBody('https://github.com', // TODO: have this passed in as an input with default
+            owner, repo, github.context.ref, badgeText, Promise.resolve({
+                [reactions_1.forIt]: 0,
+                [reactions_1.againstIt]: 0
+            }), votingConfigPromise);
+            const commentId = comments_1.findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, badgeText, createCommentBody);
             core.info(`commentId: ${yield commentId}`);
-            // TODO: If can't find the commentID create new voting comment
             // TODO: Read voters file.
             // TODO: User voters in readReactionsCounts.
             const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, commentId);
-            const votingConfigPromise = config_1.readVotingConfig(`./.voting.yml`);
             // TODO: Compute voting result.
             // TODO: Write summary to comment.
             // TODO: Fail if the vote didn't pass.
@@ -9367,9 +9373,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createVotingCommentId = exports.findOrCreateVotingCommentId = exports.findVotingCommentId = void 0;
+exports.createVotingCommentBody = exports.createVotingCommentId = exports.findOrCreateVotingCommentId = exports.findVotingCommentId = void 0;
 const util_1 = __webpack_require__(669);
 const core = __importStar(__webpack_require__(186));
+const reactions_1 = __webpack_require__(344);
 function findVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes) {
     return __awaiter(this, void 0, void 0, function* () {
         const { data: comments } = yield octokit.issues.listComments({
@@ -9388,22 +9395,45 @@ function findVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes) {
     });
 }
 exports.findVotingCommentId = findVotingCommentId;
-function findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes) {
+function findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes, createCommentBody) {
     return __awaiter(this, void 0, void 0, function* () {
         const commentId = yield findVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes);
         if (!commentId) {
-            return createVotingCommentId();
+            return createVotingCommentId(octokit, owner, repo, issueNumber, yield createCommentBody);
         }
         return commentId;
     });
 }
 exports.findOrCreateVotingCommentId = findOrCreateVotingCommentId;
-function createVotingCommentId() {
+function createVotingCommentId(octokit, owner, repo, issueNumber, body) {
     return __awaiter(this, void 0, void 0, function* () {
-        throw new Error('not implemented yet');
+        const { data: comment } = yield octokit.issues.createComment({
+            owner,
+            repo,
+            issue_number: issueNumber,
+            body
+        });
+        return comment.id;
     });
 }
 exports.createVotingCommentId = createVotingCommentId;
+function createVotingCommentBody(serverURL, owner, repo, ref, bodyIncludes, votesPromise, acceptanceCriteria) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const votes = yield votesPromise;
+        return `
+![${bodyIncludes}](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
+Vote on this comment with 👍 or 👎.
+
+Vote Summary:
+  ${votes[reactions_1.forIt]} 👍
+  ${votes[reactions_1.againstIt]} 👎
+
+Acceptance Criteria:
+  ${yield acceptanceCriteria}
+`;
+    });
+}
+exports.createVotingCommentBody = createVotingCommentBody;
 
 
 /***/ }),

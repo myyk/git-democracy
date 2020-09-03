@@ -5,7 +5,7 @@ import * as core from '@actions/core'
 export const forIt = '+1'
 export const againstIt = '-1'
 
-interface Reactions {
+export interface Reactions {
   [forIt]: number
   [againstIt]: number
 }

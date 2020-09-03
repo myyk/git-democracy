@@ -1,7 +1,7 @@
 import {inspect} from 'util'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {findOrCreateVotingCommentId} from './comments'
+import {findOrCreateVotingCommentId, createVotingCommentBody} from './comments'
 import {readReactionsCounts, forIt, againstIt} from './reactions'
 import {readVotingConfig} from './config'
 import {Octokit} from '@octokit/rest'
@@ -11,7 +11,8 @@ export async function run(): Promise<void> {
     const inputs = {
       token: core.getInput('token'),
       repository: core.getInput('repository'),
-      issueNumber: core.getInput('issueNumber')
+      issueNumber: core.getInput('issueNumber'),
+      serverURL: core.getInput('serverURL')
     }
     core.info(`Inputs: ${inspect(inputs)}`)
 
@@ -28,16 +29,33 @@ export async function run(): Promise<void> {
       : github.context.issue.number
     core.info(`issueNumber: ${issueNumber}`)
 
+    const votingConfigPromise = readVotingConfig(`./.voting.yml`)
+
+    const badgeText = 'Current Voting Result'
+
+    const createCommentBody = createVotingCommentBody(
+      'https://github.com', // TODO: have this passed in as an input with default
+      owner,
+      repo,
+      github.context.ref,
+      badgeText,
+      Promise.resolve({
+        [forIt]: 0,
+        [againstIt]: 0
+      }),
+      votingConfigPromise
+    )
+
     const commentId = findOrCreateVotingCommentId(
       octokit,
       owner,
       repo,
       issueNumber,
-      'Current Voting Result'
+      badgeText,
+      createCommentBody
     )
     core.info(`commentId: ${await commentId}`)
 
-    // TODO: If can't find the commentID create new voting comment
     // TODO: Read voters file.
     // TODO: User voters in readReactionsCounts.
 
@@ -47,8 +65,6 @@ export async function run(): Promise<void> {
       repo,
       commentId
     )
-
-    const votingConfigPromise = readVotingConfig(`./.voting.yml`)
 
     // TODO: Compute voting result.
     // TODO: Write summary to comment.
