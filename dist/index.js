@@ -2513,16 +2513,16 @@ function run() {
                 token: core.getInput('token'),
                 repository: core.getInput('repository')
             };
-            core.debug(`Inputs: ${util_1.inspect(inputs)}`);
+            core.info(`Inputs: ${util_1.inspect(inputs)}`);
             // TODO: perhaps we can get this from `github.context.issue`
             const [owner, repo] = inputs.repository.split('/');
-            core.debug(`repository: ${owner}/${repo}`);
+            core.info(`repository: ${owner}/${repo}`);
             const octokit = github.getOctokit(inputs.token, {
                 previews: ['squirrel-girl']
             });
             const commentId = comments_1.findOrCreateVotingCommentId(octokit, owner, repo, github.context.issue.number, 'Current Voting Result');
-            core.debug(`github.context.issue.number: ${github.context.issue.number}`);
-            core.debug(`commentId: ${yield commentId}`);
+            core.info(`github.context.issue.number: ${github.context.issue.number}`);
+            core.info(`commentId: ${yield commentId}`);
             // TODO: If can't find the commentID create new voting comment
             // TODO: Read voters file.
             // TODO: User voters in readReactionsCounts.
@@ -2532,16 +2532,16 @@ function run() {
             // TODO: Write summary to comment.
             // TODO: Fail if the vote didn't pass.
             const votes = yield reactionCountsPromise;
-            core.debug(`reactionCounts: ${util_1.inspect(votes)}`);
+            core.info(`reactionCounts: ${util_1.inspect(votes)}`);
             const votingConfig = yield votingConfigPromise;
-            core.debug(`votingConfig: ${util_1.inspect(votingConfig)}`);
-            core.debug(`forIt: ${votes[reactions_1.forIt]}`);
-            core.debug(`againstIt: ${votes[reactions_1.againstIt]}`);
+            core.info(`votingConfig: ${util_1.inspect(votingConfig)}`);
+            core.info(`forIt: ${votes[reactions_1.forIt]}`);
+            core.info(`againstIt: ${votes[reactions_1.againstIt]}`);
             // TODO: remove, this is just here for now as a placeholder
             core.setOutput('for', votes[reactions_1.forIt]);
             // Get the JSON webhook payload for the event that triggered the workflow
             const payload = JSON.stringify(github.context.payload, undefined, 2);
-            core.debug(`The event payload: ${payload}`);
+            core.info(`The event payload: ${payload}`);
         }
         catch (error) {
             core.setFailed(`error while running action: ${error.message}`);

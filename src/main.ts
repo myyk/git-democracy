@@ -12,11 +12,11 @@ export async function run(): Promise<void> {
       token: core.getInput('token'),
       repository: core.getInput('repository')
     }
-    core.debug(`Inputs: ${inspect(inputs)}`)
+    core.info(`Inputs: ${inspect(inputs)}`)
 
     // TODO: perhaps we can get this from `github.context.issue`
     const [owner, repo] = inputs.repository.split('/')
-    core.debug(`repository: ${owner}/${repo}`)
+    core.info(`repository: ${owner}/${repo}`)
 
     const octokit = github.getOctokit(inputs.token, {
       previews: ['squirrel-girl']
@@ -29,8 +29,8 @@ export async function run(): Promise<void> {
       github.context.issue.number,
       'Current Voting Result'
     )
-    core.debug(`github.context.issue.number: ${github.context.issue.number}`)
-    core.debug(`commentId: ${await commentId}`)
+    core.info(`github.context.issue.number: ${github.context.issue.number}`)
+    core.info(`commentId: ${await commentId}`)
 
     // TODO: If can't find the commentID create new voting comment
     // TODO: Read voters file.
@@ -50,19 +50,19 @@ export async function run(): Promise<void> {
     // TODO: Fail if the vote didn't pass.
 
     const votes = await reactionCountsPromise
-    core.debug(`reactionCounts: ${inspect(votes)}`)
+    core.info(`reactionCounts: ${inspect(votes)}`)
 
     const votingConfig = await votingConfigPromise
-    core.debug(`votingConfig: ${inspect(votingConfig)}`)
-    core.debug(`forIt: ${votes[forIt]}`)
-    core.debug(`againstIt: ${votes[againstIt]}`)
+    core.info(`votingConfig: ${inspect(votingConfig)}`)
+    core.info(`forIt: ${votes[forIt]}`)
+    core.info(`againstIt: ${votes[againstIt]}`)
 
     // TODO: remove, this is just here for now as a placeholder
     core.setOutput('for', votes[forIt])
 
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
-    core.debug(`The event payload: ${payload}`)
+    core.info(`The event payload: ${payload}`)
   } catch (error) {
     core.setFailed(`error while running action: ${error.message}`)
   }
