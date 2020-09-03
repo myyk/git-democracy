@@ -57,9 +57,8 @@ export async function run(): Promise<void> {
     core.debug(`forIt: ${votes[forIt]}`)
     core.debug(`againstIt: ${votes[againstIt]}`)
 
-    // core.setOutput('for', votes[forIt])
-    // core.setOutput('against', votes[againstIt])
-    // core.setOutput('votingConfig', votingConfig)
+    // TODO: remove, this is just here for now as a placeholder
+    core.setOutput('for', votes[forIt])
 
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
