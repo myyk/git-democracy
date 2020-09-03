@@ -2537,9 +2537,8 @@ function run() {
             core.debug(`votingConfig: ${util_1.inspect(votingConfig)}`);
             core.debug(`forIt: ${votes[reactions_1.forIt]}`);
             core.debug(`againstIt: ${votes[reactions_1.againstIt]}`);
-            // core.setOutput('for', votes[forIt])
-            // core.setOutput('against', votes[againstIt])
-            // core.setOutput('votingConfig', votingConfig)
+            // TODO: remove, this is just here for now as a placeholder
+            core.setOutput('for', votes[reactions_1.forIt]);
             // Get the JSON webhook payload for the event that triggered the workflow
             const payload = JSON.stringify(github.context.payload, undefined, 2);
             core.debug(`The event payload: ${payload}`);
@@ -9397,7 +9396,7 @@ function findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, bodyIncl
 exports.findOrCreateVotingCommentId = findOrCreateVotingCommentId;
 function createVotingCommentId() {
     return __awaiter(this, void 0, void 0, function* () {
-        throw new Error("not implemented yet");
+        throw new Error('not implemented yet');
     });
 }
 exports.createVotingCommentId = createVotingCommentId;

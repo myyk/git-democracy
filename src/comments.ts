@@ -35,7 +35,11 @@ export async function findOrCreateVotingCommentId(
   bodyIncludes: string
 ): Promise<number> {
   const commentId = await findVotingCommentId(
-    octokit, owner, repo, issueNumber, bodyIncludes
+    octokit,
+    owner,
+    repo,
+    issueNumber,
+    bodyIncludes
   )
   if (!commentId) {
     return createVotingCommentId()
@@ -45,5 +49,5 @@ export async function findOrCreateVotingCommentId(
 }
 
 export async function createVotingCommentId(): Promise<number> {
-  throw new Error("not implemented yet")
+  throw new Error('not implemented yet')
 }

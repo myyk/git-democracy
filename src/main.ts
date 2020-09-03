@@ -27,7 +27,7 @@ export async function run(): Promise<void> {
       owner,
       repo,
       github.context.issue.number,
-      'Current Voting Result',
+      'Current Voting Result'
     )
     core.debug(`github.context.issue.number: ${github.context.issue.number}`)
     core.debug(`commentId: ${await commentId}`)
@@ -40,7 +40,7 @@ export async function run(): Promise<void> {
       octokit,
       owner,
       repo,
-      commentId,
+      commentId
     )
 
     const votingConfigPromise = readVotingConfig(`./.voting.yml`)
