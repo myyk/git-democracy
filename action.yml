@@ -10,6 +10,8 @@ inputs:
   repository:
     description: 'The full name of the repository in which to tally votes.'
     default: ${{ github.repository }}
+  issueNumber:
+    description: 'Testing Parameter: Issue number to use.'
 outputs:
   # TODO: This should probably just do the update of the comment with the voting status and pass/fail the build
   for:

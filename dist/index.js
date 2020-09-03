@@ -2511,7 +2511,8 @@ function run() {
         try {
             const inputs = {
                 token: core.getInput('token'),
-                repository: core.getInput('repository')
+                repository: core.getInput('repository'),
+                issueNumber: core.getInput('issueNumber')
             };
             core.info(`Inputs: ${util_1.inspect(inputs)}`);
             // TODO: perhaps we can get this from `github.context.issue`
@@ -2520,8 +2521,11 @@ function run() {
             const octokit = github.getOctokit(inputs.token, {
                 previews: ['squirrel-girl']
             });
-            const commentId = comments_1.findOrCreateVotingCommentId(octokit, owner, repo, github.context.issue.number, 'Current Voting Result');
-            core.info(`github.context.issue.number: ${github.context.issue.number}`);
+            const issueNumber = inputs.issueNumber
+                ? Number(inputs.issueNumber)
+                : github.context.issue.number;
+            core.info(`issueNumber: ${issueNumber}`);
+            const commentId = comments_1.findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, 'Current Voting Result');
             core.info(`commentId: ${yield commentId}`);
             // TODO: If can't find the commentID create new voting comment
             // TODO: Read voters file.

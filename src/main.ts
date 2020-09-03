@@ -10,7 +10,8 @@ export async function run(): Promise<void> {
   try {
     const inputs = {
       token: core.getInput('token'),
-      repository: core.getInput('repository')
+      repository: core.getInput('repository'),
+      issueNumber: core.getInput('issueNumber')
     }
     core.info(`Inputs: ${inspect(inputs)}`)
 
@@ -22,14 +23,18 @@ export async function run(): Promise<void> {
       previews: ['squirrel-girl']
     }) as Octokit
 
+    const issueNumber = inputs.issueNumber
+      ? Number(inputs.issueNumber)
+      : github.context.issue.number
+    core.info(`issueNumber: ${issueNumber}`)
+
     const commentId = findOrCreateVotingCommentId(
       octokit,
       owner,
       repo,
-      github.context.issue.number,
+      issueNumber,
       'Current Voting Result'
     )
-    core.info(`github.context.issue.number: ${github.context.issue.number}`)
     core.info(`commentId: ${await commentId}`)
 
     // TODO: If can't find the commentID create new voting comment
