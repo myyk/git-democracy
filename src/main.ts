@@ -4,6 +4,8 @@ import * as github from '@actions/github'
 import {findOrCreateVotingCommentId, createVotingCommentBody} from './comments'
 import {readReactionsCounts, forIt, againstIt} from './reactions'
 import {readVotingConfig} from './config'
+import {readVoters} from './voters'
+
 import {Octokit} from '@octokit/rest'
 
 export async function run(): Promise<void> {
@@ -30,6 +32,7 @@ export async function run(): Promise<void> {
     core.info(`issueNumber: ${issueNumber}`)
 
     const votingConfigPromise = readVotingConfig(`./.voting.yml`)
+    const votersPromise = readVoters(`./.voters.yml`)
 
     const badgeText = 'Current Voting Result'
 
@@ -56,7 +59,9 @@ export async function run(): Promise<void> {
     )
     core.info(`commentId: ${await commentId}`)
 
-    // TODO: Read voters file.
+    const voters = await votersPromise
+    core.info(`voters: ${inspect(voters)}`)
+
     // TODO: User voters in readReactionsCounts.
 
     const reactionCountsPromise = readReactionsCounts(

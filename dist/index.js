@@ -2506,6 +2506,7 @@ const github = __importStar(__webpack_require__(438));
 const comments_1 = __webpack_require__(910);
 const reactions_1 = __webpack_require__(344);
 const config_1 = __webpack_require__(88);
+const voters_1 = __webpack_require__(934);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -2527,6 +2528,7 @@ function run() {
                 : github.context.issue.number;
             core.info(`issueNumber: ${issueNumber}`);
             const votingConfigPromise = config_1.readVotingConfig(`./.voting.yml`);
+            const votersPromise = voters_1.readVoters(`./.voters.yml`);
             const badgeText = 'Current Voting Result';
             const createCommentBody = comments_1.createVotingCommentBody('https://github.com', // TODO: have this passed in as an input with default
             owner, repo, github.context.ref, badgeText, Promise.resolve({
@@ -2535,7 +2537,8 @@ function run() {
             }), votingConfigPromise);
             const commentId = comments_1.findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, badgeText, createCommentBody);
             core.info(`commentId: ${yield commentId}`);
-            // TODO: Read voters file.
+            const voters = yield votersPromise;
+            core.info(`voters: ${util_1.inspect(voters)}`);
             // TODO: User voters in readReactionsCounts.
             const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, commentId);
             // TODO: Compute voting result.
@@ -10113,6 +10116,76 @@ class Deprecation extends Error {
 }
 
 exports.Deprecation = Deprecation;
+
+
+/***/ }),
+
+/***/ 934:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.readVoters = exports.Voters = void 0;
+const util_1 = __webpack_require__(669);
+const fs_1 = __webpack_require__(747);
+const js_yaml_1 = __webpack_require__(917);
+const core = __importStar(__webpack_require__(186));
+class Voters extends Map {
+    constructor(obj) {
+        super();
+        if (obj) {
+            for (const entry of Object.entries(obj)) {
+                const [key, val] = entry;
+                if (typeof val === 'number') {
+                    this.set(key, val);
+                }
+            }
+        }
+    }
+}
+exports.Voters = Voters;
+function readVoters(path) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const fileContents = yield fs_1.promises.readFile(path, 'utf8');
+        const data = js_yaml_1.safeLoad(fileContents);
+        // validate and sanitize values
+        core.info(`voters: ${util_1.inspect(data)}`);
+        if (!(data instanceof Object)) {
+            throw new Error(`voters data is not object type`);
+        }
+        return new Voters(data);
+    });
+}
+exports.readVoters = readVoters;
 
 
 /***/ }),
