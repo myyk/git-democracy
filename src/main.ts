@@ -18,7 +18,6 @@ export async function run(): Promise<void> {
     }
     core.info(`Inputs: ${inspect(inputs)}`)
 
-    // TODO: perhaps we can get this from `github.context.issue`
     const [owner, repo] = inputs.repository.split('/')
     core.info(`repository: ${owner}/${repo}`)
 
@@ -37,7 +36,7 @@ export async function run(): Promise<void> {
     const badgeText = 'Current Voting Result'
 
     const createCommentBody = createVotingCommentBody(
-      'https://github.com', // TODO: have this passed in as an input with default
+      inputs.serverURL,
       owner,
       repo,
       github.context.ref,

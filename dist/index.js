@@ -2517,7 +2517,6 @@ function run() {
                 serverURL: core.getInput('serverURL')
             };
             core.info(`Inputs: ${util_1.inspect(inputs)}`);
-            // TODO: perhaps we can get this from `github.context.issue`
             const [owner, repo] = inputs.repository.split('/');
             core.info(`repository: ${owner}/${repo}`);
             const octokit = github.getOctokit(inputs.token, {
@@ -2530,8 +2529,7 @@ function run() {
             const votingConfigPromise = config_1.readVotingConfig(`./.voting.yml`);
             const votersPromise = voters_1.readVoters(`./.voters.yml`);
             const badgeText = 'Current Voting Result';
-            const createCommentBody = comments_1.createVotingCommentBody('https://github.com', // TODO: have this passed in as an input with default
-            owner, repo, github.context.ref, badgeText, Promise.resolve({
+            const createCommentBody = comments_1.createVotingCommentBody(inputs.serverURL, owner, repo, github.context.ref, badgeText, Promise.resolve({
                 [reactions_1.forIt]: 0,
                 [reactions_1.againstIt]: 0
             }), votingConfigPromise);
