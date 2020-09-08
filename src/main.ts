@@ -2,7 +2,7 @@ import {inspect} from 'util'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {findOrCreateVotingCommentId, createVotingCommentBody} from './comments'
-import {readReactionsCounts, forIt, againstIt} from './reactions'
+import {readReactionsCounts, weightedVoteTotaling, forIt, againstIt} from './reactions'
 import {readVotingConfig} from './config'
 import {readVoters} from './voters'
 
@@ -62,9 +62,7 @@ export async function run(): Promise<void> {
 
     const voters = await votersPromise
     core.info(`voters: ${inspect(voters)}`)
-
-    // TODO: User voters in readReactionsCounts.
-
+    
     const reactionCountsPromise = readReactionsCounts(
       octokit,
       owner,
@@ -72,18 +70,19 @@ export async function run(): Promise<void> {
       commentId
     )
 
+    const votesPromise = weightedVoteTotaling(reactionCountsPromise, votersPromise)
     // TODO: Compute voting result.
     // TODO: Write summary to comment.
     // TODO: Fail if the vote didn't pass.
 
-    const votes = await reactionCountsPromise
+    const votes = await votesPromise
     core.info(`reactionCounts: ${inspect(votes)}`)
 
     const votingConfig = await votingConfigPromise
     core.info(`votingConfig: ${inspect(votingConfig)}`)
 
     // TODO: remove, this is just here for now as a placeholder
-    core.setOutput('for', 1234)
+    core.setOutput('for', votes[forIt])
 
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)

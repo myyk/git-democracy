@@ -2541,15 +2541,16 @@ function run() {
             core.info(`voters: ${util_1.inspect(voters)}`);
             // TODO: User voters in readReactionsCounts.
             const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, commentId);
+            const votesPromise = reactions_1.weightedVoteTotaling(reactionCountsPromise, votersPromise);
             // TODO: Compute voting result.
             // TODO: Write summary to comment.
             // TODO: Fail if the vote didn't pass.
-            const votes = yield reactionCountsPromise;
+            const votes = yield votesPromise;
             core.info(`reactionCounts: ${util_1.inspect(votes)}`);
             const votingConfig = yield votingConfigPromise;
             core.info(`votingConfig: ${util_1.inspect(votingConfig)}`);
             // TODO: remove, this is just here for now as a placeholder
-            core.setOutput('for', 1234);
+            core.setOutput('for', votes[reactions_1.forIt]);
             // Get the JSON webhook payload for the event that triggered the workflow
             const payload = JSON.stringify(github.context.payload, undefined, 2);
             core.info(`The event payload: ${payload}`);
