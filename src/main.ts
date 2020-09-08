@@ -43,11 +43,13 @@ export async function run(): Promise<void> {
       badgeText,
       Promise.resolve({
         [forIt]: 0,
-        [againstIt]: 0
+        [againstIt]: 0,
+        numVoters: 0
       }),
       votingConfigPromise
     )
 
+    // TODO: Get time since voting opened up.
     const commentId = findOrCreateVotingCommentId(
       octokit,
       owner,
@@ -79,11 +81,9 @@ export async function run(): Promise<void> {
 
     const votingConfig = await votingConfigPromise
     core.info(`votingConfig: ${inspect(votingConfig)}`)
-    core.info(`forIt: ${votes[forIt]}`)
-    core.info(`againstIt: ${votes[againstIt]}`)
 
     // TODO: remove, this is just here for now as a placeholder
-    core.setOutput('for', votes[forIt])
+    core.setOutput('for', 1234)
 
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)

@@ -22,7 +22,9 @@ export async function findVotingCommentId(
   })
 
   if (!comment) {
-    throw new Error(`cannot find comment on issue = ${issueNumber}`)
+    return Promise.reject(
+      Error(`cannot find comment on issue = ${issueNumber}`)
+    )
   }
 
   core.info(`reactions: ${inspect(comment)}`)
@@ -54,6 +56,9 @@ export async function findOrCreateVotingCommentId(
     )
   }
 
+  if (isNaN(commentId)) {
+    return Promise.reject(Error('commentId not a number'))
+  }
   return commentId
 }
 
@@ -71,6 +76,9 @@ export async function createVotingCommentId(
     body
   })
 
+  if (isNaN(comment.id)) {
+    return Promise.reject(Error('commentId not a number'))
+  }
   return comment.id
 }
 

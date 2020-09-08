@@ -2531,8 +2531,10 @@ function run() {
             const badgeText = 'Current Voting Result';
             const createCommentBody = comments_1.createVotingCommentBody(inputs.serverURL, owner, repo, github.context.ref, badgeText, Promise.resolve({
                 [reactions_1.forIt]: 0,
-                [reactions_1.againstIt]: 0
+                [reactions_1.againstIt]: 0,
+                numVoters: 0
             }), votingConfigPromise);
+            // TODO: Get time since voting opened up.
             const commentId = comments_1.findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, badgeText, createCommentBody);
             core.info(`commentId: ${yield commentId}`);
             const voters = yield votersPromise;
@@ -2546,10 +2548,8 @@ function run() {
             core.info(`reactionCounts: ${util_1.inspect(votes)}`);
             const votingConfig = yield votingConfigPromise;
             core.info(`votingConfig: ${util_1.inspect(votingConfig)}`);
-            core.info(`forIt: ${votes[reactions_1.forIt]}`);
-            core.info(`againstIt: ${votes[reactions_1.againstIt]}`);
             // TODO: remove, this is just here for now as a placeholder
-            core.setOutput('for', votes[reactions_1.forIt]);
+            core.setOutput('for', 1234);
             // Get the JSON webhook payload for the event that triggered the workflow
             const payload = JSON.stringify(github.context.payload, undefined, 2);
             core.info(`The event payload: ${payload}`);
@@ -5533,17 +5533,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readReactionsCounts = exports.againstIt = exports.forIt = void 0;
+exports.weightedVoteTotaling = exports.readReactionsCounts = exports.readReactionsCountsFromSummary = exports.againstIt = exports.forIt = void 0;
 const util_1 = __webpack_require__(669);
 const core = __importStar(__webpack_require__(186));
 exports.forIt = '+1';
 exports.againstIt = '-1';
-function readReactionsCounts(octokit, owner, repo, promisedCommentId) {
+// These are summarized reactions which is nice and simple but not useful if we
+// need to limit voters in some way to only registered voters.
+function readReactionsCountsFromSummary(octokit, owner, repo, promisedCommentId) {
     return __awaiter(this, void 0, void 0, function* () {
         const commentId = yield promisedCommentId;
-        if (isNaN(commentId)) {
-            throw new Error('commentId not a number');
-        }
         const { data } = yield octokit.issues.getComment({
             owner,
             repo,
@@ -5555,11 +5554,74 @@ function readReactionsCounts(octokit, owner, repo, promisedCommentId) {
         core.info(`reactions: ${util_1.inspect(reactions)}`);
         return {
             [exports.forIt]: reactions[exports.forIt],
-            [exports.againstIt]: reactions[exports.againstIt]
+            [exports.againstIt]: reactions[exports.againstIt],
+            numVoters: 0 // We cannot know here, so just set to 0
         };
     });
 }
+exports.readReactionsCountsFromSummary = readReactionsCountsFromSummary;
+// These are summarized reactions which is nice and simple but not useful if we
+// need to limit voters in some way to only registered voters.
+function readReactionsCounts(octokit, owner, repo, promisedCommentId) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        const commentId = yield promisedCommentId;
+        const data = yield octokit.paginate(octokit.reactions.listForIssueComment, {
+            owner,
+            repo,
+            comment_id: commentId
+        });
+        core.info(`listForIssueComment data: ${util_1.inspect(data)}`);
+        const votingData = data.filter(next => next.content === exports.forIt || next.content === exports.againstIt);
+        const result = new Map();
+        for (const { user: { login }, content } of votingData) {
+            const vote = reactionToNumber(content);
+            const priorTotal = (_a = result.get(login)) !== null && _a !== void 0 ? _a : 0;
+            const total = priorTotal + vote;
+            result.set(login, total);
+        }
+        core.info(`readReactionsCounts: ${util_1.inspect(result)}`);
+        return result;
+    });
+}
 exports.readReactionsCounts = readReactionsCounts;
+function weightedVoteTotaling(promisedUserReactions, promisedVoters) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        const userReactions = yield promisedUserReactions;
+        const voters = yield promisedVoters;
+        let forItVotes = 0, againstItVotes = 0, numVoters = 0;
+        for (const [user, vote] of userReactions) {
+            const voteWeight = (_a = voters.get(user)) !== null && _a !== void 0 ? _a : 0;
+            if (voteWeight > 0 && vote !== 0) {
+                numVoters++;
+            }
+            if (vote > 0) {
+                forItVotes += vote * voteWeight;
+            }
+            else if (vote < 0) {
+                againstItVotes += -vote * voteWeight;
+            }
+        }
+        return {
+            [exports.forIt]: forItVotes,
+            [exports.againstIt]: againstItVotes,
+            numVoters
+        };
+    });
+}
+exports.weightedVoteTotaling = weightedVoteTotaling;
+function reactionToNumber(reaction) {
+    if (reaction === exports.forIt) {
+        return 1;
+    }
+    else if (reaction === exports.againstIt) {
+        return -1;
+    }
+    else {
+        return 0;
+    }
+}
 
 
 /***/ }),
@@ -9389,7 +9451,7 @@ function findVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes) {
             return next.body.includes(bodyIncludes);
         });
         if (!comment) {
-            throw new Error(`cannot find comment on issue = ${issueNumber}`);
+            return Promise.reject(Error(`cannot find comment on issue = ${issueNumber}`));
         }
         core.info(`reactions: ${util_1.inspect(comment)}`);
         return comment.id;
@@ -9401,6 +9463,9 @@ function findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, bodyIncl
         const commentId = yield findVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes);
         if (!commentId) {
             return createVotingCommentId(octokit, owner, repo, issueNumber, yield createCommentBody);
+        }
+        if (isNaN(commentId)) {
+            return Promise.reject(Error('commentId not a number'));
         }
         return commentId;
     });
@@ -9414,6 +9479,9 @@ function createVotingCommentId(octokit, owner, repo, issueNumber, body) {
             issue_number: issueNumber,
             body
         });
+        if (isNaN(comment.id)) {
+            return Promise.reject(Error('commentId not a number'));
+        }
         return comment.id;
     });
 }
