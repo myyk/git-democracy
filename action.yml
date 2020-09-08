@@ -1,24 +1,24 @@
 name: Tally
 author: Myyk
-description: Tally votes on PR
+description: 'Tally votes on PR'
 inputs:
   # TODO: This needs to be changed to be the only action needed rather than composing this with other
   # actions to perform the voting since it makes it too difficult to integrate then.
   token:
-    description: GITHUB_TOKEN or a repo scoped PAT.
+    description: "GITHUB_TOKEN or a repo scoped PAT."
     default: ${{ github.token }}
   repository:
-    description: The full name of the repository in which to tally votes.
+    description: "The full name of the repository in which to tally votes."
     default: ${{ github.repository }}
   issueNumber:
-    description: Testing Parameter: Issue number to use.
+    description: "Testing Parameter: Issue number to use."
   serverURL:
-    description: URL of github server. You shouldn't need to set this manually,
+    description: "URL of github server. You shouldn't need to set this manually."
     default: ${{ github.server_url }}
 outputs:
   # TODO: This should probably just do the update of the comment with the voting status and pass/fail the build
   for:
-    description: The number for the change.
+    description: "The number for the change."
 runs:
   using: 'node12'
   main: 'dist/index.js'
