@@ -2507,6 +2507,7 @@ const comments_1 = __webpack_require__(910);
 const reactions_1 = __webpack_require__(344);
 const config_1 = __webpack_require__(88);
 const voters_1 = __webpack_require__(934);
+const voting_1 = __webpack_require__(838);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -2539,18 +2540,16 @@ function run() {
             core.info(`commentId: ${yield commentId}`);
             const voters = yield votersPromise;
             core.info(`voters: ${util_1.inspect(voters)}`);
-            // TODO: User voters in readReactionsCounts.
             const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, commentId);
             const votesPromise = reactions_1.weightedVoteTotaling(reactionCountsPromise, votersPromise);
-            // TODO: Compute voting result.
-            // TODO: Write summary to comment.
-            // TODO: Fail if the vote didn't pass.
-            const votes = yield votesPromise;
-            core.info(`reactionCounts: ${util_1.inspect(votes)}`);
-            const votingConfig = yield votingConfigPromise;
-            core.info(`votingConfig: ${util_1.inspect(votingConfig)}`);
+            const isVoteAcceptedResult = yield voting_1.isVoteAccepted(votingConfigPromise, votesPromise);
+            // TODO: Write summary to issue comment.
+            if (isVoteAcceptedResult) {
+                core.setFailed(`vote failed: ${isVoteAcceptedResult}`);
+                return;
+            }
             // TODO: remove, this is just here for now as a placeholder
-            core.setOutput('for', votes[reactions_1.forIt]);
+            core.setOutput('for', 1234);
             // Get the JSON webhook payload for the event that triggered the workflow
             const payload = JSON.stringify(github.context.payload, undefined, 2);
             core.info(`The event payload: ${payload}`);
@@ -9315,6 +9314,71 @@ function removeHook (state, name, method) {
 /***/ (function(module) {
 
 module.exports = require("url");
+
+/***/ }),
+
+/***/ 838:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isVoteAccepted = void 0;
+const util_1 = __webpack_require__(669);
+const core = __importStar(__webpack_require__(186));
+const reactions_1 = __webpack_require__(344);
+// isVoteAccepted evaluates the vote. Returns "" on success and the reason for
+// the vote failing on failure.
+// TODO: Rename function since this doesn't return boolean
+function isVoteAccepted(promisedVotingConfig, promisedVotes) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const votingConfig = yield promisedVotingConfig;
+        const votes = yield promisedVotes;
+        const percentageForIt = votes[reactions_1.forIt] / (votes[reactions_1.forIt] + votes[reactions_1.againstIt]) * 100;
+        let result = "";
+        if (percentageForIt < votingConfig.percentageToApprove) {
+            result += `- Vote did not have the required ${votingConfig.percentageToApprove}% voter approval.
+    `;
+        }
+        if (votes.numVoters < votingConfig.minVotersRequired) {
+            result += `- Vote did not have the required min ${votingConfig.minVotersRequired}% voters required to pass a vote.
+    `;
+        }
+        // TODO: check voting time window
+        core.info(`voting failure message: ${util_1.inspect(result)}`);
+        return result;
+    });
+}
+exports.isVoteAccepted = isVoteAccepted;
+
 
 /***/ }),
 

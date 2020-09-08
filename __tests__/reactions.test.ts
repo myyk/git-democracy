@@ -65,26 +65,38 @@ test('readReactionsCountsFromSummary can getComment on issue', async () => {
 type weightedVoteTotalingTestCase = {
   userReactions: readonly (readonly [string, number])[]
   voters: readonly (readonly [string, number])[]
-  expectedForIt: number,
-  expectedAgainstIt: number,
+  expectedForIt: number
+  expectedAgainstIt: number
   expectedNumVoters: number
 }
 
-async function testWeightedVoteTotaling(testCase: weightedVoteTotalingTestCase) {
+async function testWeightedVoteTotaling(
+  testCase: weightedVoteTotalingTestCase
+) {
   const result = weightedVoteTotaling(
     Promise.resolve(new Map(testCase.userReactions)),
     Promise.resolve(new Map(testCase.voters))
   )
   await expect(result).resolves.toHaveProperty('+1', testCase.expectedForIt)
   await expect(result).resolves.toHaveProperty('-1', testCase.expectedAgainstIt)
-  await expect(result).resolves.toHaveProperty('numVoters', testCase.expectedNumVoters)
+  await expect(result).resolves.toHaveProperty(
+    'numVoters',
+    testCase.expectedNumVoters
+  )
 }
 
 test('weightedVoteTotaling can total weighted vote forIt', async () => {
   testWeightedVoteTotaling({
-    userReactions: [['foo', 123], ['bar', 345], ['baz', 9999]],
-    voters: [['foo', 2], ['bar', 1]],
-    expectedForIt: 2*123 + 1*345,
+    userReactions: [
+      ['foo', 123],
+      ['bar', 345],
+      ['baz', 9999]
+    ],
+    voters: [
+      ['foo', 2],
+      ['bar', 1]
+    ],
+    expectedForIt: 2 * 123 + 1 * 345,
     expectedAgainstIt: 0,
     expectedNumVoters: 2
   })
@@ -92,27 +104,45 @@ test('weightedVoteTotaling can total weighted vote forIt', async () => {
 
 test('weightedVoteTotaling can total weighted vote againstIt', async () => {
   testWeightedVoteTotaling({
-    userReactions: [['foo', -123], ['bar', -345], ['baz', -9999]],
-    voters: [['foo', 2], ['bar', 1]],
+    userReactions: [
+      ['foo', -123],
+      ['bar', -345],
+      ['baz', -9999]
+    ],
+    voters: [
+      ['foo', 2],
+      ['bar', 1]
+    ],
     expectedForIt: 0,
-    expectedAgainstIt: 2*123 + 1*345,
+    expectedAgainstIt: 2 * 123 + 1 * 345,
     expectedNumVoters: 2
   })
 })
 
 test('weightedVoteTotaling can total weighted for and againstIt', async () => {
   testWeightedVoteTotaling({
-    userReactions: [['foo', -123], ['bar', 345], ['baz', -9999]],
-    voters: [['foo', 2], ['bar', 1]],
-    expectedForIt: 1*345,
-    expectedAgainstIt: 2*123,
+    userReactions: [
+      ['foo', -123],
+      ['bar', 345],
+      ['baz', -9999]
+    ],
+    voters: [
+      ['foo', 2],
+      ['bar', 1]
+    ],
+    expectedForIt: 1 * 345,
+    expectedAgainstIt: 2 * 123,
     expectedNumVoters: 2
   })
 })
 
 test('weightedVoteTotaling handle no voters', async () => {
   testWeightedVoteTotaling({
-    userReactions: [['foo', -123], ['bar', 345], ['baz', -9999]],
+    userReactions: [
+      ['foo', -123],
+      ['bar', 345],
+      ['baz', -9999]
+    ],
     voters: [],
     expectedForIt: 0,
     expectedAgainstIt: 0,
@@ -123,7 +153,10 @@ test('weightedVoteTotaling handle no voters', async () => {
 test('weightedVoteTotaling handle no reactions', async () => {
   testWeightedVoteTotaling({
     userReactions: [],
-    voters: [['foo', 2], ['bar', 1]],
+    voters: [
+      ['foo', 2],
+      ['bar', 1]
+    ],
     expectedForIt: 0,
     expectedAgainstIt: 0,
     expectedNumVoters: 0
