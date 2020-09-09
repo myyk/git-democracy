@@ -27610,7 +27610,7 @@ function evaluateVote(promisedVotingConfig, promisedVotes) {
             failures.push(`- Vote did not have the required ${votingConfig.percentageToApprove}% voter approval.`);
         }
         if (votes.numVoters < votingConfig.minVotersRequired) {
-            failures.push(`- Vote did not have the required min ${votingConfig.minVotersRequired}% voters required to pass a vote.`);
+            failures.push(`- Vote has ${votes.numVoters} voters, did not have the required min ${votingConfig.minVotersRequired} voters required to pass a vote.`);
         }
         if (votes.voteStartedAt) {
             const votingEarliestEnd = date_fns_1.add(votes.voteStartedAt, {
