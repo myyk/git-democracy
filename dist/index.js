@@ -28631,7 +28631,7 @@ function createVotingCommentBody(serverURL, owner, repo, ref, bodyIncludes, vote
     return __awaiter(this, void 0, void 0, function* () {
         const votes = yield votesPromise;
         const acceptanceCriteria = yield acceptanceCriteriaPromise;
-        return `
+        let commentBody = `
 ![${bodyIncludes}](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
 Vote on this comment with 👍 or 👎.
 
@@ -28642,8 +28642,11 @@ Vote Summary:
 Acceptance Criteria:
   - ${acceptanceCriteria.percentageToApprove}% of weighted votes needs to be to approve
   - ${acceptanceCriteria.minVotersRequired} minimum # of unique voters required
-  - at least ${acceptanceCriteria.minVotingWindowMinutes} minutes of voting
 `;
+        if (acceptanceCriteria.minVotingWindowMinutes !== 0) {
+            commentBody += `  - at least ${acceptanceCriteria.minVotingWindowMinutes} minutes of voting`;
+        }
+        return commentBody;
     });
 }
 exports.createVotingCommentBody = createVotingCommentBody;
