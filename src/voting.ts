@@ -6,7 +6,6 @@ import {add} from 'date-fns'
 
 // evaluateVote returns "" on success and the reasons for the vote failing on
 // a non-passing vote.
-// TODO: Rename function since this doesn't return boolean
 export async function evaluateVote(
   promisedVotingConfig: Promise<Config>,
   promisedVotes: Promise<Reactions>
