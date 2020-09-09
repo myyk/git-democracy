@@ -2543,7 +2543,8 @@ function run() {
             const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, commentId);
             const votesPromise = reactions_1.weightedVoteTotaling(reactionCountsPromise, votersPromise);
             const errorMessage = yield voting_1.evaluateVote(votingConfigPromise, votesPromise);
-            // TODO: Write summary to issue comment.
+            // Write summary to issue comment.
+            yield comments_1.updateVotingCommentId(octokit, owner, repo, commentId, comments_1.createVotingCommentBody(inputs.serverURL, owner, repo, github.context.ref, badgeText, votesPromise, votingConfigPromise));
             if (errorMessage) {
                 core.setFailed(`vote failed: ${errorMessage}`);
                 return;
@@ -9500,7 +9501,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createVotingCommentBody = exports.createVotingCommentId = exports.findOrCreateVotingCommentId = exports.findVotingCommentId = void 0;
+exports.createVotingCommentBody = exports.updateVotingCommentId = exports.createVotingCommentId = exports.findOrCreateVotingCommentId = exports.findVotingCommentId = void 0;
 const util_1 = __webpack_require__(669);
 const core = __importStar(__webpack_require__(186));
 const reactions_1 = __webpack_require__(344);
@@ -9550,6 +9551,17 @@ function createVotingCommentId(octokit, owner, repo, issueNumber, body) {
     });
 }
 exports.createVotingCommentId = createVotingCommentId;
+function updateVotingCommentId(octokit, owner, repo, commentId, body) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield octokit.issues.updateComment({
+            owner,
+            repo,
+            comment_id: yield commentId,
+            body: yield body
+        });
+    });
+}
+exports.updateVotingCommentId = updateVotingCommentId;
 function createVotingCommentBody(serverURL, owner, repo, ref, bodyIncludes, votesPromise, acceptanceCriteriaPromise) {
     return __awaiter(this, void 0, void 0, function* () {
         const votes = yield votesPromise;

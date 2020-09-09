@@ -1,7 +1,11 @@
 import {inspect} from 'util'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {findOrCreateVotingCommentId, createVotingCommentBody} from './comments'
+import {
+  findOrCreateVotingCommentId,
+  createVotingCommentBody,
+  updateVotingCommentId
+} from './comments'
 import {
   readReactionsCounts,
   weightedVoteTotaling,
@@ -82,7 +86,22 @@ export async function run(): Promise<void> {
     )
     const errorMessage = await evaluateVote(votingConfigPromise, votesPromise)
 
-    // TODO: Write summary to issue comment.
+    // Write summary to issue comment.
+    await updateVotingCommentId(
+      octokit,
+      owner,
+      repo,
+      commentId,
+      createVotingCommentBody(
+        inputs.serverURL,
+        owner,
+        repo,
+        github.context.ref,
+        badgeText,
+        votesPromise,
+        votingConfigPromise
+      )
+    )
 
     if (errorMessage) {
       core.setFailed(`vote failed: ${errorMessage}`)

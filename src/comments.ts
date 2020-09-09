@@ -82,6 +82,21 @@ export async function createVotingCommentId(
   return comment.id
 }
 
+export async function updateVotingCommentId(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  commentId: Promise<number>,
+  body: Promise<string>
+): Promise<void> {
+  await octokit.issues.updateComment({
+    owner,
+    repo,
+    comment_id: await commentId,
+    body: await body
+  })
+}
+
 export async function createVotingCommentBody(
   serverURL: string,
   owner: string,
