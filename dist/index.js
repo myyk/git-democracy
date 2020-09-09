@@ -2542,10 +2542,10 @@ function run() {
             core.info(`voters: ${util_1.inspect(voters)}`);
             const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, commentId);
             const votesPromise = reactions_1.weightedVoteTotaling(reactionCountsPromise, votersPromise);
-            const isVoteAcceptedResult = yield voting_1.isVoteAccepted(votingConfigPromise, votesPromise);
+            const errorMessage = yield voting_1.evaluateVote(votingConfigPromise, votesPromise);
             // TODO: Write summary to issue comment.
-            if (isVoteAcceptedResult) {
-                core.setFailed(`vote failed: ${isVoteAcceptedResult}`);
+            if (errorMessage) {
+                core.setFailed(`vote failed: ${errorMessage}`);
                 return;
             }
             // TODO: remove, this is just here for now as a placeholder
@@ -9351,33 +9351,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isVoteAccepted = void 0;
+exports.evaluateVote = void 0;
 const util_1 = __webpack_require__(669);
 const core = __importStar(__webpack_require__(186));
 const reactions_1 = __webpack_require__(344);
-// isVoteAccepted evaluates the vote. Returns "" on success and the reason for
-// the vote failing on failure.
+// evaluateVote returns "" on success and the reasons for the vote failing on
+// a non-passing vote.
 // TODO: Rename function since this doesn't return boolean
-function isVoteAccepted(promisedVotingConfig, promisedVotes) {
+function evaluateVote(promisedVotingConfig, promisedVotes) {
     return __awaiter(this, void 0, void 0, function* () {
         const votingConfig = yield promisedVotingConfig;
         const votes = yield promisedVotes;
-        const percentageForIt = votes[reactions_1.forIt] / (votes[reactions_1.forIt] + votes[reactions_1.againstIt]) * 100;
-        let result = "";
+        const percentageForIt = (votes[reactions_1.forIt] / (votes[reactions_1.forIt] + votes[reactions_1.againstIt])) * 100;
+        const failures = [];
         if (percentageForIt < votingConfig.percentageToApprove) {
-            result += `- Vote did not have the required ${votingConfig.percentageToApprove}% voter approval.
-    `;
+            failures.push(`- Vote did not have the required ${votingConfig.percentageToApprove}% voter approval.`);
         }
         if (votes.numVoters < votingConfig.minVotersRequired) {
-            result += `- Vote did not have the required min ${votingConfig.minVotersRequired}% voters required to pass a vote.
-    `;
+            failures.push(`- Vote did not have the required min ${votingConfig.minVotersRequired}% voters required to pass a vote.`);
         }
         // TODO: check voting time window
-        core.info(`voting failure message: ${util_1.inspect(result)}`);
-        return result;
+        const failureMessage = failures.join('\n');
+        core.info(`voting failure message: ${util_1.inspect(failureMessage)}`);
+        return failureMessage;
     });
 }
-exports.isVoteAccepted = isVoteAccepted;
+exports.evaluateVote = evaluateVote;
 
 
 /***/ }),
@@ -9551,9 +9550,10 @@ function createVotingCommentId(octokit, owner, repo, issueNumber, body) {
     });
 }
 exports.createVotingCommentId = createVotingCommentId;
-function createVotingCommentBody(serverURL, owner, repo, ref, bodyIncludes, votesPromise, acceptanceCriteria) {
+function createVotingCommentBody(serverURL, owner, repo, ref, bodyIncludes, votesPromise, acceptanceCriteriaPromise) {
     return __awaiter(this, void 0, void 0, function* () {
         const votes = yield votesPromise;
+        const acceptanceCriteria = yield acceptanceCriteriaPromise;
         return `
 ![${bodyIncludes}](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
 Vote on this comment with 👍 or 👎.
@@ -9563,8 +9563,10 @@ Vote Summary:
   ${votes[reactions_1.againstIt]} 👎
 
 Acceptance Criteria:
-  ${yield acceptanceCriteria}
+  - ${acceptanceCriteria.percentageToApprove}% of weighted votes needs to be to approve
+  - ${acceptanceCriteria.minVotersRequired} minimum # of unique voters required
 `;
+        // TODO: add min voting window
     });
 }
 exports.createVotingCommentBody = createVotingCommentBody;

@@ -1,0 +1,39 @@
+import {inspect} from 'util'
+import * as core from '@actions/core'
+import {Config} from './config'
+import {Reactions, forIt, againstIt} from './reactions'
+
+// evaluateVote returns "" on success and the reasons for the vote failing on
+// a non-passing vote.
+// TODO: Rename function since this doesn't return boolean
+export async function evaluateVote(
+  promisedVotingConfig: Promise<Config>,
+  promisedVotes: Promise<Reactions>
+): Promise<string> {
+  const votingConfig = await promisedVotingConfig
+  const votes = await promisedVotes
+
+  const percentageForIt =
+    (votes[forIt] / (votes[forIt] + votes[againstIt])) * 100
+
+  const failures: string[] = []
+  if (percentageForIt < votingConfig.percentageToApprove) {
+    failures.push(
+      `- Vote did not have the required ${votingConfig.percentageToApprove}% voter approval.`
+    )
+  }
+
+  if (votes.numVoters < votingConfig.minVotersRequired) {
+    failures.push(
+      `- Vote did not have the required min ${votingConfig.minVotersRequired}% voters required to pass a vote.`
+    )
+  }
+
+  // TODO: check voting time window
+
+  const failureMessage = failures.join('\n')
+
+  core.info(`voting failure message: ${inspect(failureMessage)}`)
+
+  return failureMessage
+}

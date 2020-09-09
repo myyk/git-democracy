@@ -89,9 +89,10 @@ export async function createVotingCommentBody(
   ref: string,
   bodyIncludes: string,
   votesPromise: Promise<Reactions>,
-  acceptanceCriteria: Promise<Config>
+  acceptanceCriteriaPromise: Promise<Config>
 ): Promise<string> {
   const votes = await votesPromise
+  const acceptanceCriteria = await acceptanceCriteriaPromise
   return `
 ![${bodyIncludes}](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
 Vote on this comment with 👍 or 👎.
@@ -101,6 +102,8 @@ Vote Summary:
   ${votes[againstIt]} 👎
 
 Acceptance Criteria:
-  ${await acceptanceCriteria}
+  - ${acceptanceCriteria.percentageToApprove}% of weighted votes needs to be to approve
+  - ${acceptanceCriteria.minVotersRequired} minimum # of unique voters required
 `
+  // TODO: add min voting window
 }

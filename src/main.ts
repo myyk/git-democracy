@@ -10,7 +10,7 @@ import {
 } from './reactions'
 import {readVotingConfig} from './config'
 import {readVoters} from './voters'
-import {isVoteAccepted} from './voting'
+import {evaluateVote} from './voting'
 
 import {Octokit} from '@octokit/rest'
 
@@ -80,15 +80,12 @@ export async function run(): Promise<void> {
       reactionCountsPromise,
       votersPromise
     )
-    const isVoteAcceptedResult = await isVoteAccepted(
-      votingConfigPromise,
-      votesPromise
-    )
+    const errorMessage = await evaluateVote(votingConfigPromise, votesPromise)
 
     // TODO: Write summary to issue comment.
 
-    if (isVoteAcceptedResult) {
-      core.setFailed(`vote failed: ${isVoteAcceptedResult}`)
+    if (errorMessage) {
+      core.setFailed(`vote failed: ${errorMessage}`)
       return
     }
 
