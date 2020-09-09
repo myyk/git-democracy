@@ -26,7 +26,7 @@ export async function evaluateVote(
 
   if (votes.numVoters < votingConfig.minVotersRequired) {
     failures.push(
-      `- Vote did not have the required min ${votingConfig.minVotersRequired}% voters required to pass a vote.`
+      `- Vote has ${votes.numVoters} voters, did not have the required min ${votingConfig.minVotersRequired} voters required to pass a vote.`
     )
   }
 
