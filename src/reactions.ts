@@ -10,6 +10,7 @@ export interface Reactions {
   [forIt]: number
   [againstIt]: number
   numVoters: number
+  voteStartedAt: Date | null
 }
 
 type UserReactions = Map<string, number>
@@ -36,7 +37,8 @@ export async function readReactionsCountsFromSummary(
   return {
     [forIt]: reactions[forIt],
     [againstIt]: reactions[againstIt],
-    numVoters: 0 // We cannot know here, so just set to 0
+    numVoters: 0, // We cannot know here, so just set to 0
+    voteStartedAt: null // We cannot know here
   }
 }
 
@@ -78,7 +80,8 @@ export async function readReactionsCounts(
 
 export async function weightedVoteTotaling(
   promisedUserReactions: Promise<UserReactions>,
-  promisedVoters: Promise<Voters>
+  promisedVoters: Promise<Voters>,
+  promisedVoteStartedAt: Promise<Date>
 ): Promise<Reactions> {
   const userReactions = await promisedUserReactions
   const voters = await promisedVoters
@@ -102,7 +105,8 @@ export async function weightedVoteTotaling(
   return {
     [forIt]: forItVotes,
     [againstIt]: againstItVotes,
-    numVoters
+    numVoters,
+    voteStartedAt: await promisedVoteStartedAt
   }
 }
 

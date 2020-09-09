@@ -4,13 +4,28 @@ import * as core from '@actions/core'
 import {Reactions, forIt, againstIt} from './reactions'
 import {Config} from './config'
 
+export class Comment {
+  id: number
+  createdAt: Date
+
+  constructor(commentResponse: CommentResponse) {
+    this.id = commentResponse.id
+    this.createdAt = new Date(commentResponse.created_at)
+  }
+}
+
+interface CommentResponse {
+  id: number
+  created_at: string
+}
+
 export async function findVotingCommentId(
   octokit: Octokit,
   owner: string,
   repo: string,
   issueNumber: number,
   bodyIncludes: string
-): Promise<number | null> {
+): Promise<Comment | null> {
   const {data: comments} = await octokit.issues.listComments({
     owner,
     repo,
@@ -27,8 +42,12 @@ export async function findVotingCommentId(
     )
   }
 
+  if (isNaN(comment.id)) {
+    return Promise.reject(Error('commentId not a number'))
+  }
+
   core.info(`reactions: ${inspect(comment)}`)
-  return comment.id
+  return new Comment(comment)
 }
 
 export async function findOrCreateVotingCommentId(
@@ -38,15 +57,15 @@ export async function findOrCreateVotingCommentId(
   issueNumber: number,
   bodyIncludes: string,
   createCommentBody: Promise<string>
-): Promise<number> {
-  const commentId = await findVotingCommentId(
+): Promise<Comment> {
+  const comment = await findVotingCommentId(
     octokit,
     owner,
     repo,
     issueNumber,
     bodyIncludes
   )
-  if (!commentId) {
+  if (!comment) {
     return createVotingCommentId(
       octokit,
       owner,
@@ -56,10 +75,7 @@ export async function findOrCreateVotingCommentId(
     )
   }
 
-  if (isNaN(commentId)) {
-    return Promise.reject(Error('commentId not a number'))
-  }
-  return commentId
+  return comment
 }
 
 export async function createVotingCommentId(
@@ -68,7 +84,7 @@ export async function createVotingCommentId(
   repo: string,
   issueNumber: number,
   body: string
-): Promise<number> {
+): Promise<Comment> {
   const {data: comment} = await octokit.issues.createComment({
     owner,
     repo,
@@ -79,7 +95,7 @@ export async function createVotingCommentId(
   if (isNaN(comment.id)) {
     return Promise.reject(Error('commentId not a number'))
   }
-  return comment.id
+  return new Comment(comment)
 }
 
 export async function updateVotingCommentId(
@@ -119,6 +135,15 @@ Vote Summary:
 Acceptance Criteria:
   - ${acceptanceCriteria.percentageToApprove}% of weighted votes needs to be to approve
   - ${acceptanceCriteria.minVotersRequired} minimum # of unique voters required
+  - at least ${acceptanceCriteria.minVotingWindowMinutes} minutes of voting
 `
-  // TODO: add min voting window
+}
+
+export async function commentToId(commit: Promise<Comment>): Promise<number> {
+  return (await commit).id
+}
+export async function commentToCreatedAt(
+  commit: Promise<Comment>
+): Promise<Date> {
+  return (await commit).createdAt
 }

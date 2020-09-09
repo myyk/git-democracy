@@ -73,9 +73,11 @@ type weightedVoteTotalingTestCase = {
 async function testWeightedVoteTotaling(
   testCase: weightedVoteTotalingTestCase
 ) {
+  const createdAt = new Date()
   const result = weightedVoteTotaling(
     Promise.resolve(new Map(testCase.userReactions)),
-    Promise.resolve(new Map(testCase.voters))
+    Promise.resolve(new Map(testCase.voters)),
+    Promise.resolve(createdAt)
   )
   await expect(result).resolves.toHaveProperty('+1', testCase.expectedForIt)
   await expect(result).resolves.toHaveProperty('-1', testCase.expectedAgainstIt)
@@ -83,6 +85,7 @@ async function testWeightedVoteTotaling(
     'numVoters',
     testCase.expectedNumVoters
   )
+  await expect(result).resolves.toHaveProperty('voteStartedAt', createdAt)
 }
 
 test('weightedVoteTotaling can total weighted vote forIt', async () => {

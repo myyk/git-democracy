@@ -4,7 +4,9 @@ import * as github from '@actions/github'
 import {
   findOrCreateVotingCommentId,
   createVotingCommentBody,
-  updateVotingCommentId
+  updateVotingCommentId,
+  commentToId,
+  commentToCreatedAt
 } from './comments'
 import {
   readReactionsCounts,
@@ -54,13 +56,13 @@ export async function run(): Promise<void> {
       Promise.resolve({
         [forIt]: 0,
         [againstIt]: 0,
-        numVoters: 0
+        numVoters: 0,
+        voteStartedAt: null
       }),
       votingConfigPromise
     )
 
-    // TODO: Get time since voting opened up.
-    const commentId = findOrCreateVotingCommentId(
+    const comment = findOrCreateVotingCommentId(
       octokit,
       owner,
       repo,
@@ -68,7 +70,8 @@ export async function run(): Promise<void> {
       badgeText,
       createCommentBody
     )
-    core.info(`commentId: ${await commentId}`)
+    const commentID = commentToId(comment)
+    core.info(`commentId: ${await commentID}`)
 
     const voters = await votersPromise
     core.info(`voters: ${inspect(voters)}`)
@@ -77,12 +80,13 @@ export async function run(): Promise<void> {
       octokit,
       owner,
       repo,
-      commentId
+      commentID
     )
 
     const votesPromise = weightedVoteTotaling(
       reactionCountsPromise,
-      votersPromise
+      votersPromise,
+      commentToCreatedAt(comment)
     )
     const errorMessage = await evaluateVote(votingConfigPromise, votesPromise)
 
@@ -91,7 +95,7 @@ export async function run(): Promise<void> {
       octokit,
       owner,
       repo,
-      commentId,
+      commentID,
       createVotingCommentBody(
         inputs.serverURL,
         owner,
