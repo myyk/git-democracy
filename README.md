@@ -15,7 +15,7 @@ before letting a pull request be mergeable.
 
 ## How it works
 
-When a Pull Request is made to your repository's main branch, a new comment is
+When a Pull Request is made to your repository's default branch, a new comment is
 posted by the action on the PR automatically as a place for :thumbsup:/
 :thumbsdown: votes to be cast.
 

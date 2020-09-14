@@ -1,5 +1,5 @@
 import {inspect} from 'util'
-import {Octokit} from '@octokit/rest'
+import {Octokit} from './octokit'
 import * as core from '@actions/core'
 import {Voters} from './voters'
 

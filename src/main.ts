@@ -18,8 +18,6 @@ import {readVotingConfig} from './config'
 import {readVoters} from './voters'
 import {evaluateVote} from './voting'
 
-import {Octokit} from '@octokit/rest'
-
 export async function run(): Promise<void> {
   try {
     const inputs = {
@@ -35,7 +33,7 @@ export async function run(): Promise<void> {
 
     const octokit = github.getOctokit(inputs.token, {
       previews: ['squirrel-girl']
-    }) as Octokit
+    })
 
     const issueNumber = inputs.issueNumber
       ? Number(inputs.issueNumber)

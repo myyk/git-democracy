@@ -1,8 +1,8 @@
 import {inspect} from 'util'
-import {Octokit} from '@octokit/rest'
 import * as core from '@actions/core'
 import {Reactions, forIt, againstIt} from './reactions'
 import {Config} from './config'
+import {Octokit} from './octokit'
 
 export class Comment {
   id: number
