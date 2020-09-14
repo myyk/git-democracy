@@ -50,6 +50,14 @@ It's important that the workflow runs as triggered by `pull_request_target` and
 not `pull_request` so that a vote cannot be circumvented by a Pull Request
 containing changes to the rules of voting.
 
+### Recommended: Branch Settings
+
+It's recommended to set your repository's branch settings to require the voting
+as part of the `Branch protection rules` by enabling
+`Require status checks to pass before merging` at a minimum enabling it for your
+new workflow. It may need a little time after running the action before the
+new workflow is selectable in the UI.
+
 ### Configuration
 
 #### Voting
