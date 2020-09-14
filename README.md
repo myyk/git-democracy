@@ -94,3 +94,7 @@ normal fair election, every voter has would be configured to have a weight of 1.
 myyk: 1
 jienormous: 1
 ```
+
+## Sample Project
+
+An example of a fully wired up project: https://github.com/myyk/git-democracy-example
