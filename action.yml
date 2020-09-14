@@ -15,10 +15,6 @@ inputs:
   serverURL:
     description: "URL of github server. You shouldn't need to set this manually."
     default: ${{ github.server_url }}
-outputs:
-  # TODO: This should probably just do the update of the comment with the voting status and pass/fail the build
-  for:
-    description: "The number for the change."
 runs:
   using: 'node12'
   main: 'dist/index.js'
