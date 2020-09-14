@@ -37,9 +37,8 @@ export async function findVotingCommentId(
   })
 
   if (!comment) {
-    return Promise.reject(
-      Error(`cannot find comment on issue = ${issueNumber}`)
-    )
+    core.info(`cannot find comment on issue = ${issueNumber}`)
+    return null
   }
 
   if (isNaN(comment.id)) {
