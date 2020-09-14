@@ -58,7 +58,8 @@ function findVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes) {
             return next.body.includes(bodyIncludes);
         });
         if (!comment) {
-            return Promise.reject(Error(`cannot find comment on issue = ${issueNumber}`));
+            core.info(`cannot find comment on issue = ${issueNumber}`);
+            return null;
         }
         if (isNaN(comment.id)) {
             return Promise.reject(Error('commentId not a number'));
@@ -566,7 +567,6 @@ const reactions_1 = __webpack_require__(7344);
 const date_fns_1 = __webpack_require__(3314);
 // evaluateVote returns "" on success and the reasons for the vote failing on
 // a non-passing vote.
-// TODO: Rename function since this doesn't return boolean
 function evaluateVote(promisedVotingConfig, promisedVotes) {
     return __awaiter(this, void 0, void 0, function* () {
         const votingConfig = yield promisedVotingConfig;
