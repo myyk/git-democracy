@@ -112,9 +112,6 @@ export async function run(): Promise<void> {
       return
     }
 
-    // TODO: remove, this is just here for now as a placeholder
-    core.setOutput('for', 1234)
-
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
     core.info(`The event payload: ${payload}`)

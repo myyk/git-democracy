@@ -2,100 +2,87 @@
   <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
 </p>
 
-# Create a JavaScript Action using TypeScript
+# git-democracy
 
-Use this template to bootstrap the creation of a TypeScript action.:rocket:
+Use this GitHub action to add voting to your projects. :rocket:
 
-This template includes compilation support, tests, a validation workflow, publishing, and versioning guidance.  
+Traditionally, most repositories need some number of approvers to make a change
+and it's not clear what to do with controversial changes such as with standards
+changes such as a change to linter formatting.
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+This GitHub action was created to allow projects to require a vote to pass
+before letting a pull request be mergeable.
 
-## Create an action from this template
+## How it works
 
-Click the `Use this Template` and provide the new repo details for your action
+When a Pull Request is made to your repository's main branch, a new comment is
+posted by the action on the PR automatically as a place for :thumbsup:/
+:thumbsdown: votes to be cast.
 
-## Code in Main
+Only configured voters are counted. Votes are counted when the action is rerun
+either by an update to the PR or manual rerunning it. Failed votes will list
+reasons why the vote failed in the action's error messaging.
 
-Install the dependencies  
-```bash
-$ npm install
+## Usage
+
+### Workflow Integration
+
+Create a new workflow in `.github/workflows/` as a new `.yaml` file.
+
+```
+name: 'Voting'
+on:
+  pull_request_target:
+
+jobs:
+  democracy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Evaluate vote
+        uses: myyk/git-democracy@main
 ```
 
-Build the typescript and package it for distribution
-```bash
-$ npm run build && npm run package
+The name of the workflow must be `Voting` to match the badge that will be
+linked to the voting comment.
+
+It's important that the workflow runs as triggered by `pull_request_target` and
+not `pull_request` so that a vote cannot be circumvented by a Pull Request
+containing changes to the rules of voting.
+
+### Configuration
+
+#### Voting
+
+The action expects a `.voting.yml` defining the rules of voting.
+
+`percentageToApprove` is the percentage of weighted votes needed to approve a
+vote defined by the number of weighted for votes over the total number of
+weighted vote. This number must be above 0 for this action to have any affect.
+
+`minVotersRequired` is the minimum number of unique voters need to call the
+results of a vote. These voters can be for or against. This number must be above
+1 for the action to have any affect.
+
+`minVotingWindowMinutes` is the minimum amount of time that must pass after the voting comment is created before any vote can pass.
+
+Example:
+```
+---
+percentageToApprove: 75
+minVotersRequired: 3
+minVotingWindowMinutes: 7200
 ```
 
-Run the tests :heavy_check_mark:  
-```bash
-$ npm test
+#### Voters
 
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
+The action expects a `.voters.yml` defining the voters and their vote weights.
 
-...
+Each entry should have the format of `<github-user>:<voting-weight>`. In a
+normal fair election, every voter has would be configured to have a weight of 1.
+
 ```
-
-## Change action.yml
-
-The action.yml contains defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-import * as core from '@actions/core';
-...
-
-async function run() {
-  try { 
-      ...
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
+---
+myyk: 1
+jienormous: 1
 ```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
-
-## Publish to a distribution branch
-
-Actions are run from GitHub repos so we will checkin the packed dist folder. 
-
-Then run [ncc](https://github.com/zeit/ncc) and push the results:
-```bash
-$ npm run package
-$ git add dist
-$ git commit -a -m "prod dependencies"
-$ git push origin releases/v1
-```
-
-Your action is now published! :rocket: 
-
-See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Validate
-
-You can now validate the action by referencing `./` in a workflow in your repo (see [test.yml](.github/workflows/test.yml))
-
-```yaml
-uses: ./
-with:
-  milliseconds: 1000
-```
-
-See the [actions tab](https://github.com/actions/typescript-action/actions) for runs of this action! :rocket:
-
-## Usage:
-
-After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
