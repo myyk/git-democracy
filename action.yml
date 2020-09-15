@@ -1,6 +1,6 @@
 name: git-democracy
 author: Myyk
-description: 'Tally votes on PR'
+description: 'Add voting to your Pull Requests'
 inputs:
   token:
     description: "GITHUB_TOKEN or a repo scoped PAT."
