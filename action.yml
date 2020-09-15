@@ -1,9 +1,7 @@
-name: Tally
+name: git-democracy
 author: Myyk
 description: 'Tally votes on PR'
 inputs:
-  # TODO: This needs to be changed to be the only action needed rather than composing this with other
-  # actions to perform the voting since it makes it too difficult to integrate then.
   token:
     description: "GITHUB_TOKEN or a repo scoped PAT."
     default: ${{ github.token }}
