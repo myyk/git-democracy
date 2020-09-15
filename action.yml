@@ -1,4 +1,4 @@
-name: Tally
+name: git-democracy
 author: Myyk
 description: 'Tally votes on PR'
 inputs:
