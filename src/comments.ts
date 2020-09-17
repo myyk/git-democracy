@@ -1,8 +1,10 @@
 import {inspect} from 'util'
-import {Octokit} from '@octokit/rest'
+import {GitHub} from '@actions/github/lib/utils'
 import * as core from '@actions/core'
 import {Reactions, forIt, againstIt} from './reactions'
 import {Config} from './config'
+
+type Octokit = InstanceType<typeof GitHub>
 
 export class Comment {
   id: number
