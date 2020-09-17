@@ -1,7 +1,9 @@
 import {inspect} from 'util'
-import {Octokit} from '@octokit/rest'
+import {GitHub} from '@actions/github/lib/utils'
 import * as core from '@actions/core'
 import {Voters} from './voters'
+
+type Octokit = InstanceType<typeof GitHub>
 
 export const forIt = '+1'
 export const againstIt = '-1'

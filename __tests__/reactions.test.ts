@@ -3,10 +3,10 @@ import {
   readReactionsCountsFromSummary,
   weightedVoteTotaling
 } from '../src/reactions'
-import {Octokit} from '@octokit/rest'
+import {GitHub} from '@actions/github/lib/utils'
 
 test('readReactionsCounts throws invalid number', async () => {
-  const octokit = new Octokit()
+  const octokit = new GitHub()
   await expect(
     readReactionsCounts(
       octokit,
@@ -19,7 +19,7 @@ test('readReactionsCounts throws invalid number', async () => {
 
 test('readReactionsCounts can reactions on issue', async () => {
   // make sure to run with `INPUT_TOKEN=your-token npm test`
-  const octokit = new Octokit({
+  const octokit = new GitHub({
     auth: process.env['INPUT_TOKEN'] as string
   })
   // TODO: Setup a better test case with values that are not the same. Probably need to lock commment if possible.
@@ -33,7 +33,7 @@ test('readReactionsCounts can reactions on issue', async () => {
 })
 
 test('readReactionsCountsFromSummary throws invalid number', async () => {
-  const octokit = new Octokit()
+  const octokit = new GitHub()
   await expect(
     readReactionsCountsFromSummary(
       octokit,
@@ -46,7 +46,7 @@ test('readReactionsCountsFromSummary throws invalid number', async () => {
 
 test('readReactionsCountsFromSummary can getComment on issue', async () => {
   // make sure to run with `INPUT_TOKEN=your-token npm test`
-  const octokit = new Octokit({
+  const octokit = new GitHub({
     auth: process.env['INPUT_TOKEN'] as string,
     previews: ['squirrel-girl']
   })
