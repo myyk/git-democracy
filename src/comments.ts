@@ -9,19 +9,22 @@ type Octokit = InstanceType<typeof GitHub>
 export class Comment {
   id: number
   createdAt: Date
+  body: string
 
   constructor(commentResponse: CommentResponse) {
     this.id = commentResponse.id
     this.createdAt = new Date(commentResponse.created_at)
+    this.body = commentResponse.body
   }
 }
 
 interface CommentResponse {
   id: number
   created_at: string
+  body: string
 }
 
-export async function findVotingCommentId(
+export async function findVotingComment(
   octokit: Octokit,
   owner: string,
   repo: string,
@@ -47,11 +50,11 @@ export async function findVotingCommentId(
     return Promise.reject(Error('commentId not a number'))
   }
 
-  core.info(`reactions: ${inspect(comment)}`)
+  core.info(`comment: ${inspect(comment)}`)
   return new Comment(comment)
 }
 
-export async function findOrCreateVotingCommentId(
+export async function findOrCreateVotingComment(
   octokit: Octokit,
   owner: string,
   repo: string,
@@ -59,7 +62,7 @@ export async function findOrCreateVotingCommentId(
   bodyIncludes: string,
   createCommentBody: Promise<string>
 ): Promise<Comment> {
-  const comment = await findVotingCommentId(
+  const comment = await findVotingComment(
     octokit,
     owner,
     repo,
@@ -67,7 +70,7 @@ export async function findOrCreateVotingCommentId(
     bodyIncludes
   )
   if (!comment) {
-    return createVotingCommentId(
+    return createVotingComment(
       octokit,
       owner,
       repo,
@@ -79,7 +82,7 @@ export async function findOrCreateVotingCommentId(
   return comment
 }
 
-export async function createVotingCommentId(
+export async function createVotingComment(
   octokit: Octokit,
   owner: string,
   repo: string,
@@ -99,7 +102,7 @@ export async function createVotingCommentId(
   return new Comment(comment)
 }
 
-export async function updateVotingCommentId(
+export async function updateVotingComment(
   octokit: Octokit,
   owner: string,
   repo: string,
@@ -126,7 +129,7 @@ export async function createVotingCommentBody(
   const votes = await votesPromise
   const acceptanceCriteria = await acceptanceCriteriaPromise
   let commentBody = `
-![${bodyIncludes}](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
+**${bodyIncludes}** ![Voting](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
 Vote on this comment with 👍 or 👎.
 
 Vote Summary:
@@ -141,6 +144,35 @@ Acceptance Criteria:
     commentBody += `  - at least ${acceptanceCriteria.minVotingWindowMinutes} minutes of voting`
   }
   return commentBody
+}
+
+export async function closeVotingComment(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  comment: Comment,
+  bodyIncludes: string,
+  closedVotingBodyTag: string
+): Promise<void> {
+  if (bodyIncludes === closedVotingBodyTag) {
+    return Promise.reject(
+      Error(
+        'voting comment identifier and closed comment identifier cannot be equal'
+      )
+    )
+  }
+
+  const closedBody = comment.body.replace(bodyIncludes, closedVotingBodyTag)
+
+  await updateVotingComment(
+    octokit,
+    owner,
+    repo,
+    Promise.resolve(comment.id),
+    Promise.resolve(closedBody)
+  )
+
+  return
 }
 
 export async function commentToId(commit: Promise<Comment>): Promise<number> {
