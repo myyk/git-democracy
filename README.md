@@ -20,8 +20,8 @@ posted by the action on the PR automatically as a place for :thumbsup:/
 :thumbsdown: votes to be cast.
 
 Only configured voters are counted. Votes are counted when the action is rerun
-either by an update to the PR or manual rerunning it. Failed votes will list
-reasons why the vote failed in the action's error messaging.
+by manual rerunning it. Failed votes will list reasons why the vote failed in
+the action's error messaging.
 
 When a Pull Request is update, it will clear the voting and restart the vote
 with the default settings.
