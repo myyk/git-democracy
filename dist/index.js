@@ -36,7 +36,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.commentToCreatedAt = exports.commentToId = exports.createVotingCommentBody = exports.updateVotingCommentId = exports.createVotingCommentId = exports.findOrCreateVotingCommentId = exports.findVotingCommentId = exports.Comment = void 0;
+exports.commentToCreatedAt = exports.commentToId = exports.closeVotingComment = exports.createVotingCommentBody = exports.updateVotingComment = exports.createVotingComment = exports.findOrCreateVotingComment = exports.findVotingComment = exports.Comment = void 0;
 const util_1 = __webpack_require__(1669);
 const core = __importStar(__webpack_require__(2186));
 const reactions_1 = __webpack_require__(7344);
@@ -44,10 +44,11 @@ class Comment {
     constructor(commentResponse) {
         this.id = commentResponse.id;
         this.createdAt = new Date(commentResponse.created_at);
+        this.body = commentResponse.body;
     }
 }
 exports.Comment = Comment;
-function findVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes) {
+function findVotingComment(octokit, owner, repo, issueNumber, bodyIncludes) {
     return __awaiter(this, void 0, void 0, function* () {
         const { data: comments } = yield octokit.issues.listComments({
             owner,
@@ -64,22 +65,22 @@ function findVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes) {
         if (isNaN(comment.id)) {
             return Promise.reject(Error('commentId not a number'));
         }
-        core.info(`reactions: ${util_1.inspect(comment)}`);
+        core.info(`comment: ${util_1.inspect(comment)}`);
         return new Comment(comment);
     });
 }
-exports.findVotingCommentId = findVotingCommentId;
-function findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes, createCommentBody) {
+exports.findVotingComment = findVotingComment;
+function findOrCreateVotingComment(octokit, owner, repo, issueNumber, bodyIncludes, createCommentBody) {
     return __awaiter(this, void 0, void 0, function* () {
-        const comment = yield findVotingCommentId(octokit, owner, repo, issueNumber, bodyIncludes);
+        const comment = yield findVotingComment(octokit, owner, repo, issueNumber, bodyIncludes);
         if (!comment) {
-            return createVotingCommentId(octokit, owner, repo, issueNumber, yield createCommentBody);
+            return createVotingComment(octokit, owner, repo, issueNumber, yield createCommentBody);
         }
         return comment;
     });
 }
-exports.findOrCreateVotingCommentId = findOrCreateVotingCommentId;
-function createVotingCommentId(octokit, owner, repo, issueNumber, body) {
+exports.findOrCreateVotingComment = findOrCreateVotingComment;
+function createVotingComment(octokit, owner, repo, issueNumber, body) {
     return __awaiter(this, void 0, void 0, function* () {
         const { data: comment } = yield octokit.issues.createComment({
             owner,
@@ -93,8 +94,8 @@ function createVotingCommentId(octokit, owner, repo, issueNumber, body) {
         return new Comment(comment);
     });
 }
-exports.createVotingCommentId = createVotingCommentId;
-function updateVotingCommentId(octokit, owner, repo, commentId, body) {
+exports.createVotingComment = createVotingComment;
+function updateVotingComment(octokit, owner, repo, commentId, body) {
     return __awaiter(this, void 0, void 0, function* () {
         yield octokit.issues.updateComment({
             owner,
@@ -104,7 +105,7 @@ function updateVotingCommentId(octokit, owner, repo, commentId, body) {
         });
     });
 }
-exports.updateVotingCommentId = updateVotingCommentId;
+exports.updateVotingComment = updateVotingComment;
 function createVotingCommentBody(serverURL, owner, repo, ref, bodyIncludes, votesPromise, acceptanceCriteriaPromise) {
     return __awaiter(this, void 0, void 0, function* () {
         const votes = yield votesPromise;
@@ -128,6 +129,17 @@ Acceptance Criteria:
     });
 }
 exports.createVotingCommentBody = createVotingCommentBody;
+function closeVotingComment(octokit, owner, repo, comment, bodyIncludes, closedVotingBodyTag) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (bodyIncludes === closedVotingBodyTag) {
+            return Promise.reject(Error('voting comment identifier and closed comment identifier cannot be equal'));
+        }
+        const closedBody = comment.body.replace(bodyIncludes, closedVotingBodyTag);
+        yield updateVotingComment(octokit, owner, repo, Promise.resolve(comment.id), Promise.resolve(closedBody));
+        return;
+    });
+}
+exports.closeVotingComment = closeVotingComment;
 function commentToId(commit) {
     return __awaiter(this, void 0, void 0, function* () {
         return (yield commit).id;
@@ -268,6 +280,43 @@ const reactions_1 = __webpack_require__(7344);
 const config_1 = __webpack_require__(88);
 const voters_1 = __webpack_require__(6934);
 const voting_1 = __webpack_require__(7838);
+function startOrUpdate(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const createCommentBody = comments_1.createVotingCommentBody(serverURL, owner, repo, github.context.ref, badgeText, Promise.resolve({
+            [reactions_1.forIt]: 0,
+            [reactions_1.againstIt]: 0,
+            numVoters: 0,
+            voteStartedAt: null
+        }), votingConfigPromise);
+        const comment = comments_1.findOrCreateVotingComment(octokit, owner, repo, issueNumber, badgeText, createCommentBody);
+        const commentID = comments_1.commentToId(comment);
+        core.info(`commentId: ${yield commentID}`);
+        const voters = yield votersPromise;
+        core.info(`voters: ${util_1.inspect(voters)}`);
+        const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, commentID);
+        const votesPromise = reactions_1.weightedVoteTotaling(reactionCountsPromise, votersPromise, comments_1.commentToCreatedAt(comment));
+        const errorMessage = yield voting_1.evaluateVote(votingConfigPromise, votesPromise);
+        // Write summary to issue comment.
+        yield comments_1.updateVotingComment(octokit, owner, repo, commentID, comments_1.createVotingCommentBody(serverURL, owner, repo, github.context.ref, badgeText, votesPromise, votingConfigPromise));
+        if (errorMessage) {
+            core.setFailed(`vote failed: ${errorMessage}`);
+            return;
+        }
+    });
+}
+function close(octokit, owner, repo, issueNumber, badgeText, closedVotingBodyTag) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const comment = yield comments_1.findVotingComment(octokit, owner, repo, issueNumber, badgeText);
+        if (!comment) {
+            core.warning(`no vote started, this may be because something is misconfigured or the action was recently added`);
+            return;
+        }
+        yield comments_1.closeVotingComment(octokit, owner, repo, comment, badgeText, closedVotingBodyTag);
+    });
+}
+function restart() {
+    return __awaiter(this, void 0, void 0, function* () { });
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -290,25 +339,19 @@ function run() {
             const votingConfigPromise = config_1.readVotingConfig(`./.voting.yml`);
             const votersPromise = voters_1.readVoters(`./.voters.yml`);
             const badgeText = 'Current Voting Result';
-            const createCommentBody = comments_1.createVotingCommentBody(inputs.serverURL, owner, repo, github.context.ref, badgeText, Promise.resolve({
-                [reactions_1.forIt]: 0,
-                [reactions_1.againstIt]: 0,
-                numVoters: 0,
-                voteStartedAt: null
-            }), votingConfigPromise);
-            const comment = comments_1.findOrCreateVotingCommentId(octokit, owner, repo, issueNumber, badgeText, createCommentBody);
-            const commentID = comments_1.commentToId(comment);
-            core.info(`commentId: ${yield commentID}`);
-            const voters = yield votersPromise;
-            core.info(`voters: ${util_1.inspect(voters)}`);
-            const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, commentID);
-            const votesPromise = reactions_1.weightedVoteTotaling(reactionCountsPromise, votersPromise, comments_1.commentToCreatedAt(comment));
-            const errorMessage = yield voting_1.evaluateVote(votingConfigPromise, votesPromise);
-            // Write summary to issue comment.
-            yield comments_1.updateVotingCommentId(octokit, owner, repo, commentID, comments_1.createVotingCommentBody(inputs.serverURL, owner, repo, github.context.ref, badgeText, votesPromise, votingConfigPromise));
-            if (errorMessage) {
-                core.setFailed(`vote failed: ${errorMessage}`);
-                return;
+            switch (github.context.payload.action) {
+                case 'opened':
+                    startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
+                    break;
+                case 'reopened':
+                    startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
+                    break;
+                case 'synchronize':
+                    restart();
+                    break;
+                case 'closed':
+                    close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed');
+                    break;
             }
             // Get the JSON webhook payload for the event that triggered the workflow
             const payload = JSON.stringify(github.context.payload, undefined, 2);

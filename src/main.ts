@@ -2,12 +2,13 @@ import {inspect} from 'util'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {
-  findOrCreateVotingCommentId,
+  findVotingComment,
+  findOrCreateVotingComment,
   createVotingCommentBody,
-  updateVotingCommentId,
+  updateVotingComment,
   commentToId,
   commentToCreatedAt,
-  Comment,
+  closeVotingComment
 } from './comments'
 import {
   readReactionsCounts,
@@ -27,11 +28,35 @@ async function startOrUpdate(
   owner: string,
   repo: string,
   serverURL: string,
-  comment: Promise<Comment>,
+  issueNumber: number,
   badgeText: string,
   votersPromise: Promise<Voters>,
-  votingConfigPromise: Promise<Config>,
+  votingConfigPromise: Promise<Config>
 ): Promise<void> {
+  const createCommentBody = createVotingCommentBody(
+    serverURL,
+    owner,
+    repo,
+    github.context.ref,
+    badgeText,
+    Promise.resolve({
+      [forIt]: 0,
+      [againstIt]: 0,
+      numVoters: 0,
+      voteStartedAt: null
+    }),
+    votingConfigPromise
+  )
+
+  const comment = findOrCreateVotingComment(
+    octokit,
+    owner,
+    repo,
+    issueNumber,
+    badgeText,
+    createCommentBody
+  )
+
   const commentID = commentToId(comment)
   core.info(`commentId: ${await commentID}`)
 
@@ -53,7 +78,7 @@ async function startOrUpdate(
   const errorMessage = await evaluateVote(votingConfigPromise, votesPromise)
 
   // Write summary to issue comment.
-  await updateVotingCommentId(
+  await updateVotingComment(
     octokit,
     owner,
     repo,
@@ -75,11 +100,39 @@ async function startOrUpdate(
   }
 }
 
-async function close(): Promise<void> {
+async function close(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  issueNumber: number,
+  badgeText: string,
+  closedVotingBodyTag: string
+): Promise<void> {
+  const comment = await findVotingComment(
+    octokit,
+    owner,
+    repo,
+    issueNumber,
+    badgeText
+  )
+  if (!comment) {
+    core.warning(
+      `no vote started, this may be because something is misconfigured or the action was recently added`
+    )
+    return
+  }
+
+  await closeVotingComment(
+    octokit,
+    owner,
+    repo,
+    comment,
+    badgeText,
+    closedVotingBodyTag
+  )
 }
 
-async function restart(): Promise<void> {
-}
+async function restart(): Promise<void> {}
 
 export async function run(): Promise<void> {
   try {
@@ -108,30 +161,6 @@ export async function run(): Promise<void> {
 
     const badgeText = 'Current Voting Result'
 
-    const createCommentBody = createVotingCommentBody(
-      inputs.serverURL,
-      owner,
-      repo,
-      github.context.ref,
-      badgeText,
-      Promise.resolve({
-        [forIt]: 0,
-        [againstIt]: 0,
-        numVoters: 0,
-        voteStartedAt: null
-      }),
-      votingConfigPromise
-    )
-
-    const comment = findOrCreateVotingCommentId(
-      octokit,
-      owner,
-      repo,
-      issueNumber,
-      badgeText,
-      createCommentBody
-    )
-
     switch (github.context.payload.action) {
       case 'opened':
         startOrUpdate(
@@ -139,30 +168,30 @@ export async function run(): Promise<void> {
           owner,
           repo,
           inputs.serverURL,
-          comment,
+          issueNumber,
           badgeText,
           votersPromise,
-          votingConfigPromise,
+          votingConfigPromise
         )
-        break;
+        break
       case 'reopened':
         startOrUpdate(
           octokit,
           owner,
           repo,
           inputs.serverURL,
-          comment,
+          issueNumber,
           badgeText,
           votersPromise,
-          votingConfigPromise,
+          votingConfigPromise
         )
-        break;
+        break
       case 'synchronize':
         restart()
-        break;
+        break
       case 'closed':
-        close()
-        break;
+        close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed')
+        break
     }
 
     // Get the JSON webhook payload for the event that triggered the workflow
