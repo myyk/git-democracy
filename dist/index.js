@@ -280,7 +280,7 @@ const reactions_1 = __webpack_require__(7344);
 const config_1 = __webpack_require__(88);
 const voters_1 = __webpack_require__(6934);
 const voting_1 = __webpack_require__(7838);
-function startOrUpdate(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
+function startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
     return __awaiter(this, void 0, void 0, function* () {
         const createCommentBody = comments_1.createVotingCommentBody(serverURL, owner, repo, github.context.ref, badgeText, Promise.resolve({
             [reactions_1.forIt]: 0,
@@ -299,6 +299,15 @@ function startOrUpdate(octokit, owner, repo, serverURL, issueNumber, badgeText, 
         // Write summary to issue comment.
         yield comments_1.updateVotingComment(octokit, owner, repo, commentID, comments_1.createVotingCommentBody(serverURL, owner, repo, github.context.ref, badgeText, votesPromise, votingConfigPromise));
         if (errorMessage) {
+            return errorMessage;
+        }
+        return null;
+    });
+}
+function startOrUpdate(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const errorMessage = yield startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
+        if (errorMessage) {
             core.setFailed(`vote failed: ${errorMessage}`);
             return;
         }
@@ -314,8 +323,15 @@ function close(octokit, owner, repo, issueNumber, badgeText, closedVotingBodyTag
         yield comments_1.closeVotingComment(octokit, owner, repo, comment, badgeText, closedVotingBodyTag);
     });
 }
-function restart() {
-    return __awaiter(this, void 0, void 0, function* () { });
+function restart(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // update the prior vote before closing it and starting a new one.
+        yield startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
+        // close the prior vote
+        yield close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed');
+        // create a new vote the same way as in for 'opened' events
+        yield startOrUpdate(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
+    });
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -347,7 +363,7 @@ function run() {
                     startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
                     break;
                 case 'synchronize':
-                    restart();
+                    restart(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
                     break;
                 case 'closed':
                     close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed');

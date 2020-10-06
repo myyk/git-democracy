@@ -23,7 +23,7 @@ import {GitHub} from '@actions/github/lib/utils'
 
 type Octokit = InstanceType<typeof GitHub>
 
-async function startOrUpdate(
+async function startOrUpdateHelper(
   octokit: Octokit,
   owner: string,
   repo: string,
@@ -32,7 +32,7 @@ async function startOrUpdate(
   badgeText: string,
   votersPromise: Promise<Voters>,
   votingConfigPromise: Promise<Config>
-): Promise<void> {
+): Promise<string | Error | null> {
   const createCommentBody = createVotingCommentBody(
     serverURL,
     owner,
@@ -95,6 +95,33 @@ async function startOrUpdate(
   )
 
   if (errorMessage) {
+    return errorMessage
+  }
+  return null
+}
+
+async function startOrUpdate(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  serverURL: string,
+  issueNumber: number,
+  badgeText: string,
+  votersPromise: Promise<Voters>,
+  votingConfigPromise: Promise<Config>
+): Promise<void> {
+  const errorMessage = await startOrUpdateHelper(
+    octokit,
+    owner,
+    repo,
+    serverURL,
+    issueNumber,
+    badgeText,
+    votersPromise,
+    votingConfigPromise
+  )
+
+  if (errorMessage) {
     core.setFailed(`vote failed: ${errorMessage}`)
     return
   }
@@ -132,7 +159,43 @@ async function close(
   )
 }
 
-async function restart(): Promise<void> {}
+async function restart(
+  octokit: Octokit,
+  owner: string,
+  repo: string,
+  serverURL: string,
+  issueNumber: number,
+  badgeText: string,
+  votersPromise: Promise<Voters>,
+  votingConfigPromise: Promise<Config>
+): Promise<void> {
+  // update the prior vote before closing it and starting a new one.
+  await startOrUpdateHelper(
+    octokit,
+    owner,
+    repo,
+    serverURL,
+    issueNumber,
+    badgeText,
+    votersPromise,
+    votingConfigPromise
+  )
+
+  // close the prior vote
+  await close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed')
+
+  // create a new vote the same way as in for 'opened' events
+  await startOrUpdate(
+    octokit,
+    owner,
+    repo,
+    serverURL,
+    issueNumber,
+    badgeText,
+    votersPromise,
+    votingConfigPromise
+  )
+}
 
 export async function run(): Promise<void> {
   try {
@@ -187,7 +250,16 @@ export async function run(): Promise<void> {
         )
         break
       case 'synchronize':
-        restart()
+        restart(
+          octokit,
+          owner,
+          repo,
+          inputs.serverURL,
+          issueNumber,
+          badgeText,
+          votersPromise,
+          votingConfigPromise
+        )
         break
       case 'closed':
         close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed')
