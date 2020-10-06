@@ -238,7 +238,7 @@ export async function run(): Promise<void> {
         )
         break
       case 'reopened':
-        startOrUpdate(
+        restart(
           octokit,
           owner,
           repo,

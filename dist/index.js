@@ -111,7 +111,7 @@ function createVotingCommentBody(serverURL, owner, repo, ref, bodyIncludes, vote
         const votes = yield votesPromise;
         const acceptanceCriteria = yield acceptanceCriteriaPromise;
         let commentBody = `
-![${bodyIncludes}](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
+**${bodyIncludes}** ![Voting](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
 Vote on this comment with 👍 or 👎.
 
 Vote Summary:
@@ -360,7 +360,7 @@ function run() {
                     startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
                     break;
                 case 'reopened':
-                    startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
+                    restart(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
                     break;
                 case 'synchronize':
                     restart(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
