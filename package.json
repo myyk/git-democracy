@@ -22,7 +22,7 @@
     "node",
     "setup"
   ],
-  "author": "",
+  "author": "Myyk Seok",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.6",
