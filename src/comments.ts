@@ -129,7 +129,7 @@ export async function createVotingCommentBody(
   const votes = await votesPromise
   const acceptanceCriteria = await acceptanceCriteriaPromise
   let commentBody = `
-![${bodyIncludes}](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
+**${bodyIncludes}** ![Voting](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
 Vote on this comment with 👍 or 👎.
 
 Vote Summary:
