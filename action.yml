@@ -8,6 +8,9 @@ inputs:
   repository:
     description: "The full name of the repository in which to tally votes."
     default: ${{ github.repository }}
+  payloadAction:
+    description: "Testing Parameter: Action payload override."
+    default: ""
   issueNumber:
     description: "Testing Parameter: Issue number to use."
   serverURL:

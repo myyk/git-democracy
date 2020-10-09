@@ -202,6 +202,7 @@ export async function run(): Promise<void> {
     const inputs = {
       token: core.getInput('token'),
       repository: core.getInput('repository'),
+      payloadAction: (core.getInput('payloadAction') ? core.getInput('payloadAction') : github.context.payload.action),
       issueNumber: core.getInput('issueNumber'),
       serverURL: core.getInput('serverURL')
     }
@@ -224,7 +225,7 @@ export async function run(): Promise<void> {
 
     const badgeText = 'Current Voting Result'
 
-    switch (github.context.payload.action) {
+    switch (inputs.payloadAction) {
       case 'opened':
         startOrUpdate(
           octokit,
