@@ -339,6 +339,7 @@ function run() {
             const inputs = {
                 token: core.getInput('token'),
                 repository: core.getInput('repository'),
+                payloadAction: (core.getInput('payloadAction') ? core.getInput('payloadAction') : github.context.payload.action),
                 issueNumber: core.getInput('issueNumber'),
                 serverURL: core.getInput('serverURL')
             };
@@ -355,7 +356,7 @@ function run() {
             const votingConfigPromise = config_1.readVotingConfig(`./.voting.yml`);
             const votersPromise = voters_1.readVoters(`./.voters.yml`);
             const badgeText = 'Current Voting Result';
-            switch (github.context.payload.action) {
+            switch (inputs.payloadAction) {
                 case 'opened':
                     startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
                     break;
