@@ -22,4 +22,4 @@ jobs:
       - uses: ./
         with:
           repository: myyk/git-democracy
-          issueNumber: 11
+          issueNumber: 71 # this is a permenant PR left for testing
