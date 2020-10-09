@@ -339,7 +339,9 @@ function run() {
             const inputs = {
                 token: core.getInput('token'),
                 repository: core.getInput('repository'),
-                payloadAction: (core.getInput('payloadAction') ? core.getInput('payloadAction') : github.context.payload.action),
+                payloadAction: core.getInput('payloadAction')
+                    ? core.getInput('payloadAction')
+                    : github.context.payload.action,
                 issueNumber: core.getInput('issueNumber'),
                 serverURL: core.getInput('serverURL')
             };
