@@ -1,6 +1,6 @@
 import {inspect} from 'util'
 import {promises as fsPromises, PathLike} from 'fs'
-import {safeLoad as yamlSafeLoad} from 'js-yaml'
+import {load as yamlSafeLoad} from 'js-yaml'
 import * as core from '@actions/core'
 
 export class Voters extends Map<string, number> {
