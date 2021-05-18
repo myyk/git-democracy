@@ -207,7 +207,7 @@ function readVotingConfig(path) {
     return __awaiter(this, void 0, void 0, function* () {
         // read voting config
         const fileContents = yield fs_1.promises.readFile(path, 'utf8');
-        const configData = js_yaml_1.safeLoad(fileContents);
+        const configData = js_yaml_1.load(fileContents);
         // validate and sanitize values
         core.info(`voting config: ${util_1.inspect(configData)}`);
         if (!(configData instanceof Object)) {
@@ -572,7 +572,7 @@ exports.Voters = Voters;
 function readVoters(path) {
     return __awaiter(this, void 0, void 0, function* () {
         const fileContents = yield fs_1.promises.readFile(path, 'utf8');
-        const data = js_yaml_1.safeLoad(fileContents);
+        const data = js_yaml_1.load(fileContents);
         // validate and sanitize values
         core.info(`voters: ${util_1.inspect(data)}`);
         if (!(data instanceof Object)) {
