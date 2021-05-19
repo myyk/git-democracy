@@ -26,7 +26,7 @@ export async function readReactionsCountsFromSummary(
   promisedCommentId: Promise<number>
 ): Promise<Reactions> {
   const commentId = await promisedCommentId
-  const {data} = await octokit.issues.getComment({
+  const {data} = await octokit.rest.issues.getComment({
     owner,
     repo,
     comment_id: commentId
@@ -53,11 +53,14 @@ export async function readReactionsCounts(
   promisedCommentId: Promise<number>
 ): Promise<UserReactions> {
   const commentId = await promisedCommentId
-  const data = await octokit.paginate(octokit.reactions.listForIssueComment, {
-    owner,
-    repo,
-    comment_id: commentId
-  })
+  const data = await octokit.paginate(
+    octokit.rest.reactions.listForIssueComment,
+    {
+      owner,
+      repo,
+      comment_id: commentId
+    }
+  )
 
   core.info(`listForIssueComment data: ${inspect(data)}`)
   const votingData = data.filter(
@@ -65,15 +68,15 @@ export async function readReactionsCounts(
   )
 
   const result = new Map<string, number>()
-  for (const {
-    user: {login},
-    content
-  } of votingData) {
-    const vote = reactionToNumber(content)
+  for (const {user, content} of votingData) {
+    if (user != null) {
+      const login = user.login
+      const vote = reactionToNumber(content)
 
-    const priorTotal = result.get(login) ?? 0
-    const total = priorTotal + vote
-    result.set(login, total)
+      const priorTotal = result.get(login) ?? 0
+      const total = priorTotal + vote
+      result.set(login, total)
+    }
   }
 
   core.info(`readReactionsCounts: ${inspect(result)}`)

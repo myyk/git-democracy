@@ -1,9 +1,8 @@
-require('./sourcemap-register.js');module.exports =
-/******/ (() => { // webpackBootstrap
+require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 1910:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -37,26 +36,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.commentToCreatedAt = exports.commentToId = exports.closeVotingComment = exports.createVotingCommentBody = exports.updateVotingComment = exports.createVotingComment = exports.findOrCreateVotingComment = exports.findVotingComment = exports.Comment = void 0;
-const util_1 = __webpack_require__(1669);
-const core = __importStar(__webpack_require__(2186));
-const reactions_1 = __webpack_require__(7344);
+const util_1 = __nccwpck_require__(1669);
+const core = __importStar(__nccwpck_require__(2186));
+const reactions_1 = __nccwpck_require__(7344);
 class Comment {
     constructor(commentResponse) {
+        if (commentResponse.body == null) {
+            throw new Error('body must be defined');
+        }
         this.id = commentResponse.id;
         this.createdAt = new Date(commentResponse.created_at);
-        this.body = commentResponse.body;
+        this.body = commentResponse.body; //this must be defined
     }
 }
 exports.Comment = Comment;
 function findVotingComment(octokit, owner, repo, issueNumber, bodyIncludes) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { data: comments } = yield octokit.issues.listComments({
+        const { data: comments } = yield octokit.rest.issues.listComments({
             owner,
             repo,
             issue_number: issueNumber
         });
         const comment = comments.find(next => {
-            return next.body.includes(bodyIncludes);
+            var _a;
+            return (_a = next.body) === null || _a === void 0 ? void 0 : _a.includes(bodyIncludes);
         });
         if (!comment) {
             core.info(`cannot find comment on issue = ${issueNumber}`);
@@ -82,7 +85,7 @@ function findOrCreateVotingComment(octokit, owner, repo, issueNumber, bodyInclud
 exports.findOrCreateVotingComment = findOrCreateVotingComment;
 function createVotingComment(octokit, owner, repo, issueNumber, body) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { data: comment } = yield octokit.issues.createComment({
+        const { data: comment } = yield octokit.rest.issues.createComment({
             owner,
             repo,
             issue_number: issueNumber,
@@ -97,7 +100,7 @@ function createVotingComment(octokit, owner, repo, issueNumber, body) {
 exports.createVotingComment = createVotingComment;
 function updateVotingComment(octokit, owner, repo, commentId, body) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield octokit.issues.updateComment({
+        yield octokit.rest.issues.updateComment({
             owner,
             repo,
             comment_id: yield commentId,
@@ -157,7 +160,7 @@ exports.commentToCreatedAt = commentToCreatedAt;
 /***/ }),
 
 /***/ 88:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -191,10 +194,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.readVotingConfig = exports.Config = void 0;
-const util_1 = __webpack_require__(1669);
-const fs_1 = __webpack_require__(5747);
-const js_yaml_1 = __webpack_require__(1917);
-const core = __importStar(__webpack_require__(2186));
+const util_1 = __nccwpck_require__(1669);
+const fs_1 = __nccwpck_require__(5747);
+const js_yaml_1 = __nccwpck_require__(1917);
+const core = __importStar(__nccwpck_require__(2186));
 class Config {
     constructor({ percentageToApprove = 0, minVotersRequired = 0, minVotingWindowMinutes = 0 }) {
         this.percentageToApprove = percentageToApprove;
@@ -238,7 +241,7 @@ exports.readVotingConfig = readVotingConfig;
 /***/ }),
 
 /***/ 3109:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -272,14 +275,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
-const util_1 = __webpack_require__(1669);
-const core = __importStar(__webpack_require__(2186));
-const github = __importStar(__webpack_require__(5438));
-const comments_1 = __webpack_require__(1910);
-const reactions_1 = __webpack_require__(7344);
-const config_1 = __webpack_require__(88);
-const voters_1 = __webpack_require__(6934);
-const voting_1 = __webpack_require__(7838);
+const util_1 = __nccwpck_require__(1669);
+const core = __importStar(__nccwpck_require__(2186));
+const github = __importStar(__nccwpck_require__(5438));
+const comments_1 = __nccwpck_require__(1910);
+const reactions_1 = __nccwpck_require__(7344);
+const config_1 = __nccwpck_require__(88);
+const voters_1 = __nccwpck_require__(6934);
+const voting_1 = __nccwpck_require__(7838);
 function startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
     return __awaiter(this, void 0, void 0, function* () {
         const createCommentBody = comments_1.createVotingCommentBody(serverURL, owner, repo, github.context.ref, badgeText, Promise.resolve({
@@ -388,7 +391,7 @@ run();
 /***/ }),
 
 /***/ 7344:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -422,8 +425,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.weightedVoteTotaling = exports.readReactionsCounts = exports.readReactionsCountsFromSummary = exports.againstIt = exports.forIt = void 0;
-const util_1 = __webpack_require__(1669);
-const core = __importStar(__webpack_require__(2186));
+const util_1 = __nccwpck_require__(1669);
+const core = __importStar(__nccwpck_require__(2186));
 exports.forIt = '+1';
 exports.againstIt = '-1';
 // These are summarized reactions which is nice and simple but not useful if we
@@ -431,7 +434,7 @@ exports.againstIt = '-1';
 function readReactionsCountsFromSummary(octokit, owner, repo, promisedCommentId) {
     return __awaiter(this, void 0, void 0, function* () {
         const commentId = yield promisedCommentId;
-        const { data } = yield octokit.issues.getComment({
+        const { data } = yield octokit.rest.issues.getComment({
             owner,
             repo,
             comment_id: commentId
@@ -455,7 +458,7 @@ function readReactionsCounts(octokit, owner, repo, promisedCommentId) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const commentId = yield promisedCommentId;
-        const data = yield octokit.paginate(octokit.reactions.listForIssueComment, {
+        const data = yield octokit.paginate(octokit.rest.reactions.listForIssueComment, {
             owner,
             repo,
             comment_id: commentId
@@ -463,11 +466,14 @@ function readReactionsCounts(octokit, owner, repo, promisedCommentId) {
         core.info(`listForIssueComment data: ${util_1.inspect(data)}`);
         const votingData = data.filter(next => next.content === exports.forIt || next.content === exports.againstIt);
         const result = new Map();
-        for (const { user: { login }, content } of votingData) {
-            const vote = reactionToNumber(content);
-            const priorTotal = (_a = result.get(login)) !== null && _a !== void 0 ? _a : 0;
-            const total = priorTotal + vote;
-            result.set(login, total);
+        for (const { user, content } of votingData) {
+            if (user != null) {
+                const login = user.login;
+                const vote = reactionToNumber(content);
+                const priorTotal = (_a = result.get(login)) !== null && _a !== void 0 ? _a : 0;
+                const total = priorTotal + vote;
+                result.set(login, total);
+            }
         }
         core.info(`readReactionsCounts: ${util_1.inspect(result)}`);
         return result;
@@ -517,7 +523,7 @@ function reactionToNumber(reaction) {
 /***/ }),
 
 /***/ 6934:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -551,10 +557,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.readVoters = exports.Voters = void 0;
-const util_1 = __webpack_require__(1669);
-const fs_1 = __webpack_require__(5747);
-const js_yaml_1 = __webpack_require__(1917);
-const core = __importStar(__webpack_require__(2186));
+const util_1 = __nccwpck_require__(1669);
+const fs_1 = __nccwpck_require__(5747);
+const js_yaml_1 = __nccwpck_require__(1917);
+const core = __importStar(__nccwpck_require__(2186));
 class Voters extends Map {
     constructor(obj) {
         super();
@@ -587,7 +593,7 @@ exports.readVoters = readVoters;
 /***/ }),
 
 /***/ 7838:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -621,10 +627,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.evaluateVote = void 0;
-const util_1 = __webpack_require__(1669);
-const core = __importStar(__webpack_require__(2186));
-const reactions_1 = __webpack_require__(7344);
-const date_fns_1 = __webpack_require__(3314);
+const util_1 = __nccwpck_require__(1669);
+const core = __importStar(__nccwpck_require__(2186));
+const reactions_1 = __nccwpck_require__(7344);
+const date_fns_1 = __nccwpck_require__(3314);
 // evaluateVote returns "" on success and the reasons for the vote failing on
 // a non-passing vote.
 function evaluateVote(promisedVotingConfig, promisedVotes) {
@@ -659,7 +665,7 @@ exports.evaluateVote = evaluateVote;
 /***/ }),
 
 /***/ 7351:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -671,8 +677,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const os = __importStar(__webpack_require__(2087));
-const utils_1 = __webpack_require__(5278);
+const os = __importStar(__nccwpck_require__(2087));
+const utils_1 = __nccwpck_require__(5278);
 /**
  * Commands
  *
@@ -745,7 +751,7 @@ function escapeProperty(s) {
 /***/ }),
 
 /***/ 2186:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -766,11 +772,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const command_1 = __webpack_require__(7351);
-const file_command_1 = __webpack_require__(717);
-const utils_1 = __webpack_require__(5278);
-const os = __importStar(__webpack_require__(2087));
-const path = __importStar(__webpack_require__(5622));
+const command_1 = __nccwpck_require__(7351);
+const file_command_1 = __nccwpck_require__(717);
+const utils_1 = __nccwpck_require__(5278);
+const os = __importStar(__nccwpck_require__(2087));
+const path = __importStar(__nccwpck_require__(5622));
 /**
  * The code to exit an action
  */
@@ -854,6 +860,7 @@ exports.getInput = getInput;
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setOutput(name, value) {
+    process.stdout.write(os.EOL);
     command_1.issueCommand('set-output', { name }, value);
 }
 exports.setOutput = setOutput;
@@ -990,7 +997,7 @@ exports.getState = getState;
 /***/ }),
 
 /***/ 717:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -1005,9 +1012,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const fs = __importStar(__webpack_require__(5747));
-const os = __importStar(__webpack_require__(2087));
-const utils_1 = __webpack_require__(5278);
+const fs = __importStar(__nccwpck_require__(5747));
+const os = __importStar(__nccwpck_require__(2087));
+const utils_1 = __nccwpck_require__(5278);
 function issueCommand(command, message) {
     const filePath = process.env[`GITHUB_${command}`];
     if (!filePath) {
@@ -1052,19 +1059,20 @@ exports.toCommandValue = toCommandValue;
 /***/ }),
 
 /***/ 4087:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Context = void 0;
-const fs_1 = __webpack_require__(5747);
-const os_1 = __webpack_require__(2087);
+const fs_1 = __nccwpck_require__(5747);
+const os_1 = __nccwpck_require__(2087);
 class Context {
     /**
      * Hydrate the context from the environment
      */
     constructor() {
+        var _a, _b, _c;
         this.payload = {};
         if (process.env.GITHUB_EVENT_PATH) {
             if (fs_1.existsSync(process.env.GITHUB_EVENT_PATH)) {
@@ -1084,6 +1092,9 @@ class Context {
         this.job = process.env.GITHUB_JOB;
         this.runNumber = parseInt(process.env.GITHUB_RUN_NUMBER, 10);
         this.runId = parseInt(process.env.GITHUB_RUN_ID, 10);
+        this.apiUrl = (_a = process.env.GITHUB_API_URL) !== null && _a !== void 0 ? _a : `https://api.github.com`;
+        this.serverUrl = (_b = process.env.GITHUB_SERVER_URL) !== null && _b !== void 0 ? _b : `https://github.com`;
+        this.graphqlUrl = (_c = process.env.GITHUB_GRAPHQL_URL) !== null && _c !== void 0 ? _c : `https://api.github.com/graphql`;
     }
     get issue() {
         const payload = this.payload;
@@ -1109,7 +1120,7 @@ exports.Context = Context;
 /***/ }),
 
 /***/ 5438:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -1128,14 +1139,14 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokit = exports.context = void 0;
-const Context = __importStar(__webpack_require__(4087));
-const utils_1 = __webpack_require__(3030);
+const Context = __importStar(__nccwpck_require__(4087));
+const utils_1 = __nccwpck_require__(3030);
 exports.context = new Context.Context();
 /**
  * Returns a hydrated octokit ready to use for GitHub Actions
@@ -1152,7 +1163,7 @@ exports.getOctokit = getOctokit;
 /***/ }),
 
 /***/ 7914:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -1171,13 +1182,13 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getApiBaseUrl = exports.getProxyAgent = exports.getAuthString = void 0;
-const httpClient = __importStar(__webpack_require__(9925));
+const httpClient = __importStar(__nccwpck_require__(9925));
 function getAuthString(token, options) {
     if (!token && !options.auth) {
         throw new Error('Parameter token or opts.auth is required');
@@ -1202,7 +1213,7 @@ exports.getApiBaseUrl = getApiBaseUrl;
 /***/ }),
 
 /***/ 3030:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -1221,18 +1232,18 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
     __setModuleDefault(result, mod);
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokitOptions = exports.GitHub = exports.context = void 0;
-const Context = __importStar(__webpack_require__(4087));
-const Utils = __importStar(__webpack_require__(7914));
+const Context = __importStar(__nccwpck_require__(4087));
+const Utils = __importStar(__nccwpck_require__(7914));
 // octokit + plugins
-const core_1 = __webpack_require__(6762);
-const plugin_rest_endpoint_methods_1 = __webpack_require__(3044);
-const plugin_paginate_rest_1 = __webpack_require__(4193);
+const core_1 = __nccwpck_require__(6762);
+const plugin_rest_endpoint_methods_1 = __nccwpck_require__(3044);
+const plugin_paginate_rest_1 = __nccwpck_require__(4193);
 exports.context = new Context.Context();
 const baseUrl = Utils.getApiBaseUrl();
 const defaults = {
@@ -1263,15 +1274,14 @@ exports.getOctokitOptions = getOctokitOptions;
 /***/ }),
 
 /***/ 9925:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const url = __webpack_require__(8835);
-const http = __webpack_require__(8605);
-const https = __webpack_require__(7211);
-const pm = __webpack_require__(6443);
+const http = __nccwpck_require__(8605);
+const https = __nccwpck_require__(7211);
+const pm = __nccwpck_require__(6443);
 let tunnel;
 var HttpCodes;
 (function (HttpCodes) {
@@ -1317,7 +1327,7 @@ var MediaTypes;
  * @param serverUrl  The server URL where the request will be sent. For example, https://api.github.com
  */
 function getProxyUrl(serverUrl) {
-    let proxyUrl = pm.getProxyUrl(url.parse(serverUrl));
+    let proxyUrl = pm.getProxyUrl(new URL(serverUrl));
     return proxyUrl ? proxyUrl.href : '';
 }
 exports.getProxyUrl = getProxyUrl;
@@ -1336,6 +1346,15 @@ const HttpResponseRetryCodes = [
 const RetryableHttpVerbs = ['OPTIONS', 'GET', 'DELETE', 'HEAD'];
 const ExponentialBackoffCeiling = 10;
 const ExponentialBackoffTimeSlice = 5;
+class HttpClientError extends Error {
+    constructor(message, statusCode) {
+        super(message);
+        this.name = 'HttpClientError';
+        this.statusCode = statusCode;
+        Object.setPrototypeOf(this, HttpClientError.prototype);
+    }
+}
+exports.HttpClientError = HttpClientError;
 class HttpClientResponse {
     constructor(message) {
         this.message = message;
@@ -1354,7 +1373,7 @@ class HttpClientResponse {
 }
 exports.HttpClientResponse = HttpClientResponse;
 function isHttps(requestUrl) {
-    let parsedUrl = url.parse(requestUrl);
+    let parsedUrl = new URL(requestUrl);
     return parsedUrl.protocol === 'https:';
 }
 exports.isHttps = isHttps;
@@ -1459,7 +1478,7 @@ class HttpClient {
         if (this._disposed) {
             throw new Error('Client has already been disposed.');
         }
-        let parsedUrl = url.parse(requestUrl);
+        let parsedUrl = new URL(requestUrl);
         let info = this._prepareRequest(verb, parsedUrl, headers);
         // Only perform retries on reads since writes may not be idempotent.
         let maxTries = this._allowRetries && RetryableHttpVerbs.indexOf(verb) != -1
@@ -1498,7 +1517,7 @@ class HttpClient {
                     // if there's no location to redirect to, we won't
                     break;
                 }
-                let parsedRedirectUrl = url.parse(redirectUrl);
+                let parsedRedirectUrl = new URL(redirectUrl);
                 if (parsedUrl.protocol == 'https:' &&
                     parsedUrl.protocol != parsedRedirectUrl.protocol &&
                     !this._allowRedirectDowngrade) {
@@ -1614,7 +1633,7 @@ class HttpClient {
      * @param serverUrl  The server URL where the request will be sent. For example, https://api.github.com
      */
     getAgent(serverUrl) {
-        let parsedUrl = url.parse(serverUrl);
+        let parsedUrl = new URL(serverUrl);
         return this._getAgent(parsedUrl);
     }
     _prepareRequest(method, requestUrl, headers) {
@@ -1681,13 +1700,15 @@ class HttpClient {
         if (useProxy) {
             // If using proxy, need tunnel
             if (!tunnel) {
-                tunnel = __webpack_require__(4294);
+                tunnel = __nccwpck_require__(4294);
             }
             const agentOptions = {
                 maxSockets: maxSockets,
                 keepAlive: this._keepAlive,
                 proxy: {
-                    proxyAuth: proxyUrl.auth,
+                    ...((proxyUrl.username || proxyUrl.password) && {
+                        proxyAuth: `${proxyUrl.username}:${proxyUrl.password}`
+                    }),
                     host: proxyUrl.hostname,
                     port: proxyUrl.port
                 }
@@ -1782,12 +1803,8 @@ class HttpClient {
                 else {
                     msg = 'Failed request: (' + statusCode + ')';
                 }
-                let err = new Error(msg);
-                // attach statusCode and body obj (if available) to the error object
-                err['statusCode'] = statusCode;
-                if (response.result) {
-                    err['result'] = response.result;
-                }
+                let err = new HttpClientError(msg, statusCode);
+                err.result = response.result;
                 reject(err);
             }
             else {
@@ -1802,12 +1819,11 @@ exports.HttpClient = HttpClient;
 /***/ }),
 
 /***/ 6443:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const url = __webpack_require__(8835);
 function getProxyUrl(reqUrl) {
     let usingSsl = reqUrl.protocol === 'https:';
     let proxyUrl;
@@ -1822,7 +1838,7 @@ function getProxyUrl(reqUrl) {
         proxyVar = process.env['http_proxy'] || process.env['HTTP_PROXY'];
     }
     if (proxyVar) {
-        proxyUrl = url.parse(proxyVar);
+        proxyUrl = new URL(proxyVar);
     }
     return proxyUrl;
 }
@@ -1925,69 +1941,56 @@ exports.createTokenAuth = createTokenAuth;
 /***/ }),
 
 /***/ 6762:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var universalUserAgent = __webpack_require__(5030);
-var beforeAfterHook = __webpack_require__(3682);
-var request = __webpack_require__(6234);
-var graphql = __webpack_require__(8467);
-var authToken = __webpack_require__(334);
+var universalUserAgent = __nccwpck_require__(5030);
+var beforeAfterHook = __nccwpck_require__(3682);
+var request = __nccwpck_require__(6234);
+var graphql = __nccwpck_require__(8467);
+var authToken = __nccwpck_require__(334);
 
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
   }
 
-  return obj;
+  return target;
 }
 
-function ownKeys(object, enumerableOnly) {
-  var keys = Object.keys(object);
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
 
   if (Object.getOwnPropertySymbols) {
-    var symbols = Object.getOwnPropertySymbols(object);
-    if (enumerableOnly) symbols = symbols.filter(function (sym) {
-      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-    });
-    keys.push.apply(keys, symbols);
-  }
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
 
-  return keys;
-}
-
-function _objectSpread2(target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
     }
   }
 
   return target;
 }
 
-const VERSION = "3.1.2";
+const VERSION = "3.4.0";
 
 class Octokit {
   constructor(options = {}) {
@@ -1996,6 +1999,7 @@ class Octokit {
       baseUrl: request.request.endpoint.DEFAULTS.baseUrl,
       headers: {},
       request: Object.assign({}, options.request, {
+        // @ts-ignore internal usage only, no need to type
         hook: hook.bind(null, "request")
       }),
       mediaType: {
@@ -2019,9 +2023,7 @@ class Octokit {
     }
 
     this.request = request.request.defaults(requestDefaults);
-    this.graphql = graphql.withCustomRequest(this.request).defaults(_objectSpread2(_objectSpread2({}, requestDefaults), {}, {
-      baseUrl: requestDefaults.baseUrl.replace(/\/api\/v3$/, "/api")
-    }));
+    this.graphql = graphql.withCustomRequest(this.request).defaults(requestDefaults);
     this.log = Object.assign({
       debug: () => {},
       info: () => {},
@@ -2029,7 +2031,7 @@ class Octokit {
       error: console.error.bind(console)
     }, options.log);
     this.hook = hook; // (1) If neither `options.authStrategy` nor `options.auth` are set, the `octokit` instance
-    //     is unauthenticated. The `this.auth()` method is a no-op and no request hook is registred.
+    //     is unauthenticated. The `this.auth()` method is a no-op and no request hook is registered.
     // (2) If only `options.auth` is set, use the default token authentication strategy.
     // (3) If `options.authStrategy` is set then use it and pass in `options.auth`. Always pass own request as many strategies accept a custom request instance.
     // TODO: type `options.auth` based on `options.authStrategy`.
@@ -2048,8 +2050,21 @@ class Octokit {
         this.auth = auth;
       }
     } else {
-      const auth = options.authStrategy(Object.assign({
-        request: this.request
+      const {
+        authStrategy
+      } = options,
+            otherOptions = _objectWithoutProperties(options, ["authStrategy"]);
+
+      const auth = authStrategy(Object.assign({
+        request: this.request,
+        log: this.log,
+        // we pass the current octokit instance as well as its constructor options
+        // to allow for authentication strategies that return a new octokit instance
+        // that shares the same internal state as the current one. The original
+        // requirement for this was the "event-octokit" authentication strategy
+        // of https://github.com/probot/octokit-auth-probot.
+        octokit: this,
+        octokitOptions: otherOptions
       }, options.auth)); // @ts-ignore  ¯\_(ツ)_/¯
 
       hook.wrap("request", auth.hook);
@@ -2109,15 +2124,15 @@ exports.Octokit = Octokit;
 /***/ }),
 
 /***/ 9440:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var isPlainObject = __webpack_require__(3287);
-var universalUserAgent = __webpack_require__(5030);
+var isPlainObject = __nccwpck_require__(3287);
+var universalUserAgent = __nccwpck_require__(5030);
 
 function lowercaseKeys(object) {
   if (!object) {
@@ -2146,6 +2161,16 @@ function mergeDeep(defaults, options) {
   return result;
 }
 
+function removeUndefinedProperties(obj) {
+  for (const key in obj) {
+    if (obj[key] === undefined) {
+      delete obj[key];
+    }
+  }
+
+  return obj;
+}
+
 function merge(defaults, route, options) {
   if (typeof route === "string") {
     let [method, url] = route.split(" ");
@@ -2160,7 +2185,10 @@ function merge(defaults, route, options) {
   } // lowercase header names before merging with defaults to avoid duplicates
 
 
-  options.headers = lowercaseKeys(options.headers);
+  options.headers = lowercaseKeys(options.headers); // remove properties with undefined values before merging
+
+  removeUndefinedProperties(options);
+  removeUndefinedProperties(options.headers);
   const mergedOptions = mergeDeep(defaults || {}, options); // mediaType.previews arrays are merged, instead of overwritten
 
   if (defaults && defaults.mediaType.previews.length) {
@@ -2382,7 +2410,7 @@ function parse(options) {
   // https://fetch.spec.whatwg.org/#methods
   let method = options.method.toUpperCase(); // replace :varname with {varname} to make it RFC 6570 compatible
 
-  let url = (options.url || "/").replace(/:([a-z]\w+)/g, "{+$1}");
+  let url = (options.url || "/").replace(/:([a-z]\w+)/g, "{$1}");
   let headers = Object.assign({}, options.headers);
   let body;
   let parameters = omit(options, ["method", "baseUrl", "url", "headers", "request", "mediaType"]); // extract variable names from URL to calculate remaining variables later
@@ -2467,7 +2495,7 @@ function withDefaults(oldDefaults, newDefaults) {
   });
 }
 
-const VERSION = "6.0.6";
+const VERSION = "6.0.11";
 
 const userAgent = `octokit-endpoint.js/${VERSION} ${universalUserAgent.getUserAgent()}`; // DEFAULTS has all properties set that EndpointOptions has, except url.
 // So we use RequestParameters and add method as additional required property.
@@ -2494,17 +2522,17 @@ exports.endpoint = endpoint;
 /***/ }),
 
 /***/ 8467:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var request = __webpack_require__(6234);
-var universalUserAgent = __webpack_require__(5030);
+var request = __nccwpck_require__(6234);
+var universalUserAgent = __nccwpck_require__(5030);
 
-const VERSION = "4.5.6";
+const VERSION = "4.6.2";
 
 class GraphqlError extends Error {
   constructor(request, response) {
@@ -2527,10 +2555,18 @@ class GraphqlError extends Error {
 }
 
 const NON_VARIABLE_OPTIONS = ["method", "baseUrl", "url", "headers", "request", "query", "mediaType"];
+const FORBIDDEN_VARIABLE_OPTIONS = ["query", "method", "url"];
 const GHES_V3_SUFFIX_REGEX = /\/api\/v3\/?$/;
 function graphql(request, query, options) {
-  if (typeof query === "string" && options && "query" in options) {
-    return Promise.reject(new Error(`[@octokit/graphql] "query" cannot be used as variable name`));
+  if (options) {
+    if (typeof query === "string" && "query" in options) {
+      return Promise.reject(new Error(`[@octokit/graphql] "query" cannot be used as variable name`));
+    }
+
+    for (const key in options) {
+      if (!FORBIDDEN_VARIABLE_OPTIONS.includes(key)) continue;
+      return Promise.reject(new Error(`[@octokit/graphql] "${key}" cannot be used as variable name`));
+    }
   }
 
   const parsedOptions = typeof query === "string" ? Object.assign({
@@ -2617,7 +2653,7 @@ exports.withCustomRequest = withCustomRequest;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-const VERSION = "2.4.0";
+const VERSION = "2.13.3";
 
 /**
  * Some “list” response that can be paginated have a different response structure
@@ -2670,26 +2706,23 @@ function iterator(octokit, route, parameters) {
   let url = options.url;
   return {
     [Symbol.asyncIterator]: () => ({
-      next() {
-        if (!url) {
-          return Promise.resolve({
-            done: true
-          });
-        }
-
-        return requestMethod({
+      async next() {
+        if (!url) return {
+          done: true
+        };
+        const response = await requestMethod({
           method,
           url,
           headers
-        }).then(normalizePaginatedListResponse).then(response => {
-          // `response.headers.link` format:
-          // '<https://api.github.com/users/aseemk/followers?page=2>; rel="next", <https://api.github.com/users/aseemk/followers?page=2>; rel="last"'
-          // sets `url` to undefined if "next" URL is not present or `link` header is not set
-          url = ((response.headers.link || "").match(/<([^>]+)>;\s*rel="next"/) || [])[1];
-          return {
-            value: response
-          };
         });
+        const normalizedResponse = normalizePaginatedListResponse(response); // `response.headers.link` format:
+        // '<https://api.github.com/users/aseemk/followers?page=2>; rel="next", <https://api.github.com/users/aseemk/followers?page=2>; rel="last"'
+        // sets `url` to undefined if "next" URL is not present or `link` header is not set
+
+        url = ((normalizedResponse.headers.link || "").match(/<([^>]+)>;\s*rel="next"/) || [])[1];
+        return {
+          value: normalizedResponse
+        };
       }
 
     })
@@ -2727,6 +2760,20 @@ function gather(octokit, results, iterator, mapFn) {
   });
 }
 
+const composePaginateRest = Object.assign(paginate, {
+  iterator
+});
+
+const paginatingEndpoints = ["GET /app/installations", "GET /applications/grants", "GET /authorizations", "GET /enterprises/{enterprise}/actions/permissions/organizations", "GET /enterprises/{enterprise}/actions/runner-groups", "GET /enterprises/{enterprise}/actions/runner-groups/{runner_group_id}/organizations", "GET /enterprises/{enterprise}/actions/runner-groups/{runner_group_id}/runners", "GET /enterprises/{enterprise}/actions/runners", "GET /enterprises/{enterprise}/actions/runners/downloads", "GET /events", "GET /gists", "GET /gists/public", "GET /gists/starred", "GET /gists/{gist_id}/comments", "GET /gists/{gist_id}/commits", "GET /gists/{gist_id}/forks", "GET /installation/repositories", "GET /issues", "GET /marketplace_listing/plans", "GET /marketplace_listing/plans/{plan_id}/accounts", "GET /marketplace_listing/stubbed/plans", "GET /marketplace_listing/stubbed/plans/{plan_id}/accounts", "GET /networks/{owner}/{repo}/events", "GET /notifications", "GET /organizations", "GET /orgs/{org}/actions/permissions/repositories", "GET /orgs/{org}/actions/runner-groups", "GET /orgs/{org}/actions/runner-groups/{runner_group_id}/repositories", "GET /orgs/{org}/actions/runner-groups/{runner_group_id}/runners", "GET /orgs/{org}/actions/runners", "GET /orgs/{org}/actions/runners/downloads", "GET /orgs/{org}/actions/secrets", "GET /orgs/{org}/actions/secrets/{secret_name}/repositories", "GET /orgs/{org}/blocks", "GET /orgs/{org}/credential-authorizations", "GET /orgs/{org}/events", "GET /orgs/{org}/failed_invitations", "GET /orgs/{org}/hooks", "GET /orgs/{org}/installations", "GET /orgs/{org}/invitations", "GET /orgs/{org}/invitations/{invitation_id}/teams", "GET /orgs/{org}/issues", "GET /orgs/{org}/members", "GET /orgs/{org}/migrations", "GET /orgs/{org}/migrations/{migration_id}/repositories", "GET /orgs/{org}/outside_collaborators", "GET /orgs/{org}/projects", "GET /orgs/{org}/public_members", "GET /orgs/{org}/repos", "GET /orgs/{org}/team-sync/groups", "GET /orgs/{org}/teams", "GET /orgs/{org}/teams/{team_slug}/discussions", "GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments", "GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/comments/{comment_number}/reactions", "GET /orgs/{org}/teams/{team_slug}/discussions/{discussion_number}/reactions", "GET /orgs/{org}/teams/{team_slug}/invitations", "GET /orgs/{org}/teams/{team_slug}/members", "GET /orgs/{org}/teams/{team_slug}/projects", "GET /orgs/{org}/teams/{team_slug}/repos", "GET /orgs/{org}/teams/{team_slug}/team-sync/group-mappings", "GET /orgs/{org}/teams/{team_slug}/teams", "GET /projects/columns/{column_id}/cards", "GET /projects/{project_id}/collaborators", "GET /projects/{project_id}/columns", "GET /repos/{owner}/{repo}/actions/artifacts", "GET /repos/{owner}/{repo}/actions/runners", "GET /repos/{owner}/{repo}/actions/runners/downloads", "GET /repos/{owner}/{repo}/actions/runs", "GET /repos/{owner}/{repo}/actions/runs/{run_id}/artifacts", "GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs", "GET /repos/{owner}/{repo}/actions/secrets", "GET /repos/{owner}/{repo}/actions/workflows", "GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/runs", "GET /repos/{owner}/{repo}/assignees", "GET /repos/{owner}/{repo}/branches", "GET /repos/{owner}/{repo}/check-runs/{check_run_id}/annotations", "GET /repos/{owner}/{repo}/check-suites/{check_suite_id}/check-runs", "GET /repos/{owner}/{repo}/code-scanning/alerts", "GET /repos/{owner}/{repo}/code-scanning/alerts/{alert_number}/instances", "GET /repos/{owner}/{repo}/code-scanning/analyses", "GET /repos/{owner}/{repo}/collaborators", "GET /repos/{owner}/{repo}/comments", "GET /repos/{owner}/{repo}/comments/{comment_id}/reactions", "GET /repos/{owner}/{repo}/commits", "GET /repos/{owner}/{repo}/commits/{commit_sha}/branches-where-head", "GET /repos/{owner}/{repo}/commits/{commit_sha}/comments", "GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls", "GET /repos/{owner}/{repo}/commits/{ref}/check-runs", "GET /repos/{owner}/{repo}/commits/{ref}/check-suites", "GET /repos/{owner}/{repo}/commits/{ref}/statuses", "GET /repos/{owner}/{repo}/contributors", "GET /repos/{owner}/{repo}/deployments", "GET /repos/{owner}/{repo}/deployments/{deployment_id}/statuses", "GET /repos/{owner}/{repo}/events", "GET /repos/{owner}/{repo}/forks", "GET /repos/{owner}/{repo}/git/matching-refs/{ref}", "GET /repos/{owner}/{repo}/hooks", "GET /repos/{owner}/{repo}/invitations", "GET /repos/{owner}/{repo}/issues", "GET /repos/{owner}/{repo}/issues/comments", "GET /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions", "GET /repos/{owner}/{repo}/issues/events", "GET /repos/{owner}/{repo}/issues/{issue_number}/comments", "GET /repos/{owner}/{repo}/issues/{issue_number}/events", "GET /repos/{owner}/{repo}/issues/{issue_number}/labels", "GET /repos/{owner}/{repo}/issues/{issue_number}/reactions", "GET /repos/{owner}/{repo}/issues/{issue_number}/timeline", "GET /repos/{owner}/{repo}/keys", "GET /repos/{owner}/{repo}/labels", "GET /repos/{owner}/{repo}/milestones", "GET /repos/{owner}/{repo}/milestones/{milestone_number}/labels", "GET /repos/{owner}/{repo}/notifications", "GET /repos/{owner}/{repo}/pages/builds", "GET /repos/{owner}/{repo}/projects", "GET /repos/{owner}/{repo}/pulls", "GET /repos/{owner}/{repo}/pulls/comments", "GET /repos/{owner}/{repo}/pulls/comments/{comment_id}/reactions", "GET /repos/{owner}/{repo}/pulls/{pull_number}/comments", "GET /repos/{owner}/{repo}/pulls/{pull_number}/commits", "GET /repos/{owner}/{repo}/pulls/{pull_number}/files", "GET /repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers", "GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews", "GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}/comments", "GET /repos/{owner}/{repo}/releases", "GET /repos/{owner}/{repo}/releases/{release_id}/assets", "GET /repos/{owner}/{repo}/secret-scanning/alerts", "GET /repos/{owner}/{repo}/stargazers", "GET /repos/{owner}/{repo}/subscribers", "GET /repos/{owner}/{repo}/tags", "GET /repos/{owner}/{repo}/teams", "GET /repositories", "GET /repositories/{repository_id}/environments/{environment_name}/secrets", "GET /scim/v2/enterprises/{enterprise}/Groups", "GET /scim/v2/enterprises/{enterprise}/Users", "GET /scim/v2/organizations/{org}/Users", "GET /search/code", "GET /search/commits", "GET /search/issues", "GET /search/labels", "GET /search/repositories", "GET /search/topics", "GET /search/users", "GET /teams/{team_id}/discussions", "GET /teams/{team_id}/discussions/{discussion_number}/comments", "GET /teams/{team_id}/discussions/{discussion_number}/comments/{comment_number}/reactions", "GET /teams/{team_id}/discussions/{discussion_number}/reactions", "GET /teams/{team_id}/invitations", "GET /teams/{team_id}/members", "GET /teams/{team_id}/projects", "GET /teams/{team_id}/repos", "GET /teams/{team_id}/team-sync/group-mappings", "GET /teams/{team_id}/teams", "GET /user/blocks", "GET /user/emails", "GET /user/followers", "GET /user/following", "GET /user/gpg_keys", "GET /user/installations", "GET /user/installations/{installation_id}/repositories", "GET /user/issues", "GET /user/keys", "GET /user/marketplace_purchases", "GET /user/marketplace_purchases/stubbed", "GET /user/memberships/orgs", "GET /user/migrations", "GET /user/migrations/{migration_id}/repositories", "GET /user/orgs", "GET /user/public_emails", "GET /user/repos", "GET /user/repository_invitations", "GET /user/starred", "GET /user/subscriptions", "GET /user/teams", "GET /users", "GET /users/{username}/events", "GET /users/{username}/events/orgs/{org}", "GET /users/{username}/events/public", "GET /users/{username}/followers", "GET /users/{username}/following", "GET /users/{username}/gists", "GET /users/{username}/gpg_keys", "GET /users/{username}/keys", "GET /users/{username}/orgs", "GET /users/{username}/projects", "GET /users/{username}/received_events", "GET /users/{username}/received_events/public", "GET /users/{username}/repos", "GET /users/{username}/starred", "GET /users/{username}/subscriptions"];
+
+function isPaginatingEndpoint(arg) {
+  if (typeof arg === "string") {
+    return paginatingEndpoints.includes(arg);
+  } else {
+    return false;
+  }
+}
+
 /**
  * @param octokit Octokit instance
  * @param options Options passed to Octokit constructor
@@ -2741,7 +2788,10 @@ function paginateRest(octokit) {
 }
 paginateRest.VERSION = VERSION;
 
+exports.composePaginateRest = composePaginateRest;
+exports.isPaginatingEndpoint = isPaginatingEndpoint;
 exports.paginateRest = paginateRest;
+exports.paginatingEndpoints = paginatingEndpoints;
 //# sourceMappingURL=index.js.map
 
 
@@ -2755,10 +2805,60 @@ exports.paginateRest = paginateRest;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
 const Endpoints = {
   actions: {
     addSelectedRepoToOrgSecret: ["PUT /orgs/{org}/actions/secrets/{secret_name}/repositories/{repository_id}"],
     cancelWorkflowRun: ["POST /repos/{owner}/{repo}/actions/runs/{run_id}/cancel"],
+    createOrUpdateEnvironmentSecret: ["PUT /repositories/{repository_id}/environments/{environment_name}/secrets/{secret_name}"],
     createOrUpdateOrgSecret: ["PUT /orgs/{org}/actions/secrets/{secret_name}"],
     createOrUpdateRepoSecret: ["PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}"],
     createRegistrationTokenForOrg: ["POST /orgs/{org}/actions/runners/registration-token"],
@@ -2767,21 +2867,37 @@ const Endpoints = {
     createRemoveTokenForRepo: ["POST /repos/{owner}/{repo}/actions/runners/remove-token"],
     createWorkflowDispatch: ["POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches"],
     deleteArtifact: ["DELETE /repos/{owner}/{repo}/actions/artifacts/{artifact_id}"],
+    deleteEnvironmentSecret: ["DELETE /repositories/{repository_id}/environments/{environment_name}/secrets/{secret_name}"],
     deleteOrgSecret: ["DELETE /orgs/{org}/actions/secrets/{secret_name}"],
     deleteRepoSecret: ["DELETE /repos/{owner}/{repo}/actions/secrets/{secret_name}"],
     deleteSelfHostedRunnerFromOrg: ["DELETE /orgs/{org}/actions/runners/{runner_id}"],
     deleteSelfHostedRunnerFromRepo: ["DELETE /repos/{owner}/{repo}/actions/runners/{runner_id}"],
     deleteWorkflowRun: ["DELETE /repos/{owner}/{repo}/actions/runs/{run_id}"],
     deleteWorkflowRunLogs: ["DELETE /repos/{owner}/{repo}/actions/runs/{run_id}/logs"],
+    disableSelectedRepositoryGithubActionsOrganization: ["DELETE /orgs/{org}/actions/permissions/repositories/{repository_id}"],
+    disableWorkflow: ["PUT /repos/{owner}/{repo}/actions/workflows/{workflow_id}/disable"],
     downloadArtifact: ["GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}"],
     downloadJobLogsForWorkflowRun: ["GET /repos/{owner}/{repo}/actions/jobs/{job_id}/logs"],
     downloadWorkflowRunLogs: ["GET /repos/{owner}/{repo}/actions/runs/{run_id}/logs"],
+    enableSelectedRepositoryGithubActionsOrganization: ["PUT /orgs/{org}/actions/permissions/repositories/{repository_id}"],
+    enableWorkflow: ["PUT /repos/{owner}/{repo}/actions/workflows/{workflow_id}/enable"],
+    getAllowedActionsOrganization: ["GET /orgs/{org}/actions/permissions/selected-actions"],
+    getAllowedActionsRepository: ["GET /repos/{owner}/{repo}/actions/permissions/selected-actions"],
     getArtifact: ["GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}"],
+    getEnvironmentPublicKey: ["GET /repositories/{repository_id}/environments/{environment_name}/secrets/public-key"],
+    getEnvironmentSecret: ["GET /repositories/{repository_id}/environments/{environment_name}/secrets/{secret_name}"],
+    getGithubActionsPermissionsOrganization: ["GET /orgs/{org}/actions/permissions"],
+    getGithubActionsPermissionsRepository: ["GET /repos/{owner}/{repo}/actions/permissions"],
     getJobForWorkflowRun: ["GET /repos/{owner}/{repo}/actions/jobs/{job_id}"],
     getOrgPublicKey: ["GET /orgs/{org}/actions/secrets/public-key"],
     getOrgSecret: ["GET /orgs/{org}/actions/secrets/{secret_name}"],
+    getPendingDeploymentsForRun: ["GET /repos/{owner}/{repo}/actions/runs/{run_id}/pending_deployments"],
+    getRepoPermissions: ["GET /repos/{owner}/{repo}/actions/permissions", {}, {
+      renamed: ["actions", "getGithubActionsPermissionsRepository"]
+    }],
     getRepoPublicKey: ["GET /repos/{owner}/{repo}/actions/secrets/public-key"],
     getRepoSecret: ["GET /repos/{owner}/{repo}/actions/secrets/{secret_name}"],
+    getReviewsForRun: ["GET /repos/{owner}/{repo}/actions/runs/{run_id}/approvals"],
     getSelfHostedRunnerForOrg: ["GET /orgs/{org}/actions/runners/{runner_id}"],
     getSelfHostedRunnerForRepo: ["GET /repos/{owner}/{repo}/actions/runners/{runner_id}"],
     getWorkflow: ["GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}"],
@@ -2789,6 +2905,7 @@ const Endpoints = {
     getWorkflowRunUsage: ["GET /repos/{owner}/{repo}/actions/runs/{run_id}/timing"],
     getWorkflowUsage: ["GET /repos/{owner}/{repo}/actions/workflows/{workflow_id}/timing"],
     listArtifactsForRepo: ["GET /repos/{owner}/{repo}/actions/artifacts"],
+    listEnvironmentSecrets: ["GET /repositories/{repository_id}/environments/{environment_name}/secrets"],
     listJobsForWorkflowRun: ["GET /repos/{owner}/{repo}/actions/runs/{run_id}/jobs"],
     listOrgSecrets: ["GET /orgs/{org}/actions/secrets"],
     listRepoSecrets: ["GET /repos/{owner}/{repo}/actions/secrets"],
@@ -2796,6 +2913,7 @@ const Endpoints = {
     listRunnerApplicationsForOrg: ["GET /orgs/{org}/actions/runners/downloads"],
     listRunnerApplicationsForRepo: ["GET /repos/{owner}/{repo}/actions/runners/downloads"],
     listSelectedReposForOrgSecret: ["GET /orgs/{org}/actions/secrets/{secret_name}/repositories"],
+    listSelectedRepositoriesEnabledGithubActionsOrganization: ["GET /orgs/{org}/actions/permissions/repositories"],
     listSelfHostedRunnersForOrg: ["GET /orgs/{org}/actions/runners"],
     listSelfHostedRunnersForRepo: ["GET /repos/{owner}/{repo}/actions/runners"],
     listWorkflowRunArtifacts: ["GET /repos/{owner}/{repo}/actions/runs/{run_id}/artifacts"],
@@ -2803,7 +2921,13 @@ const Endpoints = {
     listWorkflowRunsForRepo: ["GET /repos/{owner}/{repo}/actions/runs"],
     reRunWorkflow: ["POST /repos/{owner}/{repo}/actions/runs/{run_id}/rerun"],
     removeSelectedRepoFromOrgSecret: ["DELETE /orgs/{org}/actions/secrets/{secret_name}/repositories/{repository_id}"],
-    setSelectedReposForOrgSecret: ["PUT /orgs/{org}/actions/secrets/{secret_name}/repositories"]
+    reviewPendingDeploymentsForRun: ["POST /repos/{owner}/{repo}/actions/runs/{run_id}/pending_deployments"],
+    setAllowedActionsOrganization: ["PUT /orgs/{org}/actions/permissions/selected-actions"],
+    setAllowedActionsRepository: ["PUT /repos/{owner}/{repo}/actions/permissions/selected-actions"],
+    setGithubActionsPermissionsOrganization: ["PUT /orgs/{org}/actions/permissions"],
+    setGithubActionsPermissionsRepository: ["PUT /repos/{owner}/{repo}/actions/permissions"],
+    setSelectedReposForOrgSecret: ["PUT /orgs/{org}/actions/secrets/{secret_name}/repositories"],
+    setSelectedRepositoriesEnabledGithubActionsOrganization: ["PUT /orgs/{org}/actions/permissions/repositories"]
   },
   activity: {
     checkRepoIsStarredByAuthenticatedUser: ["GET /user/starred/{owner}/{repo}"],
@@ -2859,6 +2983,7 @@ const Endpoints = {
     getSubscriptionPlanForAccount: ["GET /marketplace_listing/accounts/{account_id}"],
     getSubscriptionPlanForAccountStubbed: ["GET /marketplace_listing/stubbed/accounts/{account_id}"],
     getUserInstallation: ["GET /users/{username}/installation"],
+    getWebhookConfigForApp: ["GET /app/hook/config"],
     listAccountsForPlan: ["GET /marketplace_listing/plans/{plan_id}/accounts"],
     listAccountsForPlanStubbed: ["GET /marketplace_listing/stubbed/plans/{plan_id}/accounts"],
     listInstallationReposForAuthenticatedUser: ["GET /user/installations/{installation_id}/repositories"],
@@ -2872,8 +2997,10 @@ const Endpoints = {
     removeRepoFromInstallation: ["DELETE /user/installations/{installation_id}/repositories/{repository_id}"],
     resetToken: ["PATCH /applications/{client_id}/token"],
     revokeInstallationAccessToken: ["DELETE /installation/token"],
+    scopeToken: ["POST /applications/{client_id}/token/scoped"],
     suspendInstallation: ["PUT /app/installations/{installation_id}/suspended"],
-    unsuspendInstallation: ["DELETE /app/installations/{installation_id}/suspended"]
+    unsuspendInstallation: ["DELETE /app/installations/{installation_id}/suspended"],
+    updateWebhookConfigForApp: ["PATCH /app/hook/config"]
   },
   billing: {
     getGithubActionsBillingOrg: ["GET /orgs/{org}/settings/billing/actions"],
@@ -2884,69 +3011,29 @@ const Endpoints = {
     getSharedStorageBillingUser: ["GET /users/{username}/settings/billing/shared-storage"]
   },
   checks: {
-    create: ["POST /repos/{owner}/{repo}/check-runs", {
-      mediaType: {
-        previews: ["antiope"]
-      }
-    }],
-    createSuite: ["POST /repos/{owner}/{repo}/check-suites", {
-      mediaType: {
-        previews: ["antiope"]
-      }
-    }],
-    get: ["GET /repos/{owner}/{repo}/check-runs/{check_run_id}", {
-      mediaType: {
-        previews: ["antiope"]
-      }
-    }],
-    getSuite: ["GET /repos/{owner}/{repo}/check-suites/{check_suite_id}", {
-      mediaType: {
-        previews: ["antiope"]
-      }
-    }],
-    listAnnotations: ["GET /repos/{owner}/{repo}/check-runs/{check_run_id}/annotations", {
-      mediaType: {
-        previews: ["antiope"]
-      }
-    }],
-    listForRef: ["GET /repos/{owner}/{repo}/commits/{ref}/check-runs", {
-      mediaType: {
-        previews: ["antiope"]
-      }
-    }],
-    listForSuite: ["GET /repos/{owner}/{repo}/check-suites/{check_suite_id}/check-runs", {
-      mediaType: {
-        previews: ["antiope"]
-      }
-    }],
-    listSuitesForRef: ["GET /repos/{owner}/{repo}/commits/{ref}/check-suites", {
-      mediaType: {
-        previews: ["antiope"]
-      }
-    }],
-    rerequestSuite: ["POST /repos/{owner}/{repo}/check-suites/{check_suite_id}/rerequest", {
-      mediaType: {
-        previews: ["antiope"]
-      }
-    }],
-    setSuitesPreferences: ["PATCH /repos/{owner}/{repo}/check-suites/preferences", {
-      mediaType: {
-        previews: ["antiope"]
-      }
-    }],
-    update: ["PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}", {
-      mediaType: {
-        previews: ["antiope"]
-      }
-    }]
+    create: ["POST /repos/{owner}/{repo}/check-runs"],
+    createSuite: ["POST /repos/{owner}/{repo}/check-suites"],
+    get: ["GET /repos/{owner}/{repo}/check-runs/{check_run_id}"],
+    getSuite: ["GET /repos/{owner}/{repo}/check-suites/{check_suite_id}"],
+    listAnnotations: ["GET /repos/{owner}/{repo}/check-runs/{check_run_id}/annotations"],
+    listForRef: ["GET /repos/{owner}/{repo}/commits/{ref}/check-runs"],
+    listForSuite: ["GET /repos/{owner}/{repo}/check-suites/{check_suite_id}/check-runs"],
+    listSuitesForRef: ["GET /repos/{owner}/{repo}/commits/{ref}/check-suites"],
+    rerequestSuite: ["POST /repos/{owner}/{repo}/check-suites/{check_suite_id}/rerequest"],
+    setSuitesPreferences: ["PATCH /repos/{owner}/{repo}/check-suites/preferences"],
+    update: ["PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}"]
   },
   codeScanning: {
+    deleteAnalysis: ["DELETE /repos/{owner}/{repo}/code-scanning/analyses/{analysis_id}{?confirm_delete}"],
     getAlert: ["GET /repos/{owner}/{repo}/code-scanning/alerts/{alert_number}", {}, {
       renamedParameters: {
         alert_id: "alert_number"
       }
     }],
+    getAnalysis: ["GET /repos/{owner}/{repo}/code-scanning/analyses/{analysis_id}"],
+    getSarif: ["GET /repos/{owner}/{repo}/code-scanning/sarifs/{sarif_id}"],
     listAlertsForRepo: ["GET /repos/{owner}/{repo}/code-scanning/alerts"],
+    listAlertsInstances: ["GET /repos/{owner}/{repo}/code-scanning/alerts/{alert_number}/instances"],
     listRecentAnalyses: ["GET /repos/{owner}/{repo}/code-scanning/analyses"],
     updateAlert: ["PATCH /repos/{owner}/{repo}/code-scanning/alerts/{alert_number}"],
     uploadSarif: ["POST /repos/{owner}/{repo}/code-scanning/sarifs"]
@@ -2970,6 +3057,16 @@ const Endpoints = {
   },
   emojis: {
     get: ["GET /emojis"]
+  },
+  enterpriseAdmin: {
+    disableSelectedOrganizationGithubActionsEnterprise: ["DELETE /enterprises/{enterprise}/actions/permissions/organizations/{org_id}"],
+    enableSelectedOrganizationGithubActionsEnterprise: ["PUT /enterprises/{enterprise}/actions/permissions/organizations/{org_id}"],
+    getAllowedActionsEnterprise: ["GET /enterprises/{enterprise}/actions/permissions/selected-actions"],
+    getGithubActionsPermissionsEnterprise: ["GET /enterprises/{enterprise}/actions/permissions"],
+    listSelectedOrganizationsEnabledGithubActionsEnterprise: ["GET /enterprises/{enterprise}/actions/permissions/organizations"],
+    setAllowedActionsEnterprise: ["PUT /enterprises/{enterprise}/actions/permissions/selected-actions"],
+    setGithubActionsPermissionsEnterprise: ["PUT /enterprises/{enterprise}/actions/permissions"],
+    setSelectedOrganizationsEnabledGithubActionsEnterprise: ["PUT /enterprises/{enterprise}/actions/permissions/organizations"]
   },
   gists: {
     checkIsStarred: ["GET /gists/{gist_id}/star"],
@@ -3013,35 +3110,23 @@ const Endpoints = {
     getTemplate: ["GET /gitignore/templates/{name}"]
   },
   interactions: {
-    getRestrictionsForOrg: ["GET /orgs/{org}/interaction-limits", {
-      mediaType: {
-        previews: ["sombra"]
-      }
+    getRestrictionsForAuthenticatedUser: ["GET /user/interaction-limits"],
+    getRestrictionsForOrg: ["GET /orgs/{org}/interaction-limits"],
+    getRestrictionsForRepo: ["GET /repos/{owner}/{repo}/interaction-limits"],
+    getRestrictionsForYourPublicRepos: ["GET /user/interaction-limits", {}, {
+      renamed: ["interactions", "getRestrictionsForAuthenticatedUser"]
     }],
-    getRestrictionsForRepo: ["GET /repos/{owner}/{repo}/interaction-limits", {
-      mediaType: {
-        previews: ["sombra"]
-      }
+    removeRestrictionsForAuthenticatedUser: ["DELETE /user/interaction-limits"],
+    removeRestrictionsForOrg: ["DELETE /orgs/{org}/interaction-limits"],
+    removeRestrictionsForRepo: ["DELETE /repos/{owner}/{repo}/interaction-limits"],
+    removeRestrictionsForYourPublicRepos: ["DELETE /user/interaction-limits", {}, {
+      renamed: ["interactions", "removeRestrictionsForAuthenticatedUser"]
     }],
-    removeRestrictionsForOrg: ["DELETE /orgs/{org}/interaction-limits", {
-      mediaType: {
-        previews: ["sombra"]
-      }
-    }],
-    removeRestrictionsForRepo: ["DELETE /repos/{owner}/{repo}/interaction-limits", {
-      mediaType: {
-        previews: ["sombra"]
-      }
-    }],
-    setRestrictionsForOrg: ["PUT /orgs/{org}/interaction-limits", {
-      mediaType: {
-        previews: ["sombra"]
-      }
-    }],
-    setRestrictionsForRepo: ["PUT /repos/{owner}/{repo}/interaction-limits", {
-      mediaType: {
-        previews: ["sombra"]
-      }
+    setRestrictionsForAuthenticatedUser: ["PUT /user/interaction-limits"],
+    setRestrictionsForOrg: ["PUT /orgs/{org}/interaction-limits"],
+    setRestrictionsForRepo: ["PUT /repos/{owner}/{repo}/interaction-limits"],
+    setRestrictionsForYourPublicRepos: ["PUT /user/interaction-limits", {}, {
+      renamed: ["interactions", "setRestrictionsForAuthenticatedUser"]
     }]
   },
   issues: {
@@ -3103,7 +3188,10 @@ const Endpoints = {
     }]
   },
   meta: {
-    get: ["GET /meta"]
+    get: ["GET /meta"],
+    getOctocat: ["GET /octocat"],
+    getZen: ["GET /zen"],
+    root: ["GET /"]
   },
   migrations: {
     cancelImport: ["DELETE /repos/{owner}/{repo}/import"],
@@ -3179,6 +3267,7 @@ const Endpoints = {
   },
   orgs: {
     blockUser: ["PUT /orgs/{org}/blocks/{username}"],
+    cancelInvitation: ["DELETE /orgs/{org}/invitations/{invitation_id}"],
     checkBlockedUser: ["GET /orgs/{org}/blocks/{username}"],
     checkMembershipForUser: ["GET /orgs/{org}/members/{username}"],
     checkPublicMembershipForUser: ["GET /orgs/{org}/public_members/{username}"],
@@ -3190,9 +3279,11 @@ const Endpoints = {
     getMembershipForAuthenticatedUser: ["GET /user/memberships/orgs/{org}"],
     getMembershipForUser: ["GET /orgs/{org}/memberships/{username}"],
     getWebhook: ["GET /orgs/{org}/hooks/{hook_id}"],
+    getWebhookConfigForOrg: ["GET /orgs/{org}/hooks/{hook_id}/config"],
     list: ["GET /organizations"],
     listAppInstallations: ["GET /orgs/{org}/installations"],
     listBlockedUsers: ["GET /orgs/{org}/blocks"],
+    listFailedInvitations: ["GET /orgs/{org}/failed_invitations"],
     listForAuthenticatedUser: ["GET /user/orgs"],
     listForUser: ["GET /users/{username}/orgs"],
     listInvitationTeams: ["GET /orgs/{org}/invitations/{invitation_id}/teams"],
@@ -3212,7 +3303,33 @@ const Endpoints = {
     unblockUser: ["DELETE /orgs/{org}/blocks/{username}"],
     update: ["PATCH /orgs/{org}"],
     updateMembershipForAuthenticatedUser: ["PATCH /user/memberships/orgs/{org}"],
-    updateWebhook: ["PATCH /orgs/{org}/hooks/{hook_id}"]
+    updateWebhook: ["PATCH /orgs/{org}/hooks/{hook_id}"],
+    updateWebhookConfigForOrg: ["PATCH /orgs/{org}/hooks/{hook_id}/config"]
+  },
+  packages: {
+    deletePackageForAuthenticatedUser: ["DELETE /user/packages/{package_type}/{package_name}"],
+    deletePackageForOrg: ["DELETE /orgs/{org}/packages/{package_type}/{package_name}"],
+    deletePackageVersionForAuthenticatedUser: ["DELETE /user/packages/{package_type}/{package_name}/versions/{package_version_id}"],
+    deletePackageVersionForOrg: ["DELETE /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}"],
+    getAllPackageVersionsForAPackageOwnedByAnOrg: ["GET /orgs/{org}/packages/{package_type}/{package_name}/versions", {}, {
+      renamed: ["packages", "getAllPackageVersionsForPackageOwnedByOrg"]
+    }],
+    getAllPackageVersionsForAPackageOwnedByTheAuthenticatedUser: ["GET /user/packages/{package_type}/{package_name}/versions", {}, {
+      renamed: ["packages", "getAllPackageVersionsForPackageOwnedByAuthenticatedUser"]
+    }],
+    getAllPackageVersionsForPackageOwnedByAuthenticatedUser: ["GET /user/packages/{package_type}/{package_name}/versions"],
+    getAllPackageVersionsForPackageOwnedByOrg: ["GET /orgs/{org}/packages/{package_type}/{package_name}/versions"],
+    getAllPackageVersionsForPackageOwnedByUser: ["GET /users/{username}/packages/{package_type}/{package_name}/versions"],
+    getPackageForAuthenticatedUser: ["GET /user/packages/{package_type}/{package_name}"],
+    getPackageForOrganization: ["GET /orgs/{org}/packages/{package_type}/{package_name}"],
+    getPackageForUser: ["GET /users/{username}/packages/{package_type}/{package_name}"],
+    getPackageVersionForAuthenticatedUser: ["GET /user/packages/{package_type}/{package_name}/versions/{package_version_id}"],
+    getPackageVersionForOrganization: ["GET /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}"],
+    getPackageVersionForUser: ["GET /users/{username}/packages/{package_type}/{package_name}/versions/{package_version_id}"],
+    restorePackageForAuthenticatedUser: ["POST /user/packages/{package_type}/{package_name}/restore{?token}"],
+    restorePackageForOrg: ["POST /orgs/{org}/packages/{package_type}/{package_name}/restore{?token}"],
+    restorePackageVersionForAuthenticatedUser: ["POST /user/packages/{package_type}/{package_name}/versions/{package_version_id}/restore"],
+    restorePackageVersionForOrg: ["POST /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}/restore"]
   },
   projects: {
     addCollaborator: ["PUT /projects/{project_id}/collaborators/{username}", {
@@ -3443,7 +3560,7 @@ const Endpoints = {
         previews: ["squirrel-girl"]
       }
     }, {
-      deprecated: "octokit.reactions.deleteLegacy() is deprecated, see https://developer.github.com/v3/reactions/#delete-a-reaction-legacy"
+      deprecated: "octokit.rest.reactions.deleteLegacy() is deprecated, see https://docs.github.com/rest/reference/reactions/#delete-a-reaction-legacy"
     }],
     listForCommitComment: ["GET /repos/{owner}/{repo}/comments/{comment_id}/reactions", {
       mediaType: {
@@ -3512,6 +3629,7 @@ const Endpoints = {
     createForAuthenticatedUser: ["POST /user/repos"],
     createFork: ["POST /repos/{owner}/{repo}/forks"],
     createInOrg: ["POST /orgs/{org}/repos"],
+    createOrUpdateEnvironment: ["PUT /repos/{owner}/{repo}/environments/{environment_name}"],
     createOrUpdateFileContents: ["PUT /repos/{owner}/{repo}/contents/{path}"],
     createPagesSite: ["POST /repos/{owner}/{repo}/pages", {
       mediaType: {
@@ -3529,6 +3647,7 @@ const Endpoints = {
     delete: ["DELETE /repos/{owner}/{repo}"],
     deleteAccessRestrictions: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions"],
     deleteAdminBranchProtection: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/enforce_admins"],
+    deleteAnEnvironment: ["DELETE /repos/{owner}/{repo}/environments/{environment_name}"],
     deleteBranchProtection: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection"],
     deleteCommitComment: ["DELETE /repos/{owner}/{repo}/comments/{comment_id}"],
     deleteCommitSignatureProtection: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures", {
@@ -3559,7 +3678,11 @@ const Endpoints = {
         previews: ["dorian"]
       }
     }],
-    downloadArchive: ["GET /repos/{owner}/{repo}/{archive_format}/{ref}"],
+    downloadArchive: ["GET /repos/{owner}/{repo}/zipball/{ref}", {}, {
+      renamed: ["repos", "downloadZipballArchive"]
+    }],
+    downloadTarballArchive: ["GET /repos/{owner}/{repo}/tarball/{ref}"],
+    downloadZipballArchive: ["GET /repos/{owner}/{repo}/zipball/{ref}"],
     enableAutomatedSecurityFixes: ["PUT /repos/{owner}/{repo}/automated-security-fixes", {
       mediaType: {
         previews: ["london"]
@@ -3573,6 +3696,7 @@ const Endpoints = {
     get: ["GET /repos/{owner}/{repo}"],
     getAccessRestrictions: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/restrictions"],
     getAdminBranchProtection: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/enforce_admins"],
+    getAllEnvironments: ["GET /repos/{owner}/{repo}/environments"],
     getAllStatusCheckContexts: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks/contexts"],
     getAllTopics: ["GET /repos/{owner}/{repo}/topics", {
       mediaType: {
@@ -3594,24 +3718,23 @@ const Endpoints = {
         previews: ["zzzax"]
       }
     }],
-    getCommunityProfileMetrics: ["GET /repos/{owner}/{repo}/community/profile", {
-      mediaType: {
-        previews: ["black-panther"]
-      }
-    }],
+    getCommunityProfileMetrics: ["GET /repos/{owner}/{repo}/community/profile"],
     getContent: ["GET /repos/{owner}/{repo}/contents/{path}"],
     getContributorsStats: ["GET /repos/{owner}/{repo}/stats/contributors"],
     getDeployKey: ["GET /repos/{owner}/{repo}/keys/{key_id}"],
     getDeployment: ["GET /repos/{owner}/{repo}/deployments/{deployment_id}"],
     getDeploymentStatus: ["GET /repos/{owner}/{repo}/deployments/{deployment_id}/statuses/{status_id}"],
+    getEnvironment: ["GET /repos/{owner}/{repo}/environments/{environment_name}"],
     getLatestPagesBuild: ["GET /repos/{owner}/{repo}/pages/builds/latest"],
     getLatestRelease: ["GET /repos/{owner}/{repo}/releases/latest"],
     getPages: ["GET /repos/{owner}/{repo}/pages"],
     getPagesBuild: ["GET /repos/{owner}/{repo}/pages/builds/{build_id}"],
+    getPagesHealthCheck: ["GET /repos/{owner}/{repo}/pages/health"],
     getParticipationStats: ["GET /repos/{owner}/{repo}/stats/participation"],
     getPullRequestReviewProtection: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/required_pull_request_reviews"],
     getPunchCardStats: ["GET /repos/{owner}/{repo}/stats/punch_card"],
     getReadme: ["GET /repos/{owner}/{repo}/readme"],
+    getReadmeInDirectory: ["GET /repos/{owner}/{repo}/readme/{dir}"],
     getRelease: ["GET /repos/{owner}/{repo}/releases/{release_id}"],
     getReleaseAsset: ["GET /repos/{owner}/{repo}/releases/assets/{asset_id}"],
     getReleaseByTag: ["GET /repos/{owner}/{repo}/releases/tags/{tag}"],
@@ -3622,6 +3745,7 @@ const Endpoints = {
     getUsersWithAccessToProtectedBranch: ["GET /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/users"],
     getViews: ["GET /repos/{owner}/{repo}/traffic/views"],
     getWebhook: ["GET /repos/{owner}/{repo}/hooks/{hook_id}"],
+    getWebhookConfigForRepo: ["GET /repos/{owner}/{repo}/hooks/{hook_id}/config"],
     listBranches: ["GET /repos/{owner}/{repo}/branches"],
     listBranchesForHeadCommit: ["GET /repos/{owner}/{repo}/commits/{commit_sha}/branches-where-head", {
       mediaType: {
@@ -3672,6 +3796,7 @@ const Endpoints = {
     removeUserAccessRestrictions: ["DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/users", {}, {
       mapToData: "users"
     }],
+    renameBranch: ["POST /repos/{owner}/{repo}/branches/{branch}/rename"],
     replaceAllTopics: ["PUT /repos/{owner}/{repo}/topics", {
       mediaType: {
         previews: ["mercy"]
@@ -3701,8 +3826,12 @@ const Endpoints = {
     updatePullRequestReviewProtection: ["PATCH /repos/{owner}/{repo}/branches/{branch}/protection/required_pull_request_reviews"],
     updateRelease: ["PATCH /repos/{owner}/{repo}/releases/{release_id}"],
     updateReleaseAsset: ["PATCH /repos/{owner}/{repo}/releases/assets/{asset_id}"],
-    updateStatusCheckPotection: ["PATCH /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks"],
+    updateStatusCheckPotection: ["PATCH /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks", {}, {
+      renamed: ["repos", "updateStatusCheckProtection"]
+    }],
+    updateStatusCheckProtection: ["PATCH /repos/{owner}/{repo}/branches/{branch}/protection/required_status_checks"],
     updateWebhook: ["PATCH /repos/{owner}/{repo}/hooks/{hook_id}"],
+    updateWebhookConfigForRepo: ["PATCH /repos/{owner}/{repo}/hooks/{hook_id}/config"],
     uploadReleaseAsset: ["POST /repos/{owner}/{repo}/releases/{release_id}/assets{?name,label}", {
       baseUrl: "https://uploads.github.com"
     }]
@@ -3723,6 +3852,11 @@ const Endpoints = {
       }
     }],
     users: ["GET /search/users"]
+  },
+  secretScanning: {
+    getAlert: ["GET /repos/{owner}/{repo}/secret-scanning/alerts/{alert_number}"],
+    listAlertsForRepo: ["GET /repos/{owner}/{repo}/secret-scanning/alerts"],
+    updateAlert: ["PATCH /repos/{owner}/{repo}/secret-scanning/alerts/{alert_number}"]
   },
   teams: {
     addOrUpdateMembershipForUserInOrg: ["PUT /orgs/{org}/teams/{team_slug}/memberships/{username}"],
@@ -3804,7 +3938,7 @@ const Endpoints = {
   }
 };
 
-const VERSION = "4.2.0";
+const VERSION = "5.1.1";
 
 function endpointsToMethods(octokit, endpointsMap) {
   const newMethods = {};
@@ -3887,22 +4021,22 @@ function decorate(octokit, scope, methodName, defaults, decorations) {
   return Object.assign(withDecorations, requestWithDefaults);
 }
 
-/**
- * This plugin is a 1:1 copy of internal @octokit/rest plugins. The primary
- * goal is to rebuild @octokit/rest on top of @octokit/core. Once that is
- * done, we will remove the registerEndpoints methods and return the methods
- * directly as with the other plugins. At that point we will also remove the
- * legacy workarounds and deprecations.
- *
- * See the plan at
- * https://github.com/octokit/plugin-rest-endpoint-methods.js/pull/1
- */
-
 function restEndpointMethods(octokit) {
-  return endpointsToMethods(octokit, Endpoints);
+  const api = endpointsToMethods(octokit, Endpoints);
+  return {
+    rest: api
+  };
 }
 restEndpointMethods.VERSION = VERSION;
+function legacyRestEndpointMethods(octokit) {
+  const api = endpointsToMethods(octokit, Endpoints);
+  return _objectSpread2(_objectSpread2({}, api), {}, {
+    rest: api
+  });
+}
+legacyRestEndpointMethods.VERSION = VERSION;
 
+exports.legacyRestEndpointMethods = legacyRestEndpointMethods;
 exports.restEndpointMethods = restEndpointMethods;
 //# sourceMappingURL=index.js.map
 
@@ -3910,7 +4044,7 @@ exports.restEndpointMethods = restEndpointMethods;
 /***/ }),
 
 /***/ 537:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -3919,8 +4053,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var deprecation = __webpack_require__(8932);
-var once = _interopDefault(__webpack_require__(1223));
+var deprecation = __nccwpck_require__(8932);
+var once = _interopDefault(__nccwpck_require__(1223));
 
 const logOnce = once(deprecation => console.warn(deprecation));
 /**
@@ -3973,7 +4107,7 @@ exports.RequestError = RequestError;
 /***/ }),
 
 /***/ 6234:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -3982,13 +4116,13 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var endpoint = __webpack_require__(9440);
-var universalUserAgent = __webpack_require__(5030);
-var isPlainObject = __webpack_require__(3287);
-var nodeFetch = _interopDefault(__webpack_require__(467));
-var requestError = __webpack_require__(537);
+var endpoint = __nccwpck_require__(9440);
+var universalUserAgent = __nccwpck_require__(5030);
+var isPlainObject = __nccwpck_require__(3287);
+var nodeFetch = _interopDefault(__nccwpck_require__(467));
+var requestError = __nccwpck_require__(537);
 
-const VERSION = "5.4.9";
+const VERSION = "5.4.15";
 
 function getBufferResponse(response) {
   return response.arrayBuffer();
@@ -4008,7 +4142,9 @@ function fetchWrapper(requestOptions) {
     body: requestOptions.body,
     headers: requestOptions.headers,
     redirect: requestOptions.redirect
-  }, requestOptions.request)).then(response => {
+  }, // `requestOptions.request.agent` type is incompatible
+  // see https://github.com/octokit/types.ts/pull/264
+  requestOptions.request)).then(response => {
     url = response.url;
     status = response.status;
 
@@ -4129,11 +4265,11 @@ exports.request = request;
 /***/ }),
 
 /***/ 3682:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var register = __webpack_require__(4670)
-var addHook = __webpack_require__(5549)
-var removeHook = __webpack_require__(6819)
+var register = __nccwpck_require__(4670)
+var addHook = __nccwpck_require__(5549)
+var removeHook = __nccwpck_require__(6819)
 
 // bind with array of arguments: https://stackoverflow.com/a/21792913
 var bind = Function.bind
@@ -4195,51 +4331,51 @@ module.exports.Collection = Hook.Collection
 /***/ 5549:
 /***/ ((module) => {
 
-module.exports = addHook
+module.exports = addHook;
 
-function addHook (state, kind, name, hook) {
-  var orig = hook
+function addHook(state, kind, name, hook) {
+  var orig = hook;
   if (!state.registry[name]) {
-    state.registry[name] = []
+    state.registry[name] = [];
   }
 
-  if (kind === 'before') {
+  if (kind === "before") {
     hook = function (method, options) {
       return Promise.resolve()
         .then(orig.bind(null, options))
-        .then(method.bind(null, options))
-    }
+        .then(method.bind(null, options));
+    };
   }
 
-  if (kind === 'after') {
+  if (kind === "after") {
     hook = function (method, options) {
-      var result
+      var result;
       return Promise.resolve()
         .then(method.bind(null, options))
         .then(function (result_) {
-          result = result_
-          return orig(result, options)
+          result = result_;
+          return orig(result, options);
         })
         .then(function () {
-          return result
-        })
-    }
+          return result;
+        });
+    };
   }
 
-  if (kind === 'error') {
+  if (kind === "error") {
     hook = function (method, options) {
       return Promise.resolve()
         .then(method.bind(null, options))
         .catch(function (error) {
-          return orig(error, options)
-        })
-    }
+          return orig(error, options);
+        });
+    };
   }
 
   state.registry[name].push({
     hook: hook,
-    orig: orig
-  })
+    orig: orig,
+  });
 }
 
 
@@ -4248,33 +4384,32 @@ function addHook (state, kind, name, hook) {
 /***/ 4670:
 /***/ ((module) => {
 
-module.exports = register
+module.exports = register;
 
-function register (state, name, method, options) {
-  if (typeof method !== 'function') {
-    throw new Error('method for before hook must be a function')
+function register(state, name, method, options) {
+  if (typeof method !== "function") {
+    throw new Error("method for before hook must be a function");
   }
 
   if (!options) {
-    options = {}
+    options = {};
   }
 
   if (Array.isArray(name)) {
     return name.reverse().reduce(function (callback, name) {
-      return register.bind(null, state, name, callback, options)
-    }, method)()
+      return register.bind(null, state, name, callback, options);
+    }, method)();
   }
 
-  return Promise.resolve()
-    .then(function () {
-      if (!state.registry[name]) {
-        return method(options)
-      }
+  return Promise.resolve().then(function () {
+    if (!state.registry[name]) {
+      return method(options);
+    }
 
-      return (state.registry[name]).reduce(function (method, registered) {
-        return registered.hook.bind(null, method, options)
-      }, method)()
-    })
+    return state.registry[name].reduce(function (method, registered) {
+      return registered.hook.bind(null, method, options);
+    }, method)();
+  });
 }
 
 
@@ -4283,22 +4418,24 @@ function register (state, name, method, options) {
 /***/ 6819:
 /***/ ((module) => {
 
-module.exports = removeHook
+module.exports = removeHook;
 
-function removeHook (state, name, method) {
+function removeHook(state, name, method) {
   if (!state.registry[name]) {
-    return
+    return;
   }
 
   var index = state.registry[name]
-    .map(function (registered) { return registered.orig })
-    .indexOf(method)
+    .map(function (registered) {
+      return registered.orig;
+    })
+    .indexOf(method);
 
   if (index === -1) {
-    return
+    return;
   }
 
-  state.registry[name].splice(index, 1)
+  state.registry[name].splice(index, 1);
 }
 
 
@@ -4362,7 +4499,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7934:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -4372,7 +4509,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = cloneObject;
 
-var _index = _interopRequireDefault(__webpack_require__(2631));
+var _index = _interopRequireDefault(__nccwpck_require__(2631));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4385,7 +4522,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9257:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -4395,19 +4532,19 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = void 0;
 
-var _index = _interopRequireDefault(__webpack_require__(289));
+var _index = _interopRequireDefault(__nccwpck_require__(289));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2966));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2966));
 
-var _index3 = _interopRequireDefault(__webpack_require__(8493));
+var _index3 = _interopRequireDefault(__nccwpck_require__(8493));
 
-var _index4 = _interopRequireDefault(__webpack_require__(7170));
+var _index4 = _interopRequireDefault(__nccwpck_require__(7170));
 
-var _index5 = _interopRequireDefault(__webpack_require__(5993));
+var _index5 = _interopRequireDefault(__nccwpck_require__(5993));
 
-var _index6 = _interopRequireDefault(__webpack_require__(8050));
+var _index6 = _interopRequireDefault(__nccwpck_require__(8050));
 
-var _index7 = _interopRequireDefault(__webpack_require__(8794));
+var _index7 = _interopRequireDefault(__nccwpck_require__(8794));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4952,11 +5089,16 @@ var formatters = {
     switch (token) {
       case 'a':
       case 'aa':
-      case 'aaa':
         return localize.dayPeriod(dayPeriodEnumValue, {
           width: 'abbreviated',
           context: 'formatting'
         });
+
+      case 'aaa':
+        return localize.dayPeriod(dayPeriodEnumValue, {
+          width: 'abbreviated',
+          context: 'formatting'
+        }).toLowerCase();
 
       case 'aaaaa':
         return localize.dayPeriod(dayPeriodEnumValue, {
@@ -4988,11 +5130,16 @@ var formatters = {
     switch (token) {
       case 'b':
       case 'bb':
-      case 'bbb':
         return localize.dayPeriod(dayPeriodEnumValue, {
           width: 'abbreviated',
           context: 'formatting'
         });
+
+      case 'bbb':
+        return localize.dayPeriod(dayPeriodEnumValue, {
+          width: 'abbreviated',
+          context: 'formatting'
+        }).toLowerCase();
 
       case 'bbbbb':
         return localize.dayPeriod(dayPeriodEnumValue, {
@@ -5266,7 +5413,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 289:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -5276,7 +5423,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = void 0;
 
-var _index = _interopRequireDefault(__webpack_require__(8794));
+var _index = _interopRequireDefault(__nccwpck_require__(8794));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5324,8 +5471,10 @@ var formatters = {
     switch (token) {
       case 'a':
       case 'aa':
-      case 'aaa':
         return dayPeriodEnumValue.toUpperCase();
+
+      case 'aaa':
+        return dayPeriodEnumValue;
 
       case 'aaaaa':
         return dayPeriodEnumValue[0];
@@ -5487,11 +5636,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.default = getTimezoneOffsetInMilliseconds;
-var MILLISECONDS_IN_MINUTE = 60000;
 
-function getDateMillisecondsPart(date) {
-  return date.getTime() % MILLISECONDS_IN_MINUTE;
-}
 /**
  * Google Chrome as of 67.0.3396.87 introduced timezones with offset that includes seconds.
  * They usually appear for dates that denote time before the timezones were introduced
@@ -5503,15 +5648,10 @@ function getDateMillisecondsPart(date) {
  *
  * This function returns the timezone offset in milliseconds that takes seconds in account.
  */
-
-
-function getTimezoneOffsetInMilliseconds(dirtyDate) {
-  var date = new Date(dirtyDate.getTime());
-  var baseTimezoneOffset = Math.ceil(date.getTimezoneOffset());
-  date.setSeconds(0, 0);
-  var hasNegativeUTCOffset = baseTimezoneOffset > 0;
-  var millisecondsPartOfTimezoneOffset = hasNegativeUTCOffset ? (MILLISECONDS_IN_MINUTE + getDateMillisecondsPart(date)) % MILLISECONDS_IN_MINUTE : getDateMillisecondsPart(date);
-  return baseTimezoneOffset * MILLISECONDS_IN_MINUTE + millisecondsPartOfTimezoneOffset;
+function getTimezoneOffsetInMilliseconds(date) {
+  var utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds()));
+  utcDate.setUTCFullYear(date.getFullYear());
+  return date.getTime() - utcDate.getTime();
 }
 
 module.exports = exports.default;
@@ -5519,7 +5659,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2966:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -5529,9 +5669,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getUTCDayOfYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5554,7 +5694,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8493:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -5564,13 +5704,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getUTCISOWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(3061));
+var _index2 = _interopRequireDefault(__nccwpck_require__(3061));
 
-var _index3 = _interopRequireDefault(__webpack_require__(1478));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1478));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5592,7 +5732,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7170:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -5602,11 +5742,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getUTCISOWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(3061));
+var _index2 = _interopRequireDefault(__nccwpck_require__(3061));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5639,7 +5779,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5993:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -5649,13 +5789,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getUTCWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2258));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2258));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2629));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2629));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5677,7 +5817,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8050:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -5687,13 +5827,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getUTCWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2258));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2258));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5794,7 +5934,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2694:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -5804,11 +5944,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setUTCDay;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5841,7 +5981,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7985:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -5851,11 +5991,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setUTCISODay;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5884,7 +6024,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8921:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -5894,13 +6034,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setUTCISOWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(8493));
+var _index3 = _interopRequireDefault(__nccwpck_require__(8493));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5920,7 +6060,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3285:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -5930,13 +6070,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setUTCWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(5993));
+var _index3 = _interopRequireDefault(__nccwpck_require__(5993));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5956,7 +6096,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3061:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -5966,9 +6106,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfUTCISOWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -5990,7 +6130,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1478:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6000,11 +6140,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfUTCISOWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(7170));
+var _index = _interopRequireDefault(__nccwpck_require__(7170));
 
-var _index2 = _interopRequireDefault(__webpack_require__(3061));
+var _index2 = _interopRequireDefault(__nccwpck_require__(3061));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6025,7 +6165,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2258:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6035,11 +6175,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfUTCWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6070,7 +6210,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2629:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6080,13 +6220,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfUTCWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(8050));
+var _index2 = _interopRequireDefault(__nccwpck_require__(8050));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2258));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2258));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6141,7 +6281,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6211:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6151,15 +6291,15 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = add;
 
-var _index = _interopRequireDefault(__webpack_require__(6227));
+var _index = _interopRequireDefault(__nccwpck_require__(6227));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2995));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2995));
 
-var _index3 = _interopRequireDefault(__webpack_require__(6477));
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index5 = _interopRequireDefault(__webpack_require__(1985));
+var _index5 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6191,7 +6331,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Add the following duration to 1 September 2014, 10:19:50
- * var result = add(new Date(2014, 8, 1, 10, 19, 50), {
+ * const result = add(new Date(2014, 8, 1, 10, 19, 50), {
  *   years: 2,
  *   months: 9,
  *   weeks: 1,
@@ -6230,7 +6370,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1727:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6240,17 +6380,17 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = addBusinessDays;
 
-var _index = _interopRequireDefault(__webpack_require__(403));
+var _index = _interopRequireDefault(__nccwpck_require__(403));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(1985));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index5 = _interopRequireDefault(__webpack_require__(5852));
+var _index5 = _interopRequireDefault(__nccwpck_require__(5852));
 
-var _index6 = _interopRequireDefault(__webpack_require__(6308));
+var _index6 = _interopRequireDefault(__nccwpck_require__(6308));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6269,7 +6409,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Add 10 business days to 1 September 2014:
- * var result = addBusinessDays(new Date(2014, 8, 1), 10)
+ * const result = addBusinessDays(new Date(2014, 8, 1), 10)
  * //=> Mon Sep 15 2014 00:00:00 (skipped weekend days)
  */
 function addBusinessDays(dirtyDate, dirtyAmount) {
@@ -6310,7 +6450,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6227:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6320,11 +6460,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = addDays;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6342,12 +6482,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @param {Date|Number} date - the date to be changed
  * @param {Number} amount - the amount of days to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
- * @returns {Date} the new date with the days added
- * @throws {TypeError} 2 arguments required
+ * @returns {Date} - the new date with the days added
+ * @throws {TypeError} - 2 arguments required
  *
  * @example
  * // Add 10 days to 1 September 2014:
- * var result = addDays(new Date(2014, 8, 1), 10)
+ * const result = addDays(new Date(2014, 8, 1), 10)
  * //=> Thu Sep 11 2014 00:00:00
  */
 function addDays(dirtyDate, dirtyAmount) {
@@ -6373,7 +6513,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9956:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6383,11 +6523,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = addHours;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(524));
+var _index2 = _interopRequireDefault(__nccwpck_require__(524));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6411,7 +6551,7 @@ var MILLISECONDS_IN_HOUR = 3600000;
  *
  * @example
  * // Add 2 hours to 10 July 2014 23:00:00:
- * var result = addHours(new Date(2014, 6, 10, 23, 0), 2)
+ * const result = addHours(new Date(2014, 6, 10, 23, 0), 2)
  * //=> Fri Jul 11 2014 01:00:00
  */
 
@@ -6426,7 +6566,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5318:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6436,13 +6576,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = addISOWeekYears;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6991));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6991));
 
-var _index3 = _interopRequireDefault(__webpack_require__(822));
+var _index3 = _interopRequireDefault(__nccwpck_require__(822));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6472,7 +6612,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Add 5 ISO week-numbering years to 2 July 2010:
- * var result = addISOWeekYears(new Date(2010, 6, 2), 5)
+ * const result = addISOWeekYears(new Date(2010, 6, 2), 5)
  * //=> Fri Jun 26 2015 00:00:00
  */
 function addISOWeekYears(dirtyDate, dirtyAmount) {
@@ -6486,7 +6626,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 524:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6496,11 +6636,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = addMilliseconds;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6523,7 +6663,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Add 750 milliseconds to 10 July 2014 12:45:30.000:
- * var result = addMilliseconds(new Date(2014, 6, 10, 12, 45, 30, 0), 750)
+ * const result = addMilliseconds(new Date(2014, 6, 10, 12, 45, 30, 0), 750)
  * //=> Thu Jul 10 2014 12:45:30.750
  */
 function addMilliseconds(dirtyDate, dirtyAmount) {
@@ -6538,7 +6678,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5268:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6548,11 +6688,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = addMinutes;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(524));
+var _index2 = _interopRequireDefault(__nccwpck_require__(524));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6576,7 +6716,7 @@ var MILLISECONDS_IN_MINUTE = 60000;
  *
  * @example
  * // Add 30 minutes to 10 July 2014 12:00:00:
- * var result = addMinutes(new Date(2014, 6, 10, 12, 0), 30)
+ * const result = addMinutes(new Date(2014, 6, 10, 12, 0), 30)
  * //=> Thu Jul 10 2014 12:30:00
  */
 
@@ -6591,7 +6731,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2995:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6601,11 +6741,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = addMonths;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6628,7 +6768,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Add 5 months to 1 September 2014:
- * var result = addMonths(new Date(2014, 8, 1), 5)
+ * const result = addMonths(new Date(2014, 8, 1), 5)
  * //=> Sun Feb 01 2015 00:00:00
  */
 function addMonths(dirtyDate, dirtyAmount) {
@@ -6646,7 +6786,7 @@ function addMonths(dirtyDate, dirtyAmount) {
   }
 
   var dayOfMonth = date.getDate(); // The JS Date object supports date math by accepting out-of-bounds values for
-  // month, day, etc. For example, new Date(2020, 1, 0) returns 31 Dec 2019 and
+  // month, day, etc. For example, new Date(2020, 0, 0) returns 31 Dec 2019 and
   // new Date(2020, 13, 1) returns 1 Feb 2021.  This is *almost* the behavior we
   // want except that dates will wrap around the end of a month, meaning that
   // new Date(2020, 13, 31) will return 3 Mar 2021 not 28 Feb 2021 as desired. So
@@ -6680,7 +6820,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5149:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6690,11 +6830,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = addQuarters;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2995));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2995));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6717,7 +6857,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Add 1 quarter to 1 September 2014:
- * var result = addQuarters(new Date(2014, 8, 1), 1)
+ * const result = addQuarters(new Date(2014, 8, 1), 1)
  * //=> Mon Dec 01 2014 00:00:00
  */
 function addQuarters(dirtyDate, dirtyAmount) {
@@ -6732,7 +6872,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4112:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6742,11 +6882,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = addSeconds;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(524));
+var _index2 = _interopRequireDefault(__nccwpck_require__(524));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6769,7 +6909,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Add 30 seconds to 10 July 2014 12:45:00:
- * var result = addSeconds(new Date(2014, 6, 10, 12, 45, 0), 30)
+ * const result = addSeconds(new Date(2014, 6, 10, 12, 45, 0), 30)
  * //=> Thu Jul 10 2014 12:45:30
  */
 function addSeconds(dirtyDate, dirtyAmount) {
@@ -6783,7 +6923,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7195:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6793,11 +6933,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = addWeeks;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6227));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6227));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6820,7 +6960,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Add 4 weeks to 1 September 2014:
- * var result = addWeeks(new Date(2014, 8, 1), 4)
+ * const result = addWeeks(new Date(2014, 8, 1), 4)
  * //=> Mon Sep 29 2014 00:00:00
  */
 function addWeeks(dirtyDate, dirtyAmount) {
@@ -6835,7 +6975,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3367:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6845,11 +6985,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = addYears;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2995));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2995));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6872,7 +7012,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Add 5 years to 1 September 2014:
- * var result = addYears(new Date(2014, 8, 1), 5)
+ * const result = addYears(new Date(2014, 8, 1), 5)
  * //=> Sun Sep 01 2019 00:00:00
  */
 function addYears(dirtyDate, dirtyAmount) {
@@ -6886,7 +7026,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2282:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -6896,9 +7036,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = areIntervalsOverlapping;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -6944,8 +7084,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *   )
  *   ```
  *
- * @param {Interval} intervalLeft - the first interval to compare. See [Interval]{@link docs/types/Interval}
- * @param {Interval} intervalRight - the second interval to compare. See [Interval]{@link docs/types/Interval}
+ * @param {Interval} intervalLeft - the first interval to compare. See [Interval]{@link https://date-fns.org/docs/Interval}
+ * @param {Interval} intervalRight - the second interval to compare. See [Interval]{@link https://date-fns.org/docs/Interval}
  * @param {Object} [options] - the object with options
  * @param {Boolean} [options.inclusive=false] - whether the comparison is inclusive or not
  * @returns {Boolean} whether the time intervals are overlapping
@@ -6992,7 +7132,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * //=> true
  */
 function areIntervalsOverlapping(dirtyIntervalLeft, dirtyIntervalRight) {
-  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
+    inclusive: false
+  };
   (0, _index2.default)(2, arguments);
   var intervalLeft = dirtyIntervalLeft || {};
   var intervalRight = dirtyIntervalRight || {};
@@ -7017,7 +7159,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2264:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7027,9 +7169,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = closestIndexTo;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7109,7 +7251,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2013:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7119,9 +7261,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = closestTo;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7199,7 +7341,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9818:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7209,9 +7351,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = compareAsc;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7235,12 +7377,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Compare 11 February 1987 and 10 July 1989:
- * var result = compareAsc(new Date(1987, 1, 11), new Date(1989, 6, 10))
+ * const result = compareAsc(new Date(1987, 1, 11), new Date(1989, 6, 10))
  * //=> -1
  *
  * @example
  * // Sort the array of dates:
- * var result = [
+ * const result = [
  *   new Date(1995, 6, 2),
  *   new Date(1987, 1, 11),
  *   new Date(1989, 6, 10)
@@ -7271,7 +7413,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7783:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7281,9 +7423,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = compareDesc;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7307,12 +7449,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Compare 11 February 1987 and 10 July 1989 reverse chronologically:
- * var result = compareDesc(new Date(1987, 1, 11), new Date(1989, 6, 10))
+ * const result = compareDesc(new Date(1987, 1, 11), new Date(1989, 6, 10))
  * //=> 1
  *
  * @example
  * // Sort the array of dates in reverse chronological order:
- * var result = [
+ * const result = [
  *   new Date(1995, 6, 2),
  *   new Date(1987, 1, 11),
  *   new Date(1989, 6, 10)
@@ -7374,7 +7516,7 @@ exports.minTime = minTime;
 /***/ }),
 
 /***/ 4734:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7384,21 +7526,21 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInBusinessDays;
 
-var _index = _interopRequireDefault(__webpack_require__(9920));
+var _index = _interopRequireDefault(__nccwpck_require__(9920));
 
-var _index2 = _interopRequireDefault(__webpack_require__(403));
+var _index2 = _interopRequireDefault(__nccwpck_require__(403));
 
-var _index3 = _interopRequireDefault(__webpack_require__(6477));
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index4 = _interopRequireDefault(__webpack_require__(3086));
+var _index4 = _interopRequireDefault(__nccwpck_require__(3086));
 
-var _index5 = _interopRequireDefault(__webpack_require__(6227));
+var _index5 = _interopRequireDefault(__nccwpck_require__(6227));
 
-var _index6 = _interopRequireDefault(__webpack_require__(2154));
+var _index6 = _interopRequireDefault(__nccwpck_require__(2154));
 
-var _index7 = _interopRequireDefault(__webpack_require__(1985));
+var _index7 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index8 = _interopRequireDefault(__webpack_require__(2063));
+var _index8 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7452,7 +7594,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3086:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7462,11 +7604,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInCalendarDays;
 
-var _index = _interopRequireDefault(__webpack_require__(7032));
+var _index = _interopRequireDefault(__nccwpck_require__(7032));
 
-var _index2 = _interopRequireDefault(__webpack_require__(1868));
+var _index2 = _interopRequireDefault(__nccwpck_require__(1868));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7523,7 +7665,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6778:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7533,9 +7675,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInCalendarISOWeekYears;
 
-var _index = _interopRequireDefault(__webpack_require__(6991));
+var _index = _interopRequireDefault(__nccwpck_require__(6991));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7581,7 +7723,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1656:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7591,11 +7733,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInCalendarISOWeeks;
 
-var _index = _interopRequireDefault(__webpack_require__(7032));
+var _index = _interopRequireDefault(__nccwpck_require__(7032));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6307));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6307));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7645,7 +7787,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5536:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7655,9 +7797,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInCalendarMonths;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7700,7 +7842,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2342:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7710,11 +7852,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInCalendarQuarters;
 
-var _index = _interopRequireDefault(__webpack_require__(4523));
+var _index = _interopRequireDefault(__nccwpck_require__(4523));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7757,7 +7899,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8620:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7767,11 +7909,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInCalendarWeeks;
 
-var _index = _interopRequireDefault(__webpack_require__(9813));
+var _index = _interopRequireDefault(__nccwpck_require__(9813));
 
-var _index2 = _interopRequireDefault(__webpack_require__(7032));
+var _index2 = _interopRequireDefault(__nccwpck_require__(7032));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7833,7 +7975,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5237:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7843,9 +7985,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInCalendarYears;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7886,7 +8028,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6311:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -7896,11 +8038,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInDays;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(3086));
+var _index2 = _interopRequireDefault(__nccwpck_require__(3086));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7994,7 +8136,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8740:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8004,9 +8146,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInHours;
 
-var _index = _interopRequireDefault(__webpack_require__(2288));
+var _index = _interopRequireDefault(__nccwpck_require__(2288));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8048,7 +8190,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8815:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8058,15 +8200,15 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInISOWeekYears;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6778));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6778));
 
-var _index3 = _interopRequireDefault(__webpack_require__(9818));
+var _index3 = _interopRequireDefault(__nccwpck_require__(9818));
 
-var _index4 = _interopRequireDefault(__webpack_require__(3925));
+var _index4 = _interopRequireDefault(__nccwpck_require__(3925));
 
-var _index5 = _interopRequireDefault(__webpack_require__(2063));
+var _index5 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8123,7 +8265,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2288:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8133,9 +8275,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInMilliseconds;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8177,7 +8319,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3842:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8187,9 +8329,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInMinutes;
 
-var _index = _interopRequireDefault(__webpack_require__(2288));
+var _index = _interopRequireDefault(__nccwpck_require__(2288));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8239,7 +8381,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2713:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8249,13 +8391,15 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInMonths;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(5536));
+var _index2 = _interopRequireDefault(__nccwpck_require__(5536));
 
-var _index3 = _interopRequireDefault(__webpack_require__(9818));
+var _index3 = _interopRequireDefault(__nccwpck_require__(9818));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index5 = _interopRequireDefault(__nccwpck_require__(8506));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8287,11 +8431,29 @@ function differenceInMonths(dirtyDateLeft, dirtyDateRight) {
   var dateRight = (0, _index.default)(dirtyDateRight);
   var sign = (0, _index3.default)(dateLeft, dateRight);
   var difference = Math.abs((0, _index2.default)(dateLeft, dateRight));
-  dateLeft.setMonth(dateLeft.getMonth() - sign * difference); // Math.abs(diff in full months - diff in calendar months) === 1 if last calendar month is not full
-  // If so, result must be decreased by 1 in absolute value
+  var result; // Check for the difference of less than month
 
-  var isLastMonthNotFull = (0, _index3.default)(dateLeft, dateRight) === -sign;
-  var result = sign * (difference - isLastMonthNotFull); // Prevent negative zero
+  if (difference < 1) {
+    result = 0;
+  } else {
+    if (dateLeft.getMonth() === 1 && dateLeft.getDate() > 27) {
+      // This will check if the date is end of Feb and assign a higher end of month date
+      // to compare it with Jan
+      dateLeft.setDate(30);
+    }
+
+    dateLeft.setMonth(dateLeft.getMonth() - sign * difference); // Math.abs(diff in full months - diff in calendar months) === 1 if last calendar month is not full
+    // If so, result must be decreased by 1 in absolute value
+
+    var isLastMonthNotFull = (0, _index3.default)(dateLeft, dateRight) === -sign; // Check for cases of one full calendar month
+
+    if ((0, _index5.default)((0, _index.default)(dirtyDateLeft)) && difference === 1 && (0, _index3.default)(dirtyDateLeft, dateRight) === 1) {
+      isLastMonthNotFull = false;
+    }
+
+    result = sign * (difference - isLastMonthNotFull);
+  } // Prevent negative zero
+
 
   return result === 0 ? 0 : result;
 }
@@ -8301,7 +8463,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7074:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8311,9 +8473,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInQuarters;
 
-var _index = _interopRequireDefault(__webpack_require__(2713));
+var _index = _interopRequireDefault(__nccwpck_require__(2713));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8350,7 +8512,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9448:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8360,9 +8522,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInSeconds;
 
-var _index = _interopRequireDefault(__webpack_require__(2288));
+var _index = _interopRequireDefault(__nccwpck_require__(2288));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8403,7 +8565,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2701:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8413,9 +8575,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInWeeks;
 
-var _index = _interopRequireDefault(__webpack_require__(6311));
+var _index = _interopRequireDefault(__nccwpck_require__(6311));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8473,7 +8635,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3959:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8483,13 +8645,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInYears;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(5237));
+var _index2 = _interopRequireDefault(__nccwpck_require__(5237));
 
-var _index3 = _interopRequireDefault(__webpack_require__(9818));
+var _index3 = _interopRequireDefault(__nccwpck_require__(9818));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8538,7 +8700,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6545:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8548,9 +8710,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = eachDayOfInterval;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8592,7 +8754,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *   )
  *   ```
  *
- * @param {Interval} interval - the interval. See [Interval]{@link docs/types/Interval}
+ * @param {Interval} interval - the interval. See [Interval]{@link https://date-fns.org/docs/Interval}
  * @param {Object} [options] - an object with options.
  * @param {Number} [options.step=1] - the step to increment by. The value should be more than 1.
  * @returns {Date[]} the array with starts of days from the day of the interval start to the day of the interval end
@@ -8603,7 +8765,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Each day between 6 October 2014 and 10 October 2014:
- * var result = eachDayOfInterval({
+ * const result = eachDayOfInterval({
  *   start: new Date(2014, 9, 6),
  *   end: new Date(2014, 9, 10)
  * })
@@ -8646,7 +8808,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6802:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8656,11 +8818,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = eachHourOfInterval;
 
-var _index = _interopRequireDefault(__webpack_require__(9956));
+var _index = _interopRequireDefault(__nccwpck_require__(9956));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8672,7 +8834,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @description
  * Return the array of hours within the specified time interval.
  *
- * @param {Interval} interval - the interval. See [Interval]{@link docs/types/Interval}
+ * @param {Interval} interval - the interval. See [Interval]{@link https://date-fns.org/docs/Interval}
  * @param {Object} [options] - an object with options.
  * @param {Number} [options.step=1] - the step to increment by. The value should be more than 1.
  * @returns {Date[]} the array with starts of hours from the hour of the interval start to the hour of the interval end
@@ -8682,7 +8844,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @throws {RangeError} Date in interval cannot be `Invalid Date`
  *
  * @example
- * // Each hour between 6 October 2014, 12:00 and 10 October 2014, 15:00
+ * // Each hour between 6 October 2014, 12:00 and 6 October 2014, 15:00
  * var result = eachHourOfInterval({
  *   start: new Date(2014, 9, 6, 12),
  *   end: new Date(2014, 9, 6, 15)
@@ -8724,8 +8886,87 @@ module.exports = exports.default;
 
 /***/ }),
 
+/***/ 2029:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = eachMinuteOfInterval;
+
+var _index = _interopRequireDefault(__nccwpck_require__(5268));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(8567));
+
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name eachMinuteOfInterval
+ * @category Interval Helpers
+ * @summary Return the array of minutes within the specified time interval.
+ *
+ * @description
+ * Returns the array of minutes within the specified time interval.
+ *
+ * @param {Interval} interval - the interval. See [Interval]{@link https://date-fns.org/docs/Interval}
+ * @param {Object} [options] - an object with options.
+ * @param {Number} [options.step=1] - the step to increment by. The starts of minutes from the hour of the interval start to the hour of the interval end
+ * @throws {TypeError} 1 argument requie value should be more than 1.
+ * @returns {Date[]} the array withred
+ * @throws {RangeError} `options.step` must be a number equal or greater than 1
+ * @throws {RangeError} The start of an interval cannot be after its end
+ * @throws {RangeError} Date in interval cannot be `Invalid Date`
+ *
+ * @example
+ * // Each minute between 14 October 2020, 13:00 and 14 October 2020, 13:03
+ * const result = eachMinuteOfInterval({
+ *   start: new Date(2014, 9, 14, 13),
+ *   end: new Date(2014, 9, 14, 13, 3)
+ * })
+ * //=> [
+ * //   Wed Oct 14 2014 13:00:00,
+ * //   Wed Oct 14 2014 13:01:00,
+ * //   Wed Oct 14 2014 13:02:00,
+ * //   Wed Oct 14 2014 13:03:00
+ * // ]
+ */
+function eachMinuteOfInterval(interval, options) {
+  (0, _index4.default)(1, arguments);
+  var startDate = (0, _index3.default)((0, _index2.default)(interval.start));
+  var endDate = (0, _index3.default)((0, _index2.default)(interval.end));
+  var startTime = startDate.getTime();
+  var endTime = endDate.getTime();
+
+  if (startTime >= endTime) {
+    throw new RangeError('Invalid interval');
+  }
+
+  var dates = [];
+  var currentDate = startDate;
+  var step = options && 'step' in options ? Number(options.step) : 1;
+  if (step < 1 || isNaN(step)) throw new RangeError('`options.step` must be a number equal or greater than 1');
+
+  while (currentDate.getTime() <= endTime) {
+    dates.push((0, _index2.default)(currentDate));
+    currentDate = (0, _index.default)(currentDate, step);
+  }
+
+  return dates;
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
 /***/ 5879:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8735,9 +8976,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = eachMonthOfInterval;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8749,7 +8990,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @description
  * Return the array of months within the specified time interval.
  *
- * @param {Interval} interval - the interval. See [Interval]{@link docs/types/Interval}
+ * @param {Interval} interval - the interval. See [Interval]{@link https://date-fns.org/docs/Interval}
  * @returns {Date[]} the array with starts of months from the month of the interval start to the month of the interval end
  * @throws {TypeError} 1 argument required
  * @throws {RangeError} The start of an interval cannot be after its end
@@ -8776,13 +9017,13 @@ function eachMonthOfInterval(dirtyInterval) {
   var interval = dirtyInterval || {};
   var startDate = (0, _index.default)(interval.start);
   var endDate = (0, _index.default)(interval.end);
-  var endTime = endDate.getTime(); // Throw an exception if start date is after end date or if any date is `Invalid Date`
+  var endTime = endDate.getTime();
+  var dates = []; // Throw an exception if start date is after end date or if any date is `Invalid Date`
 
   if (!(startDate.getTime() <= endTime)) {
     throw new RangeError('Invalid interval');
   }
 
-  var dates = [];
   var currentDate = startDate;
   currentDate.setHours(0, 0, 0, 0);
   currentDate.setDate(1);
@@ -8800,7 +9041,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6516:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8810,13 +9051,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = eachQuarterOfInterval;
 
-var _index = _interopRequireDefault(__webpack_require__(5149));
+var _index = _interopRequireDefault(__nccwpck_require__(5149));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2932));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2932));
 
-var _index3 = _interopRequireDefault(__webpack_require__(6477));
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8828,7 +9069,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @description
  * Return the array of quarters within the specified time interval.
  *
- * @param {Interval} interval - the interval. See [Interval]{@link docs/types/Interval}
+ * @param {Interval} interval - the interval. See [Interval]{@link https://date-fns.org/docs/Interval}
  * @returns {Date[]} the array with starts of quarters from the quarter of the interval start to the quarter of the interval end
  * @throws {TypeError} 1 argument required
  * @throws {RangeError} The start of an interval cannot be after its end
@@ -8876,7 +9117,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5994:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8886,13 +9127,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = eachWeekOfInterval;
 
-var _index = _interopRequireDefault(__webpack_require__(7195));
+var _index = _interopRequireDefault(__nccwpck_require__(7195));
 
-var _index2 = _interopRequireDefault(__webpack_require__(9813));
+var _index2 = _interopRequireDefault(__nccwpck_require__(9813));
 
-var _index3 = _interopRequireDefault(__webpack_require__(6477));
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8908,7 +9149,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * - [Changes that are common for the whole library](https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#Common-Changes).
  *
- * @param {Interval} interval - the interval. See [Interval]{@link docs/types/Interval}
+ * @param {Interval} interval - the interval. See [Interval]{@link https://date-fns.org/docs/Interval}
  * @param {Object} [options] - an object with options.
  * @param {Locale} [options.locale=defaultLocale] - the locale object. See [Locale]{@link https://date-fns.org/docs/Locale}
  * @param {0|1|2|3|4|5|6} [options.weekStartsOn=0] - the index of the first day of the week (0 - Sunday)
@@ -8970,7 +9211,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1944:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -8980,13 +9221,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = eachWeekendOfInterval;
 
-var _index = _interopRequireDefault(__webpack_require__(6545));
+var _index = _interopRequireDefault(__nccwpck_require__(6545));
 
-var _index2 = _interopRequireDefault(__webpack_require__(5852));
+var _index2 = _interopRequireDefault(__nccwpck_require__(5852));
 
-var _index3 = _interopRequireDefault(__webpack_require__(403));
+var _index3 = _interopRequireDefault(__nccwpck_require__(403));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -8998,7 +9239,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @description
  * Get all the Saturdays and Sundays in the given date interval.
  *
- * @param {Interval} interval - the given interval. See [Interval]{@link docs/types/Interval}
+ * @param {Interval} interval - the given interval. See [Interval]{@link https://date-fns.org/docs/Interval}
  * @returns {Date[]} an array containing all the Saturdays and Sundays
  * @throws {TypeError} 1 argument required
  * @throws {RangeError} The start of an interval cannot be after its end
@@ -9006,7 +9247,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Lists all Saturdays and Sundays in the given date interval
- * var result = eachWeekendOfInterval({
+ * const result = eachWeekendOfInterval({
  *   start: new Date(2018, 8, 17),
  *   end: new Date(2018, 8, 30)
  * })
@@ -9040,7 +9281,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3973:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9050,13 +9291,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = eachWeekendOfMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(1944));
+var _index = _interopRequireDefault(__nccwpck_require__(1944));
 
-var _index2 = _interopRequireDefault(__webpack_require__(7182));
+var _index2 = _interopRequireDefault(__nccwpck_require__(7182));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2621));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2621));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9075,7 +9316,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Lists all Saturdays and Sundays in the given month
- * var result = eachWeekendOfMonth(new Date(2022, 1, 1))
+ * const result = eachWeekendOfMonth(new Date(2022, 1, 1))
  * //=> [
  * //   Sat Feb 05 2022 00:00:00,
  * //   Sun Feb 06 2022 00:00:00,
@@ -9090,7 +9331,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function eachWeekendOfMonth(dirtyDate) {
   (0, _index4.default)(1, arguments);
   var startDate = (0, _index2.default)(dirtyDate);
-  if (isNaN(startDate)) throw new RangeError('The passed date is invalid');
+  if (isNaN(startDate.getTime())) throw new RangeError('The passed date is invalid');
   var endDate = (0, _index3.default)(dirtyDate);
   return (0, _index.default)({
     start: startDate,
@@ -9103,7 +9344,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7961:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9113,13 +9354,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = eachWeekendOfYear;
 
-var _index = _interopRequireDefault(__webpack_require__(1944));
+var _index = _interopRequireDefault(__nccwpck_require__(1944));
 
-var _index2 = _interopRequireDefault(__webpack_require__(8225));
+var _index2 = _interopRequireDefault(__nccwpck_require__(8225));
 
-var _index3 = _interopRequireDefault(__webpack_require__(7079));
+var _index3 = _interopRequireDefault(__nccwpck_require__(7079));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9163,7 +9404,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6525:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9173,9 +9414,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = eachYearOfInterval;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9187,7 +9428,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @description
  * Return the array of yearly timestamps within the specified time interval.
  *
- * @param {Interval} interval - the interval. See [Interval]{@link docs/types/Interval}
+ * @param {Interval} interval - the interval. See [Interval]{@link https://date-fns.org/docs/Interval}
  * @returns {Date[]} the array with starts of yearly timestamps from the month of the interval start to the month of the interval end
  * @throws {TypeError} 1 argument required
  * @throws {RangeError} The start of an interval cannot be after its end
@@ -9235,7 +9476,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8569:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9245,9 +9486,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfDay;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9270,7 +9511,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The end of a day for 2 September 2014 11:55:00:
- * var result = endOfDay(new Date(2014, 8, 2, 11, 55, 0))
+ * const result = endOfDay(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Tue Sep 02 2014 23:59:59.999
  */
 function endOfDay(dirtyDate) {
@@ -9285,7 +9526,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1517:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9295,9 +9536,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfDecade;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9322,7 +9563,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The end of a decade for 12 May 1984 00:00:00:
- * var result = endOfDecade(new Date(1984, 4, 12, 00, 00, 00))
+ * const result = endOfDecade(new Date(1984, 4, 12, 00, 00, 00))
  * //=> Dec 31 1989 23:59:59.999
  */
 function endOfDecade(dirtyDate) {
@@ -9340,7 +9581,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1894:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9350,9 +9591,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfHour;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9375,7 +9616,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The end of an hour for 2 September 2014 11:55:00:
- * var result = endOfHour(new Date(2014, 8, 2, 11, 55))
+ * const result = endOfHour(new Date(2014, 8, 2, 11, 55))
  * //=> Tue Sep 02 2014 11:59:59.999
  */
 function endOfHour(dirtyDate) {
@@ -9390,7 +9631,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1920:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9400,9 +9641,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfISOWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(5218));
+var _index = _interopRequireDefault(__nccwpck_require__(5218));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9442,7 +9683,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9731:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9452,11 +9693,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfISOWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6991));
+var _index = _interopRequireDefault(__nccwpck_require__(6991));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6307));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6307));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9487,7 +9728,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The end of an ISO week-numbering year for 2 July 2005:
- * var result = endOfISOWeekYear(new Date(2005, 6, 2))
+ * const result = endOfISOWeekYear(new Date(2005, 6, 2))
  * //=> Sun Jan 01 2006 23:59:59.999
  */
 function endOfISOWeekYear(dirtyDate) {
@@ -9506,7 +9747,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1389:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9516,9 +9757,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfMinute;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9541,7 +9782,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The end of a minute for 1 December 2014 22:15:45.400:
- * var result = endOfMinute(new Date(2014, 11, 1, 22, 15, 45, 400))
+ * const result = endOfMinute(new Date(2014, 11, 1, 22, 15, 45, 400))
  * //=> Mon Dec 01 2014 22:15:59.999
  */
 function endOfMinute(dirtyDate) {
@@ -9556,7 +9797,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2621:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9566,9 +9807,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9591,7 +9832,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The end of a month for 2 September 2014 11:55:00:
- * var result = endOfMonth(new Date(2014, 8, 2, 11, 55, 0))
+ * const result = endOfMonth(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Tue Sep 30 2014 23:59:59.999
  */
 function endOfMonth(dirtyDate) {
@@ -9608,7 +9849,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5596:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9618,9 +9859,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfQuarter;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9643,7 +9884,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The end of a quarter for 2 September 2014 11:55:00:
- * var result = endOfQuarter(new Date(2014, 8, 2, 11, 55, 0))
+ * const result = endOfQuarter(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Tue Sep 30 2014 23:59:59.999
  */
 function endOfQuarter(dirtyDate) {
@@ -9661,7 +9902,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6121:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9671,9 +9912,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfSecond;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9696,7 +9937,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The end of a second for 1 December 2014 22:15:45.400:
- * var result = endOfSecond(new Date(2014, 11, 1, 22, 15, 45, 400))
+ * const result = endOfSecond(new Date(2014, 11, 1, 22, 15, 45, 400))
  * //=> Mon Dec 01 2014 22:15:45.999
  */
 function endOfSecond(dirtyDate) {
@@ -9711,7 +9952,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5700:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9721,7 +9962,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfToday;
 
-var _index = _interopRequireDefault(__webpack_require__(8569));
+var _index = _interopRequireDefault(__nccwpck_require__(8569));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9787,7 +10028,7 @@ exports.default = endOfTomorrow;
  *
  * @example
  * // If today is 6 October 2014:
- * var result = endOfTomorrow()
+ * const result = endOfTomorrow()
  * //=> Tue Oct 7 2014 23:59:59.999
  */
 function endOfTomorrow() {
@@ -9806,7 +10047,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5218:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9816,11 +10057,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(1985));
+var _index2 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9847,12 +10088,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The end of a week for 2 September 2014 11:55:00:
- * var result = endOfWeek(new Date(2014, 8, 2, 11, 55, 0))
+ * const result = endOfWeek(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Sat Sep 06 2014 23:59:59.999
  *
  * @example
  * // If the week starts on Monday, the end of the week for 2 September 2014 11:55:00:
- * var result = endOfWeek(new Date(2014, 8, 2, 11, 55, 0), { weekStartsOn: 1 })
+ * const result = endOfWeek(new Date(2014, 8, 2, 11, 55, 0), { weekStartsOn: 1 })
  * //=> Sun Sep 07 2014 23:59:59.999
  */
 function endOfWeek(dirtyDate, dirtyOptions) {
@@ -9880,7 +10121,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7079:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9890,9 +10131,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = endOfYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -9962,7 +10203,7 @@ exports.default = endOfYesterday;
  *
  * @example
  * // If today is 6 October 2014:
- * var result = endOfYesterday()
+ * const result = endOfYesterday()
  * //=> Sun Oct 5 2014 23:59:59.999
  */
 function endOfYesterday() {
@@ -9981,7 +10222,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2168:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -9991,25 +10232,25 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = format;
 
-var _index = _interopRequireDefault(__webpack_require__(9920));
+var _index = _interopRequireDefault(__nccwpck_require__(9920));
 
-var _index2 = _interopRequireDefault(__webpack_require__(1773));
+var _index2 = _interopRequireDefault(__nccwpck_require__(1773));
 
-var _index3 = _interopRequireDefault(__webpack_require__(7923));
+var _index3 = _interopRequireDefault(__nccwpck_require__(7923));
 
-var _index4 = _interopRequireDefault(__webpack_require__(6477));
+var _index4 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index5 = _interopRequireDefault(__webpack_require__(9257));
+var _index5 = _interopRequireDefault(__nccwpck_require__(9257));
 
-var _index6 = _interopRequireDefault(__webpack_require__(8387));
+var _index6 = _interopRequireDefault(__nccwpck_require__(8387));
 
-var _index7 = _interopRequireDefault(__webpack_require__(7032));
+var _index7 = _interopRequireDefault(__nccwpck_require__(7032));
 
-var _index8 = __webpack_require__(2509);
+var _index8 = __nccwpck_require__(2509);
 
-var _index9 = _interopRequireDefault(__webpack_require__(1985));
+var _index9 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index10 = _interopRequireDefault(__webpack_require__(2063));
+var _index10 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10141,10 +10382,12 @@ var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
  * |                                 | cccc    | Monday, Tuesday, ..., Sunday      | 2     |
  * |                                 | ccccc   | M, T, W, T, F, S, S               |       |
  * |                                 | cccccc  | Mo, Tu, We, Th, Fr, Su, Sa        |       |
- * | AM, PM                          | a..aaa  | AM, PM                            |       |
+ * | AM, PM                          | a..aa   | AM, PM                            |       |
+ * |                                 | aaa     | am, pm                            |       |
  * |                                 | aaaa    | a.m., p.m.                        | 2     |
  * |                                 | aaaaa   | a, p                              |       |
- * | AM, PM, noon, midnight          | b..bbb  | AM, PM, noon, midnight            |       |
+ * | AM, PM, noon, midnight          | b..bb   | AM, PM, noon, midnight            |       |
+ * |                                 | bbb     | am, pm, noon, midnight            |       |
  * |                                 | bbbb    | a.m., p.m., noon, midnight        | 2     |
  * |                                 | bbbbb   | a, p, n, mi                       |       |
  * | Flexible day period             | B..BBB  | at night, in the morning, ...     |       |
@@ -10170,7 +10413,7 @@ var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
  * |                                 | ss      | 00, 01, ..., 59                   |       |
  * | Fraction of second              | S       | 0, 1, ..., 9                      |       |
  * |                                 | SS      | 00, 01, ..., 99                   |       |
- * |                                 | SSS     | 000, 0001, ..., 999               |       |
+ * |                                 | SSS     | 000, 001, ..., 999                |       |
  * |                                 | SSSS    | ...                               | 3     |
  * | Timezone (ISO-8601 w/ Z)        | X       | -08, +0530, Z                     |       |
  * |                                 | XX      | -0800, +0530, Z                   |       |
@@ -10190,18 +10433,18 @@ var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
  * |                                 | tt      | ...                               | 3,7   |
  * | Milliseconds timestamp          | T       | 512969520900                      | 7     |
  * |                                 | TT      | ...                               | 3,7   |
- * | Long localized date             | P       | 05/29/1453                        | 7     |
- * |                                 | PP      | May 29, 1453                      | 7     |
- * |                                 | PPP     | May 29th, 1453                    | 7     |
- * |                                 | PPPP    | Sunday, May 29th, 1453            | 2,7   |
+ * | Long localized date             | P       | 04/29/1453                        | 7     |
+ * |                                 | PP      | Apr 29, 1453                      | 7     |
+ * |                                 | PPP     | April 29th, 1453                  | 7     |
+ * |                                 | PPPP    | Friday, April 29th, 1453          | 2,7   |
  * | Long localized time             | p       | 12:00 AM                          | 7     |
  * |                                 | pp      | 12:00:00 AM                       | 7     |
  * |                                 | ppp     | 12:00:00 AM GMT+2                 | 7     |
  * |                                 | pppp    | 12:00:00 AM GMT+02:00             | 2,7   |
- * | Combination of date and time    | Pp      | 05/29/1453, 12:00 AM              | 7     |
- * |                                 | PPpp    | May 29, 1453, 12:00:00 AM         | 7     |
- * |                                 | PPPppp  | May 29th, 1453 at ...             | 7     |
- * |                                 | PPPPpppp| Sunday, May 29th, 1453 at ...     | 2,7   |
+ * | Combination of date and time    | Pp      | 04/29/1453, 12:00 AM              | 7     |
+ * |                                 | PPpp    | Apr 29, 1453, 12:00:00 AM         | 7     |
+ * |                                 | PPPppp  | April 29th, 1453 at ...           | 7     |
+ * |                                 | PPPPpppp| Friday, April 29th, 1453 at ...   | 2,7   |
  * Notes:
  * 1. "Formatting" units (e.g. formatting quarter) in the default en-US locale
  *    are the same as "stand-alone" units, but are different in some languages.
@@ -10440,7 +10683,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8149:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -10450,21 +10693,21 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = formatDistance;
 
-var _index = _interopRequireDefault(__webpack_require__(9818));
+var _index = _interopRequireDefault(__nccwpck_require__(9818));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2713));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2713));
 
-var _index3 = _interopRequireDefault(__webpack_require__(9448));
+var _index3 = _interopRequireDefault(__nccwpck_require__(9448));
 
-var _index4 = _interopRequireDefault(__webpack_require__(1773));
+var _index4 = _interopRequireDefault(__nccwpck_require__(1773));
 
-var _index5 = _interopRequireDefault(__webpack_require__(6477));
+var _index5 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index6 = _interopRequireDefault(__webpack_require__(7934));
+var _index6 = _interopRequireDefault(__nccwpck_require__(7934));
 
-var _index7 = _interopRequireDefault(__webpack_require__(7032));
+var _index7 = _interopRequireDefault(__nccwpck_require__(7032));
 
-var _index8 = _interopRequireDefault(__webpack_require__(2063));
+var _index8 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -10679,7 +10922,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7128:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -10689,25 +10932,24 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = formatDistanceStrict;
 
-var _index = _interopRequireDefault(__webpack_require__(7032));
+var _index = _interopRequireDefault(__nccwpck_require__(7032));
 
-var _index2 = _interopRequireDefault(__webpack_require__(9818));
+var _index2 = _interopRequireDefault(__nccwpck_require__(9818));
 
-var _index3 = _interopRequireDefault(__webpack_require__(6477));
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index4 = _interopRequireDefault(__webpack_require__(9448));
+var _index4 = _interopRequireDefault(__nccwpck_require__(7934));
 
-var _index5 = _interopRequireDefault(__webpack_require__(7934));
+var _index5 = _interopRequireDefault(__nccwpck_require__(1773));
 
-var _index6 = _interopRequireDefault(__webpack_require__(1773));
-
-var _index7 = _interopRequireDefault(__webpack_require__(2063));
+var _index6 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var MINUTES_IN_DAY = 1440;
-var MINUTES_IN_MONTH = 43200;
-var MINUTES_IN_YEAR = 525600;
+var MILLISECONDS_IN_MINUTE = 1000 * 60;
+var MINUTES_IN_DAY = 60 * 24;
+var MINUTES_IN_MONTH = MINUTES_IN_DAY * 30;
+var MINUTES_IN_YEAR = MINUTES_IN_DAY * 365;
 /**
  * @name formatDistanceStrict
  * @category Common Helpers
@@ -10860,9 +11102,9 @@ var MINUTES_IN_YEAR = 525600;
  */
 
 function formatDistanceStrict(dirtyDate, dirtyBaseDate, dirtyOptions) {
-  (0, _index7.default)(2, arguments);
+  (0, _index6.default)(2, arguments);
   var options = dirtyOptions || {};
-  var locale = options.locale || _index6.default;
+  var locale = options.locale || _index5.default;
 
   if (!locale.formatDistance) {
     throw new RangeError('locale must contain localize.formatDistance property');
@@ -10874,7 +11116,7 @@ function formatDistanceStrict(dirtyDate, dirtyBaseDate, dirtyOptions) {
     throw new RangeError('Invalid time value');
   }
 
-  var localizeOptions = (0, _index5.default)(options);
+  var localizeOptions = (0, _index4.default)(options);
   localizeOptions.addSuffix = Boolean(options.addSuffix);
   localizeOptions.comparison = comparison;
   var dateLeft;
@@ -10901,9 +11143,12 @@ function formatDistanceStrict(dirtyDate, dirtyBaseDate, dirtyOptions) {
     throw new RangeError("roundingMethod must be 'floor', 'ceil' or 'round'");
   }
 
-  var seconds = (0, _index4.default)(dateRight, dateLeft);
-  var offsetInSeconds = ((0, _index.default)(dateRight) - (0, _index.default)(dateLeft)) / 1000;
-  var minutes = roundingMethodFn((seconds - offsetInSeconds) / 60);
+  var milliseconds = dateRight.getTime() - dateLeft.getTime();
+  var minutes = milliseconds / MILLISECONDS_IN_MINUTE;
+  var timezoneOffset = (0, _index.default)(dateRight) - (0, _index.default)(dateLeft); // Use DST-normalized difference in minutes for years, months and days;
+  // use regular difference in minutes for hours, minutes and seconds.
+
+  var dstNormalizedMinutes = (milliseconds - timezoneOffset) / MILLISECONDS_IN_MINUTE;
   var unit;
 
   if (options.unit == null) {
@@ -10913,9 +11158,9 @@ function formatDistanceStrict(dirtyDate, dirtyBaseDate, dirtyOptions) {
       unit = 'minute';
     } else if (minutes < MINUTES_IN_DAY) {
       unit = 'hour';
-    } else if (minutes < MINUTES_IN_MONTH) {
+    } else if (dstNormalizedMinutes < MINUTES_IN_MONTH) {
       unit = 'day';
-    } else if (minutes < MINUTES_IN_YEAR) {
+    } else if (dstNormalizedMinutes < MINUTES_IN_YEAR) {
       unit = 'month';
     } else {
       unit = 'year';
@@ -10926,20 +11171,22 @@ function formatDistanceStrict(dirtyDate, dirtyBaseDate, dirtyOptions) {
 
 
   if (unit === 'second') {
+    var seconds = roundingMethodFn(milliseconds / 1000);
     return locale.formatDistance('xSeconds', seconds, localizeOptions); // 1 up to 60 mins
   } else if (unit === 'minute') {
-    return locale.formatDistance('xMinutes', minutes, localizeOptions); // 1 up to 24 hours
+    var roundedMinutes = roundingMethodFn(minutes);
+    return locale.formatDistance('xMinutes', roundedMinutes, localizeOptions); // 1 up to 24 hours
   } else if (unit === 'hour') {
     var hours = roundingMethodFn(minutes / 60);
     return locale.formatDistance('xHours', hours, localizeOptions); // 1 up to 30 days
   } else if (unit === 'day') {
-    var days = roundingMethodFn(minutes / MINUTES_IN_DAY);
+    var days = roundingMethodFn(dstNormalizedMinutes / MINUTES_IN_DAY);
     return locale.formatDistance('xDays', days, localizeOptions); // 1 up to 12 months
   } else if (unit === 'month') {
-    var months = roundingMethodFn(minutes / MINUTES_IN_MONTH);
-    return locale.formatDistance('xMonths', months, localizeOptions); // 1 year up to max Date
+    var months = roundingMethodFn(dstNormalizedMinutes / MINUTES_IN_MONTH);
+    return months === 12 ? locale.formatDistance('xYears', 1, localizeOptions) : locale.formatDistance('xMonths', months, localizeOptions); // 1 year up to max Date
   } else if (unit === 'year') {
-    var years = roundingMethodFn(minutes / MINUTES_IN_YEAR);
+    var years = roundingMethodFn(dstNormalizedMinutes / MINUTES_IN_YEAR);
     return locale.formatDistance('xYears', years, localizeOptions);
   }
 
@@ -10951,7 +11198,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1163:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -10961,9 +11208,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = formatDistanceToNow;
 
-var _index = _interopRequireDefault(__webpack_require__(8149));
+var _index = _interopRequireDefault(__nccwpck_require__(8149));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11082,7 +11329,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4741:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -11092,9 +11339,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = formatDistanceToNowStrict;
 
-var _index = _interopRequireDefault(__webpack_require__(7128));
+var _index = _interopRequireDefault(__nccwpck_require__(7128));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11182,7 +11429,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8917:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -11192,7 +11439,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = formatDuration;
 
-var _index = _interopRequireDefault(__webpack_require__(1773));
+var _index = _interopRequireDefault(__nccwpck_require__(1773));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11252,7 +11499,7 @@ var defaultFormat = ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'se
  * // Customize the zeros presence
  * formatDuration({ years: 0, months: 9 })
  * //=> '9 months'
- * formatDuration({ years: 0, months: 9 }, null, { zero: true })
+ * formatDuration({ years: 0, months: 9 }, { zero: true })
  * //=> '0 years 9 months'
  *
  * @example
@@ -11287,7 +11534,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3385:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -11297,11 +11544,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = formatISO;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(9920));
+var _index2 = _interopRequireDefault(__nccwpck_require__(9920));
 
-var _index3 = _interopRequireDefault(__webpack_require__(8794));
+var _index3 = _interopRequireDefault(__nccwpck_require__(8794));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11414,7 +11661,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5296:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -11424,11 +11671,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = formatISO9075;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(9920));
+var _index2 = _interopRequireDefault(__nccwpck_require__(9920));
 
-var _index3 = _interopRequireDefault(__webpack_require__(8794));
+var _index3 = _interopRequireDefault(__nccwpck_require__(8794));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11524,7 +11771,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2448:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -11534,7 +11781,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = formatISODuration;
 
-var _index = _interopRequireDefault(__webpack_require__(2063));
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11587,7 +11834,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4182:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -11597,23 +11844,23 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = formatRFC3339;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(9920));
+var _index2 = _interopRequireDefault(__nccwpck_require__(9920));
 
-var _index3 = _interopRequireDefault(__webpack_require__(8794));
+var _index3 = _interopRequireDefault(__nccwpck_require__(8794));
 
-var _index4 = _interopRequireDefault(__webpack_require__(1985));
+var _index4 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @name formatRFC3339
  * @category Common Helpers
- * @summary Format the date according to the ISO 3339 standard (https://tools.ietf.org/html/rfc3339#section-5.6).
+ * @summary Format the date according to the RFC 3339 standard (https://tools.ietf.org/html/rfc3339#section-5.6).
  *
  * @description
- * Return the formatted date string in ISO 3339 format. Options may be passed to control the parts and notations of the date.
+ * Return the formatted date string in RFC 3339 format. Options may be passed to control the parts and notations of the date.
  *
  * @param {Date|Number} date - the original date
  * @param {Object} [options] - an object with options.
@@ -11624,17 +11871,17 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @throws {RangeError} `options.fractionDigits` must be between 0 and 3
  *
  * @example
- * // Represent 18 September 2019 in ISO 3339 format:
+ * // Represent 18 September 2019 in RFC 3339 format:
  * const result = formatRFC3339(new Date(2019, 8, 18, 19, 0, 52))
  * //=> '2019-09-18T19:00:52Z'
  *
  * @example
- * // Represent 18 September 2019 in ISO 3339 format, 2 digits of second fraction:
+ * // Represent 18 September 2019 in RFC 3339 format, 2 digits of second fraction:
  * const result = formatRFC3339(new Date(2019, 8, 18, 19, 0, 52, 234), { fractionDigits: 2 })
  * //=> '2019-09-18T19:00:52.23Z'
  *
  * @example
- * // Represent 18 September 2019 in ISO 3339 format, 3 digits of second fraction
+ * // Represent 18 September 2019 in RFC 3339 format, 3 digits of second fraction
  * const result = formatRFC3339(new Date(2019, 8, 18, 19, 0, 52, 234), { fractionDigits: 3 })
  * //=> '2019-09-18T19:00:52.234Z'
  */
@@ -11692,7 +11939,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 402:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -11702,11 +11949,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = formatRFC7231;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(9920));
+var _index2 = _interopRequireDefault(__nccwpck_require__(9920));
 
-var _index3 = _interopRequireDefault(__webpack_require__(8794));
+var _index3 = _interopRequireDefault(__nccwpck_require__(8794));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11759,7 +12006,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 675:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -11769,19 +12016,19 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = formatRelative;
 
-var _index = _interopRequireDefault(__webpack_require__(3086));
+var _index = _interopRequireDefault(__nccwpck_require__(3086));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2168));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2168));
 
-var _index3 = _interopRequireDefault(__webpack_require__(1773));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1773));
 
-var _index4 = _interopRequireDefault(__webpack_require__(7923));
+var _index4 = _interopRequireDefault(__nccwpck_require__(7923));
 
-var _index5 = _interopRequireDefault(__webpack_require__(6477));
+var _index5 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index6 = _interopRequireDefault(__webpack_require__(7032));
+var _index6 = _interopRequireDefault(__nccwpck_require__(7032));
 
-var _index7 = _interopRequireDefault(__webpack_require__(2063));
+var _index7 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11874,7 +12121,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4897:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -11884,11 +12131,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = fromUnixTime;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(1985));
+var _index2 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11924,7 +12171,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7626:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -11934,9 +12181,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getDate;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11958,7 +12205,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Which day of the month is 29 February 2012?
- * var result = getDate(new Date(2012, 1, 29))
+ * const result = getDate(new Date(2012, 1, 29))
  * //=> 29
  */
 function getDate(dirtyDate) {
@@ -11973,7 +12220,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9361:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -11983,9 +12230,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getDay;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12007,7 +12254,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Which day of the week is 29 February 2012?
- * var result = getDay(new Date(2012, 1, 29))
+ * const result = getDay(new Date(2012, 1, 29))
  * //=> 3
  */
 function getDay(dirtyDate) {
@@ -12022,7 +12269,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7468:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12032,13 +12279,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getDayOfYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(8225));
+var _index2 = _interopRequireDefault(__nccwpck_require__(8225));
 
-var _index3 = _interopRequireDefault(__webpack_require__(3086));
+var _index3 = _interopRequireDefault(__nccwpck_require__(3086));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12060,7 +12307,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Which day of the year is 2 July 2014?
- * var result = getDayOfYear(new Date(2014, 6, 2))
+ * const result = getDayOfYear(new Date(2014, 6, 2))
  * //=> 183
  */
 function getDayOfYear(dirtyDate) {
@@ -12076,7 +12323,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7573:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12086,9 +12333,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getDaysInMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12110,7 +12357,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // How many days are in February 2000?
- * var result = getDaysInMonth(new Date(2000, 1))
+ * const result = getDaysInMonth(new Date(2000, 1))
  * //=> 29
  */
 function getDaysInMonth(dirtyDate) {
@@ -12129,7 +12376,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2784:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12139,11 +12386,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getDaysInYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(74));
+var _index2 = _interopRequireDefault(__nccwpck_require__(74));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12165,14 +12412,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // How many days are in 2012?
- * var result = getDaysInYear(new Date(2012, 0, 1))
+ * const result = getDaysInYear(new Date(2012, 0, 1))
  * //=> 366
  */
 function getDaysInYear(dirtyDate) {
   (0, _index3.default)(1, arguments);
   var date = (0, _index.default)(dirtyDate);
 
-  if (isNaN(date)) {
+  if (String(new Date(date)) === 'Invalid Date') {
     return NaN;
   }
 
@@ -12184,7 +12431,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9322:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12194,9 +12441,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getDecade;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12218,7 +12465,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Which decade belongs 27 November 1942?
- * var result = getDecade(new Date(1942, 10, 27))
+ * const result = getDecade(new Date(1942, 10, 27))
  * //=> 1940
  */
 function getDecade(dirtyDate) {
@@ -12234,7 +12481,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7941:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12244,9 +12491,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getHours;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12268,7 +12515,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Get the hours of 29 February 2012 11:45:00:
- * var result = getHours(new Date(2012, 1, 29, 11, 45))
+ * const result = getHours(new Date(2012, 1, 29, 11, 45))
  * //=> 11
  */
 function getHours(dirtyDate) {
@@ -12283,7 +12530,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8313:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12293,9 +12540,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getISODay;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12320,7 +12567,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Which day of the ISO week is 26 February 2012?
- * var result = getISODay(new Date(2012, 1, 26))
+ * const result = getISODay(new Date(2012, 1, 26))
  * //=> 7
  */
 function getISODay(dirtyDate) {
@@ -12340,7 +12587,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9894:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12350,13 +12597,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getISOWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6307));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6307));
 
-var _index3 = _interopRequireDefault(__webpack_require__(776));
+var _index3 = _interopRequireDefault(__nccwpck_require__(776));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12381,7 +12628,7 @@ var MILLISECONDS_IN_WEEK = 604800000;
  *
  * @example
  * // Which week of the ISO-week numbering year is 2 January 2005?
- * var result = getISOWeek(new Date(2005, 0, 2))
+ * const result = getISOWeek(new Date(2005, 0, 2))
  * //=> 53
  */
 
@@ -12400,7 +12647,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6991:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12410,11 +12657,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getISOWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6307));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6307));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12444,7 +12691,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Which ISO-week numbering year is 2 January 2005?
- * var result = getISOWeekYear(new Date(2005, 0, 2))
+ * const result = getISOWeekYear(new Date(2005, 0, 2))
  * //=> 2004
  */
 function getISOWeekYear(dirtyDate) {
@@ -12474,7 +12721,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3283:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12484,11 +12731,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getISOWeeksInYear;
 
-var _index = _interopRequireDefault(__webpack_require__(776));
+var _index = _interopRequireDefault(__nccwpck_require__(776));
 
-var _index2 = _interopRequireDefault(__webpack_require__(7195));
+var _index2 = _interopRequireDefault(__nccwpck_require__(7195));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12513,7 +12760,7 @@ var MILLISECONDS_IN_WEEK = 604800000;
  *
  * @example
  * // How many weeks are in ISO week-numbering year 2015?
- * var result = getISOWeeksInYear(new Date(2015, 1, 11))
+ * const result = getISOWeeksInYear(new Date(2015, 1, 11))
  * //=> 53
  */
 
@@ -12533,7 +12780,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7560:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12543,9 +12790,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getMilliseconds;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12567,7 +12814,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Get the milliseconds of 29 February 2012 11:45:05.123:
- * var result = getMilliseconds(new Date(2012, 1, 29, 11, 45, 5, 123))
+ * const result = getMilliseconds(new Date(2012, 1, 29, 11, 45, 5, 123))
  * //=> 123
  */
 function getMilliseconds(dirtyDate) {
@@ -12582,7 +12829,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7030:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12592,9 +12839,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getMinutes;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12616,7 +12863,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Get the minutes of 29 February 2012 11:45:05:
- * var result = getMinutes(new Date(2012, 1, 29, 11, 45, 5))
+ * const result = getMinutes(new Date(2012, 1, 29, 11, 45, 5))
  * //=> 45
  */
 function getMinutes(dirtyDate) {
@@ -12631,7 +12878,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2194:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12641,9 +12888,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12665,7 +12912,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Which month is 29 February 2012?
- * var result = getMonth(new Date(2012, 1, 29))
+ * const result = getMonth(new Date(2012, 1, 29))
  * //=> 1
  */
 function getMonth(dirtyDate) {
@@ -12680,7 +12927,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7647:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12690,9 +12937,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getOverlappingDaysInIntervals;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12793,7 +13040,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4523:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12803,9 +13050,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getQuarter;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12827,7 +13074,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Which quarter is 2 July 2014?
- * var result = getQuarter(new Date(2014, 6, 2))
+ * const result = getQuarter(new Date(2014, 6, 2))
  * //=> 3
  */
 function getQuarter(dirtyDate) {
@@ -12842,7 +13089,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8755:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12852,9 +13099,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getSeconds;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12876,7 +13123,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Get the seconds of 29 February 2012 11:45:05.123:
- * var result = getSeconds(new Date(2012, 1, 29, 11, 45, 5, 123))
+ * const result = getSeconds(new Date(2012, 1, 29, 11, 45, 5, 123))
  * //=> 5
  */
 function getSeconds(dirtyDate) {
@@ -12891,7 +13138,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5052:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12901,9 +13148,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getTime;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12925,7 +13172,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Get the timestamp of 29 February 2012 11:45:05.123:
- * var result = getTime(new Date(2012, 1, 29, 11, 45, 5, 123))
+ * const result = getTime(new Date(2012, 1, 29, 11, 45, 5, 123))
  * //=> 1330515905123
  */
 function getTime(dirtyDate) {
@@ -12940,7 +13187,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6476:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12950,9 +13197,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getUnixTime;
 
-var _index = _interopRequireDefault(__webpack_require__(5052));
+var _index = _interopRequireDefault(__nccwpck_require__(5052));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -12974,7 +13221,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Get the timestamp of 29 February 2012 11:45:05 CET:
- * var result = getUnixTime(new Date(2012, 1, 29, 11, 45, 5))
+ * const result = getUnixTime(new Date(2012, 1, 29, 11, 45, 5))
  * //=> 1330512305
  */
 function getUnixTime(dirtyDate) {
@@ -12987,7 +13234,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 81:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -12997,13 +13244,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(9813));
+var _index = _interopRequireDefault(__nccwpck_require__(9813));
 
-var _index2 = _interopRequireDefault(__webpack_require__(8014));
+var _index2 = _interopRequireDefault(__nccwpck_require__(8014));
 
-var _index3 = _interopRequireDefault(__webpack_require__(6477));
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13066,7 +13313,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9229:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -13076,15 +13323,15 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getWeekOfMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(7626));
+var _index = _interopRequireDefault(__nccwpck_require__(7626));
 
-var _index2 = _interopRequireDefault(__webpack_require__(9361));
+var _index2 = _interopRequireDefault(__nccwpck_require__(9361));
 
-var _index3 = _interopRequireDefault(__webpack_require__(7182));
+var _index3 = _interopRequireDefault(__nccwpck_require__(7182));
 
-var _index4 = _interopRequireDefault(__webpack_require__(1985));
+var _index4 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index5 = _interopRequireDefault(__webpack_require__(2063));
+var _index5 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13155,7 +13402,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3494:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -13165,13 +13412,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(9813));
+var _index = _interopRequireDefault(__nccwpck_require__(9813));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(1985));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13205,24 +13452,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Which week numbering year is 26 December 2004 with the default settings?
- * var result = getWeekYear(new Date(2004, 11, 26))
+ * const result = getWeekYear(new Date(2004, 11, 26))
  * //=> 2005
  *
  * @example
  * // Which week numbering year is 26 December 2004 if week starts on Saturday?
- * var result = getWeekYear(new Date(2004, 11, 26), { weekStartsOn: 6 })
+ * const result = getWeekYear(new Date(2004, 11, 26), { weekStartsOn: 6 })
  * //=> 2004
  *
  * @example
  * // Which week numbering year is 26 December 2004 if the first week contains 4 January?
- * var result = getWeekYear(new Date(2004, 11, 26), { firstWeekContainsDate: 4 })
+ * const result = getWeekYear(new Date(2004, 11, 26), { firstWeekContainsDate: 4 })
  * //=> 2004
  */
-function getWeekYear(dirtyDate, dirtyOptions) {
+function getWeekYear(dirtyDate) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   (0, _index4.default)(1, arguments);
   var date = (0, _index2.default)(dirtyDate);
   var year = date.getFullYear();
-  var options = dirtyOptions || {};
   var locale = options.locale;
   var localeFirstWeekContainsDate = locale && locale.options && locale.options.firstWeekContainsDate;
   var defaultFirstWeekContainsDate = localeFirstWeekContainsDate == null ? 1 : (0, _index3.default)(localeFirstWeekContainsDate);
@@ -13235,11 +13482,11 @@ function getWeekYear(dirtyDate, dirtyOptions) {
   var firstWeekOfNextYear = new Date(0);
   firstWeekOfNextYear.setFullYear(year + 1, 0, firstWeekContainsDate);
   firstWeekOfNextYear.setHours(0, 0, 0, 0);
-  var startOfNextYear = (0, _index.default)(firstWeekOfNextYear, dirtyOptions);
+  var startOfNextYear = (0, _index.default)(firstWeekOfNextYear, options);
   var firstWeekOfThisYear = new Date(0);
   firstWeekOfThisYear.setFullYear(year, 0, firstWeekContainsDate);
   firstWeekOfThisYear.setHours(0, 0, 0, 0);
-  var startOfThisYear = (0, _index.default)(firstWeekOfThisYear, dirtyOptions);
+  var startOfThisYear = (0, _index.default)(firstWeekOfThisYear, options);
 
   if (date.getTime() >= startOfNextYear.getTime()) {
     return year + 1;
@@ -13255,7 +13502,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9482:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -13265,13 +13512,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getWeeksInMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(8620));
+var _index = _interopRequireDefault(__nccwpck_require__(8620));
 
-var _index2 = _interopRequireDefault(__webpack_require__(3346));
+var _index2 = _interopRequireDefault(__nccwpck_require__(3346));
 
-var _index3 = _interopRequireDefault(__webpack_require__(7182));
+var _index3 = _interopRequireDefault(__nccwpck_require__(7182));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13316,7 +13563,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5714:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -13326,9 +13573,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13350,7 +13597,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Which year is 2 July 2014?
- * var result = getYear(new Date(2014, 6, 2))
+ * const result = getYear(new Date(2014, 6, 2))
  * //=> 2014
  */
 function getYear(dirtyDate) {
@@ -13365,7 +13612,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3314:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -13411,6 +13658,7 @@ var _exportNames = {
   differenceInYears: true,
   eachDayOfInterval: true,
   eachHourOfInterval: true,
+  eachMinuteOfInterval: true,
   eachMonthOfInterval: true,
   eachQuarterOfInterval: true,
   eachWeekOfInterval: true,
@@ -13470,6 +13718,7 @@ var _exportNames = {
   getWeeksInMonth: true,
   getYear: true,
   intervalToDuration: true,
+  intlFormat: true,
   isAfter: true,
   isBefore: true,
   isDate: true,
@@ -13521,7 +13770,16 @@ var _exportNames = {
   lastDayOfYear: true,
   lightFormat: true,
   max: true,
+  milliseconds: true,
   min: true,
+  nextDay: true,
+  nextFriday: true,
+  nextMonday: true,
+  nextSaturday: true,
+  nextSunday: true,
+  nextThursday: true,
+  nextTuesday: true,
+  nextWednesday: true,
   parse: true,
   parseISO: true,
   parseJSON: true,
@@ -13793,1362 +14051,1450 @@ Object.defineProperty(exports, "eachHourOfInterval", ({
     return _index37.default;
   }
 }));
-Object.defineProperty(exports, "eachMonthOfInterval", ({
+Object.defineProperty(exports, "eachMinuteOfInterval", ({
   enumerable: true,
   get: function () {
     return _index38.default;
   }
 }));
-Object.defineProperty(exports, "eachQuarterOfInterval", ({
+Object.defineProperty(exports, "eachMonthOfInterval", ({
   enumerable: true,
   get: function () {
     return _index39.default;
   }
 }));
-Object.defineProperty(exports, "eachWeekOfInterval", ({
+Object.defineProperty(exports, "eachQuarterOfInterval", ({
   enumerable: true,
   get: function () {
     return _index40.default;
   }
 }));
-Object.defineProperty(exports, "eachWeekendOfInterval", ({
+Object.defineProperty(exports, "eachWeekOfInterval", ({
   enumerable: true,
   get: function () {
     return _index41.default;
   }
 }));
-Object.defineProperty(exports, "eachWeekendOfMonth", ({
+Object.defineProperty(exports, "eachWeekendOfInterval", ({
   enumerable: true,
   get: function () {
     return _index42.default;
   }
 }));
-Object.defineProperty(exports, "eachWeekendOfYear", ({
+Object.defineProperty(exports, "eachWeekendOfMonth", ({
   enumerable: true,
   get: function () {
     return _index43.default;
   }
 }));
-Object.defineProperty(exports, "eachYearOfInterval", ({
+Object.defineProperty(exports, "eachWeekendOfYear", ({
   enumerable: true,
   get: function () {
     return _index44.default;
   }
 }));
-Object.defineProperty(exports, "endOfDay", ({
+Object.defineProperty(exports, "eachYearOfInterval", ({
   enumerable: true,
   get: function () {
     return _index45.default;
   }
 }));
-Object.defineProperty(exports, "endOfDecade", ({
+Object.defineProperty(exports, "endOfDay", ({
   enumerable: true,
   get: function () {
     return _index46.default;
   }
 }));
-Object.defineProperty(exports, "endOfHour", ({
+Object.defineProperty(exports, "endOfDecade", ({
   enumerable: true,
   get: function () {
     return _index47.default;
   }
 }));
-Object.defineProperty(exports, "endOfISOWeek", ({
+Object.defineProperty(exports, "endOfHour", ({
   enumerable: true,
   get: function () {
     return _index48.default;
   }
 }));
-Object.defineProperty(exports, "endOfISOWeekYear", ({
+Object.defineProperty(exports, "endOfISOWeek", ({
   enumerable: true,
   get: function () {
     return _index49.default;
   }
 }));
-Object.defineProperty(exports, "endOfMinute", ({
+Object.defineProperty(exports, "endOfISOWeekYear", ({
   enumerable: true,
   get: function () {
     return _index50.default;
   }
 }));
-Object.defineProperty(exports, "endOfMonth", ({
+Object.defineProperty(exports, "endOfMinute", ({
   enumerable: true,
   get: function () {
     return _index51.default;
   }
 }));
-Object.defineProperty(exports, "endOfQuarter", ({
+Object.defineProperty(exports, "endOfMonth", ({
   enumerable: true,
   get: function () {
     return _index52.default;
   }
 }));
-Object.defineProperty(exports, "endOfSecond", ({
+Object.defineProperty(exports, "endOfQuarter", ({
   enumerable: true,
   get: function () {
     return _index53.default;
   }
 }));
-Object.defineProperty(exports, "endOfToday", ({
+Object.defineProperty(exports, "endOfSecond", ({
   enumerable: true,
   get: function () {
     return _index54.default;
   }
 }));
-Object.defineProperty(exports, "endOfTomorrow", ({
+Object.defineProperty(exports, "endOfToday", ({
   enumerable: true,
   get: function () {
     return _index55.default;
   }
 }));
-Object.defineProperty(exports, "endOfWeek", ({
+Object.defineProperty(exports, "endOfTomorrow", ({
   enumerable: true,
   get: function () {
     return _index56.default;
   }
 }));
-Object.defineProperty(exports, "endOfYear", ({
+Object.defineProperty(exports, "endOfWeek", ({
   enumerable: true,
   get: function () {
     return _index57.default;
   }
 }));
-Object.defineProperty(exports, "endOfYesterday", ({
+Object.defineProperty(exports, "endOfYear", ({
   enumerable: true,
   get: function () {
     return _index58.default;
   }
 }));
-Object.defineProperty(exports, "format", ({
+Object.defineProperty(exports, "endOfYesterday", ({
   enumerable: true,
   get: function () {
     return _index59.default;
   }
 }));
-Object.defineProperty(exports, "formatDistance", ({
+Object.defineProperty(exports, "format", ({
   enumerable: true,
   get: function () {
     return _index60.default;
   }
 }));
-Object.defineProperty(exports, "formatDistanceStrict", ({
+Object.defineProperty(exports, "formatDistance", ({
   enumerable: true,
   get: function () {
     return _index61.default;
   }
 }));
-Object.defineProperty(exports, "formatDistanceToNow", ({
+Object.defineProperty(exports, "formatDistanceStrict", ({
   enumerable: true,
   get: function () {
     return _index62.default;
   }
 }));
-Object.defineProperty(exports, "formatDistanceToNowStrict", ({
+Object.defineProperty(exports, "formatDistanceToNow", ({
   enumerable: true,
   get: function () {
     return _index63.default;
   }
 }));
-Object.defineProperty(exports, "formatDuration", ({
+Object.defineProperty(exports, "formatDistanceToNowStrict", ({
   enumerable: true,
   get: function () {
     return _index64.default;
   }
 }));
-Object.defineProperty(exports, "formatISO", ({
+Object.defineProperty(exports, "formatDuration", ({
   enumerable: true,
   get: function () {
     return _index65.default;
   }
 }));
-Object.defineProperty(exports, "formatISO9075", ({
+Object.defineProperty(exports, "formatISO", ({
   enumerable: true,
   get: function () {
     return _index66.default;
   }
 }));
-Object.defineProperty(exports, "formatISODuration", ({
+Object.defineProperty(exports, "formatISO9075", ({
   enumerable: true,
   get: function () {
     return _index67.default;
   }
 }));
-Object.defineProperty(exports, "formatRFC3339", ({
+Object.defineProperty(exports, "formatISODuration", ({
   enumerable: true,
   get: function () {
     return _index68.default;
   }
 }));
-Object.defineProperty(exports, "formatRFC7231", ({
+Object.defineProperty(exports, "formatRFC3339", ({
   enumerable: true,
   get: function () {
     return _index69.default;
   }
 }));
-Object.defineProperty(exports, "formatRelative", ({
+Object.defineProperty(exports, "formatRFC7231", ({
   enumerable: true,
   get: function () {
     return _index70.default;
   }
 }));
-Object.defineProperty(exports, "fromUnixTime", ({
+Object.defineProperty(exports, "formatRelative", ({
   enumerable: true,
   get: function () {
     return _index71.default;
   }
 }));
-Object.defineProperty(exports, "getDate", ({
+Object.defineProperty(exports, "fromUnixTime", ({
   enumerable: true,
   get: function () {
     return _index72.default;
   }
 }));
-Object.defineProperty(exports, "getDay", ({
+Object.defineProperty(exports, "getDate", ({
   enumerable: true,
   get: function () {
     return _index73.default;
   }
 }));
-Object.defineProperty(exports, "getDayOfYear", ({
+Object.defineProperty(exports, "getDay", ({
   enumerable: true,
   get: function () {
     return _index74.default;
   }
 }));
-Object.defineProperty(exports, "getDaysInMonth", ({
+Object.defineProperty(exports, "getDayOfYear", ({
   enumerable: true,
   get: function () {
     return _index75.default;
   }
 }));
-Object.defineProperty(exports, "getDaysInYear", ({
+Object.defineProperty(exports, "getDaysInMonth", ({
   enumerable: true,
   get: function () {
     return _index76.default;
   }
 }));
-Object.defineProperty(exports, "getDecade", ({
+Object.defineProperty(exports, "getDaysInYear", ({
   enumerable: true,
   get: function () {
     return _index77.default;
   }
 }));
-Object.defineProperty(exports, "getHours", ({
+Object.defineProperty(exports, "getDecade", ({
   enumerable: true,
   get: function () {
     return _index78.default;
   }
 }));
-Object.defineProperty(exports, "getISODay", ({
+Object.defineProperty(exports, "getHours", ({
   enumerable: true,
   get: function () {
     return _index79.default;
   }
 }));
-Object.defineProperty(exports, "getISOWeek", ({
+Object.defineProperty(exports, "getISODay", ({
   enumerable: true,
   get: function () {
     return _index80.default;
   }
 }));
-Object.defineProperty(exports, "getISOWeekYear", ({
+Object.defineProperty(exports, "getISOWeek", ({
   enumerable: true,
   get: function () {
     return _index81.default;
   }
 }));
-Object.defineProperty(exports, "getISOWeeksInYear", ({
+Object.defineProperty(exports, "getISOWeekYear", ({
   enumerable: true,
   get: function () {
     return _index82.default;
   }
 }));
-Object.defineProperty(exports, "getMilliseconds", ({
+Object.defineProperty(exports, "getISOWeeksInYear", ({
   enumerable: true,
   get: function () {
     return _index83.default;
   }
 }));
-Object.defineProperty(exports, "getMinutes", ({
+Object.defineProperty(exports, "getMilliseconds", ({
   enumerable: true,
   get: function () {
     return _index84.default;
   }
 }));
-Object.defineProperty(exports, "getMonth", ({
+Object.defineProperty(exports, "getMinutes", ({
   enumerable: true,
   get: function () {
     return _index85.default;
   }
 }));
-Object.defineProperty(exports, "getOverlappingDaysInIntervals", ({
+Object.defineProperty(exports, "getMonth", ({
   enumerable: true,
   get: function () {
     return _index86.default;
   }
 }));
-Object.defineProperty(exports, "getQuarter", ({
+Object.defineProperty(exports, "getOverlappingDaysInIntervals", ({
   enumerable: true,
   get: function () {
     return _index87.default;
   }
 }));
-Object.defineProperty(exports, "getSeconds", ({
+Object.defineProperty(exports, "getQuarter", ({
   enumerable: true,
   get: function () {
     return _index88.default;
   }
 }));
-Object.defineProperty(exports, "getTime", ({
+Object.defineProperty(exports, "getSeconds", ({
   enumerable: true,
   get: function () {
     return _index89.default;
   }
 }));
-Object.defineProperty(exports, "getUnixTime", ({
+Object.defineProperty(exports, "getTime", ({
   enumerable: true,
   get: function () {
     return _index90.default;
   }
 }));
-Object.defineProperty(exports, "getWeek", ({
+Object.defineProperty(exports, "getUnixTime", ({
   enumerable: true,
   get: function () {
     return _index91.default;
   }
 }));
-Object.defineProperty(exports, "getWeekOfMonth", ({
+Object.defineProperty(exports, "getWeek", ({
   enumerable: true,
   get: function () {
     return _index92.default;
   }
 }));
-Object.defineProperty(exports, "getWeekYear", ({
+Object.defineProperty(exports, "getWeekOfMonth", ({
   enumerable: true,
   get: function () {
     return _index93.default;
   }
 }));
-Object.defineProperty(exports, "getWeeksInMonth", ({
+Object.defineProperty(exports, "getWeekYear", ({
   enumerable: true,
   get: function () {
     return _index94.default;
   }
 }));
-Object.defineProperty(exports, "getYear", ({
+Object.defineProperty(exports, "getWeeksInMonth", ({
   enumerable: true,
   get: function () {
     return _index95.default;
   }
 }));
-Object.defineProperty(exports, "intervalToDuration", ({
+Object.defineProperty(exports, "getYear", ({
   enumerable: true,
   get: function () {
     return _index96.default;
   }
 }));
-Object.defineProperty(exports, "isAfter", ({
+Object.defineProperty(exports, "intervalToDuration", ({
   enumerable: true,
   get: function () {
     return _index97.default;
   }
 }));
-Object.defineProperty(exports, "isBefore", ({
+Object.defineProperty(exports, "intlFormat", ({
   enumerable: true,
   get: function () {
     return _index98.default;
   }
 }));
-Object.defineProperty(exports, "isDate", ({
+Object.defineProperty(exports, "isAfter", ({
   enumerable: true,
   get: function () {
     return _index99.default;
   }
 }));
-Object.defineProperty(exports, "isEqual", ({
+Object.defineProperty(exports, "isBefore", ({
   enumerable: true,
   get: function () {
     return _index100.default;
   }
 }));
-Object.defineProperty(exports, "isExists", ({
+Object.defineProperty(exports, "isDate", ({
   enumerable: true,
   get: function () {
     return _index101.default;
   }
 }));
-Object.defineProperty(exports, "isFirstDayOfMonth", ({
+Object.defineProperty(exports, "isEqual", ({
   enumerable: true,
   get: function () {
     return _index102.default;
   }
 }));
-Object.defineProperty(exports, "isFriday", ({
+Object.defineProperty(exports, "isExists", ({
   enumerable: true,
   get: function () {
     return _index103.default;
   }
 }));
-Object.defineProperty(exports, "isFuture", ({
+Object.defineProperty(exports, "isFirstDayOfMonth", ({
   enumerable: true,
   get: function () {
     return _index104.default;
   }
 }));
-Object.defineProperty(exports, "isLastDayOfMonth", ({
+Object.defineProperty(exports, "isFriday", ({
   enumerable: true,
   get: function () {
     return _index105.default;
   }
 }));
-Object.defineProperty(exports, "isLeapYear", ({
+Object.defineProperty(exports, "isFuture", ({
   enumerable: true,
   get: function () {
     return _index106.default;
   }
 }));
-Object.defineProperty(exports, "isMatch", ({
+Object.defineProperty(exports, "isLastDayOfMonth", ({
   enumerable: true,
   get: function () {
     return _index107.default;
   }
 }));
-Object.defineProperty(exports, "isMonday", ({
+Object.defineProperty(exports, "isLeapYear", ({
   enumerable: true,
   get: function () {
     return _index108.default;
   }
 }));
-Object.defineProperty(exports, "isPast", ({
+Object.defineProperty(exports, "isMatch", ({
   enumerable: true,
   get: function () {
     return _index109.default;
   }
 }));
-Object.defineProperty(exports, "isSameDay", ({
+Object.defineProperty(exports, "isMonday", ({
   enumerable: true,
   get: function () {
     return _index110.default;
   }
 }));
-Object.defineProperty(exports, "isSameHour", ({
+Object.defineProperty(exports, "isPast", ({
   enumerable: true,
   get: function () {
     return _index111.default;
   }
 }));
-Object.defineProperty(exports, "isSameISOWeek", ({
+Object.defineProperty(exports, "isSameDay", ({
   enumerable: true,
   get: function () {
     return _index112.default;
   }
 }));
-Object.defineProperty(exports, "isSameISOWeekYear", ({
+Object.defineProperty(exports, "isSameHour", ({
   enumerable: true,
   get: function () {
     return _index113.default;
   }
 }));
-Object.defineProperty(exports, "isSameMinute", ({
+Object.defineProperty(exports, "isSameISOWeek", ({
   enumerable: true,
   get: function () {
     return _index114.default;
   }
 }));
-Object.defineProperty(exports, "isSameMonth", ({
+Object.defineProperty(exports, "isSameISOWeekYear", ({
   enumerable: true,
   get: function () {
     return _index115.default;
   }
 }));
-Object.defineProperty(exports, "isSameQuarter", ({
+Object.defineProperty(exports, "isSameMinute", ({
   enumerable: true,
   get: function () {
     return _index116.default;
   }
 }));
-Object.defineProperty(exports, "isSameSecond", ({
+Object.defineProperty(exports, "isSameMonth", ({
   enumerable: true,
   get: function () {
     return _index117.default;
   }
 }));
-Object.defineProperty(exports, "isSameWeek", ({
+Object.defineProperty(exports, "isSameQuarter", ({
   enumerable: true,
   get: function () {
     return _index118.default;
   }
 }));
-Object.defineProperty(exports, "isSameYear", ({
+Object.defineProperty(exports, "isSameSecond", ({
   enumerable: true,
   get: function () {
     return _index119.default;
   }
 }));
-Object.defineProperty(exports, "isSaturday", ({
+Object.defineProperty(exports, "isSameWeek", ({
   enumerable: true,
   get: function () {
     return _index120.default;
   }
 }));
-Object.defineProperty(exports, "isSunday", ({
+Object.defineProperty(exports, "isSameYear", ({
   enumerable: true,
   get: function () {
     return _index121.default;
   }
 }));
-Object.defineProperty(exports, "isThisHour", ({
+Object.defineProperty(exports, "isSaturday", ({
   enumerable: true,
   get: function () {
     return _index122.default;
   }
 }));
-Object.defineProperty(exports, "isThisISOWeek", ({
+Object.defineProperty(exports, "isSunday", ({
   enumerable: true,
   get: function () {
     return _index123.default;
   }
 }));
-Object.defineProperty(exports, "isThisMinute", ({
+Object.defineProperty(exports, "isThisHour", ({
   enumerable: true,
   get: function () {
     return _index124.default;
   }
 }));
-Object.defineProperty(exports, "isThisMonth", ({
+Object.defineProperty(exports, "isThisISOWeek", ({
   enumerable: true,
   get: function () {
     return _index125.default;
   }
 }));
-Object.defineProperty(exports, "isThisQuarter", ({
+Object.defineProperty(exports, "isThisMinute", ({
   enumerable: true,
   get: function () {
     return _index126.default;
   }
 }));
-Object.defineProperty(exports, "isThisSecond", ({
+Object.defineProperty(exports, "isThisMonth", ({
   enumerable: true,
   get: function () {
     return _index127.default;
   }
 }));
-Object.defineProperty(exports, "isThisWeek", ({
+Object.defineProperty(exports, "isThisQuarter", ({
   enumerable: true,
   get: function () {
     return _index128.default;
   }
 }));
-Object.defineProperty(exports, "isThisYear", ({
+Object.defineProperty(exports, "isThisSecond", ({
   enumerable: true,
   get: function () {
     return _index129.default;
   }
 }));
-Object.defineProperty(exports, "isThursday", ({
+Object.defineProperty(exports, "isThisWeek", ({
   enumerable: true,
   get: function () {
     return _index130.default;
   }
 }));
-Object.defineProperty(exports, "isToday", ({
+Object.defineProperty(exports, "isThisYear", ({
   enumerable: true,
   get: function () {
     return _index131.default;
   }
 }));
-Object.defineProperty(exports, "isTomorrow", ({
+Object.defineProperty(exports, "isThursday", ({
   enumerable: true,
   get: function () {
     return _index132.default;
   }
 }));
-Object.defineProperty(exports, "isTuesday", ({
+Object.defineProperty(exports, "isToday", ({
   enumerable: true,
   get: function () {
     return _index133.default;
   }
 }));
-Object.defineProperty(exports, "isValid", ({
+Object.defineProperty(exports, "isTomorrow", ({
   enumerable: true,
   get: function () {
     return _index134.default;
   }
 }));
-Object.defineProperty(exports, "isWednesday", ({
+Object.defineProperty(exports, "isTuesday", ({
   enumerable: true,
   get: function () {
     return _index135.default;
   }
 }));
-Object.defineProperty(exports, "isWeekend", ({
+Object.defineProperty(exports, "isValid", ({
   enumerable: true,
   get: function () {
     return _index136.default;
   }
 }));
-Object.defineProperty(exports, "isWithinInterval", ({
+Object.defineProperty(exports, "isWednesday", ({
   enumerable: true,
   get: function () {
     return _index137.default;
   }
 }));
-Object.defineProperty(exports, "isYesterday", ({
+Object.defineProperty(exports, "isWeekend", ({
   enumerable: true,
   get: function () {
     return _index138.default;
   }
 }));
-Object.defineProperty(exports, "lastDayOfDecade", ({
+Object.defineProperty(exports, "isWithinInterval", ({
   enumerable: true,
   get: function () {
     return _index139.default;
   }
 }));
-Object.defineProperty(exports, "lastDayOfISOWeek", ({
+Object.defineProperty(exports, "isYesterday", ({
   enumerable: true,
   get: function () {
     return _index140.default;
   }
 }));
-Object.defineProperty(exports, "lastDayOfISOWeekYear", ({
+Object.defineProperty(exports, "lastDayOfDecade", ({
   enumerable: true,
   get: function () {
     return _index141.default;
   }
 }));
-Object.defineProperty(exports, "lastDayOfMonth", ({
+Object.defineProperty(exports, "lastDayOfISOWeek", ({
   enumerable: true,
   get: function () {
     return _index142.default;
   }
 }));
-Object.defineProperty(exports, "lastDayOfQuarter", ({
+Object.defineProperty(exports, "lastDayOfISOWeekYear", ({
   enumerable: true,
   get: function () {
     return _index143.default;
   }
 }));
-Object.defineProperty(exports, "lastDayOfWeek", ({
+Object.defineProperty(exports, "lastDayOfMonth", ({
   enumerable: true,
   get: function () {
     return _index144.default;
   }
 }));
-Object.defineProperty(exports, "lastDayOfYear", ({
+Object.defineProperty(exports, "lastDayOfQuarter", ({
   enumerable: true,
   get: function () {
     return _index145.default;
   }
 }));
-Object.defineProperty(exports, "lightFormat", ({
+Object.defineProperty(exports, "lastDayOfWeek", ({
   enumerable: true,
   get: function () {
     return _index146.default;
   }
 }));
-Object.defineProperty(exports, "max", ({
+Object.defineProperty(exports, "lastDayOfYear", ({
   enumerable: true,
   get: function () {
     return _index147.default;
   }
 }));
-Object.defineProperty(exports, "min", ({
+Object.defineProperty(exports, "lightFormat", ({
   enumerable: true,
   get: function () {
     return _index148.default;
   }
 }));
-Object.defineProperty(exports, "parse", ({
+Object.defineProperty(exports, "max", ({
   enumerable: true,
   get: function () {
     return _index149.default;
   }
 }));
-Object.defineProperty(exports, "parseISO", ({
+Object.defineProperty(exports, "milliseconds", ({
   enumerable: true,
   get: function () {
     return _index150.default;
   }
 }));
-Object.defineProperty(exports, "parseJSON", ({
+Object.defineProperty(exports, "min", ({
   enumerable: true,
   get: function () {
     return _index151.default;
   }
 }));
-Object.defineProperty(exports, "roundToNearestMinutes", ({
+Object.defineProperty(exports, "nextDay", ({
   enumerable: true,
   get: function () {
     return _index152.default;
   }
 }));
-Object.defineProperty(exports, "set", ({
+Object.defineProperty(exports, "nextFriday", ({
   enumerable: true,
   get: function () {
     return _index153.default;
   }
 }));
-Object.defineProperty(exports, "setDate", ({
+Object.defineProperty(exports, "nextMonday", ({
   enumerable: true,
   get: function () {
     return _index154.default;
   }
 }));
-Object.defineProperty(exports, "setDay", ({
+Object.defineProperty(exports, "nextSaturday", ({
   enumerable: true,
   get: function () {
     return _index155.default;
   }
 }));
-Object.defineProperty(exports, "setDayOfYear", ({
+Object.defineProperty(exports, "nextSunday", ({
   enumerable: true,
   get: function () {
     return _index156.default;
   }
 }));
-Object.defineProperty(exports, "setHours", ({
+Object.defineProperty(exports, "nextThursday", ({
   enumerable: true,
   get: function () {
     return _index157.default;
   }
 }));
-Object.defineProperty(exports, "setISODay", ({
+Object.defineProperty(exports, "nextTuesday", ({
   enumerable: true,
   get: function () {
     return _index158.default;
   }
 }));
-Object.defineProperty(exports, "setISOWeek", ({
+Object.defineProperty(exports, "nextWednesday", ({
   enumerable: true,
   get: function () {
     return _index159.default;
   }
 }));
-Object.defineProperty(exports, "setISOWeekYear", ({
+Object.defineProperty(exports, "parse", ({
   enumerable: true,
   get: function () {
     return _index160.default;
   }
 }));
-Object.defineProperty(exports, "setMilliseconds", ({
+Object.defineProperty(exports, "parseISO", ({
   enumerable: true,
   get: function () {
     return _index161.default;
   }
 }));
-Object.defineProperty(exports, "setMinutes", ({
+Object.defineProperty(exports, "parseJSON", ({
   enumerable: true,
   get: function () {
     return _index162.default;
   }
 }));
-Object.defineProperty(exports, "setMonth", ({
+Object.defineProperty(exports, "roundToNearestMinutes", ({
   enumerable: true,
   get: function () {
     return _index163.default;
   }
 }));
-Object.defineProperty(exports, "setQuarter", ({
+Object.defineProperty(exports, "set", ({
   enumerable: true,
   get: function () {
     return _index164.default;
   }
 }));
-Object.defineProperty(exports, "setSeconds", ({
+Object.defineProperty(exports, "setDate", ({
   enumerable: true,
   get: function () {
     return _index165.default;
   }
 }));
-Object.defineProperty(exports, "setWeek", ({
+Object.defineProperty(exports, "setDay", ({
   enumerable: true,
   get: function () {
     return _index166.default;
   }
 }));
-Object.defineProperty(exports, "setWeekYear", ({
+Object.defineProperty(exports, "setDayOfYear", ({
   enumerable: true,
   get: function () {
     return _index167.default;
   }
 }));
-Object.defineProperty(exports, "setYear", ({
+Object.defineProperty(exports, "setHours", ({
   enumerable: true,
   get: function () {
     return _index168.default;
   }
 }));
-Object.defineProperty(exports, "startOfDay", ({
+Object.defineProperty(exports, "setISODay", ({
   enumerable: true,
   get: function () {
     return _index169.default;
   }
 }));
-Object.defineProperty(exports, "startOfDecade", ({
+Object.defineProperty(exports, "setISOWeek", ({
   enumerable: true,
   get: function () {
     return _index170.default;
   }
 }));
-Object.defineProperty(exports, "startOfHour", ({
+Object.defineProperty(exports, "setISOWeekYear", ({
   enumerable: true,
   get: function () {
     return _index171.default;
   }
 }));
-Object.defineProperty(exports, "startOfISOWeek", ({
+Object.defineProperty(exports, "setMilliseconds", ({
   enumerable: true,
   get: function () {
     return _index172.default;
   }
 }));
-Object.defineProperty(exports, "startOfISOWeekYear", ({
+Object.defineProperty(exports, "setMinutes", ({
   enumerable: true,
   get: function () {
     return _index173.default;
   }
 }));
-Object.defineProperty(exports, "startOfMinute", ({
+Object.defineProperty(exports, "setMonth", ({
   enumerable: true,
   get: function () {
     return _index174.default;
   }
 }));
-Object.defineProperty(exports, "startOfMonth", ({
+Object.defineProperty(exports, "setQuarter", ({
   enumerable: true,
   get: function () {
     return _index175.default;
   }
 }));
-Object.defineProperty(exports, "startOfQuarter", ({
+Object.defineProperty(exports, "setSeconds", ({
   enumerable: true,
   get: function () {
     return _index176.default;
   }
 }));
-Object.defineProperty(exports, "startOfSecond", ({
+Object.defineProperty(exports, "setWeek", ({
   enumerable: true,
   get: function () {
     return _index177.default;
   }
 }));
-Object.defineProperty(exports, "startOfToday", ({
+Object.defineProperty(exports, "setWeekYear", ({
   enumerable: true,
   get: function () {
     return _index178.default;
   }
 }));
-Object.defineProperty(exports, "startOfTomorrow", ({
+Object.defineProperty(exports, "setYear", ({
   enumerable: true,
   get: function () {
     return _index179.default;
   }
 }));
-Object.defineProperty(exports, "startOfWeek", ({
+Object.defineProperty(exports, "startOfDay", ({
   enumerable: true,
   get: function () {
     return _index180.default;
   }
 }));
-Object.defineProperty(exports, "startOfWeekYear", ({
+Object.defineProperty(exports, "startOfDecade", ({
   enumerable: true,
   get: function () {
     return _index181.default;
   }
 }));
-Object.defineProperty(exports, "startOfYear", ({
+Object.defineProperty(exports, "startOfHour", ({
   enumerable: true,
   get: function () {
     return _index182.default;
   }
 }));
-Object.defineProperty(exports, "startOfYesterday", ({
+Object.defineProperty(exports, "startOfISOWeek", ({
   enumerable: true,
   get: function () {
     return _index183.default;
   }
 }));
-Object.defineProperty(exports, "sub", ({
+Object.defineProperty(exports, "startOfISOWeekYear", ({
   enumerable: true,
   get: function () {
     return _index184.default;
   }
 }));
-Object.defineProperty(exports, "subBusinessDays", ({
+Object.defineProperty(exports, "startOfMinute", ({
   enumerable: true,
   get: function () {
     return _index185.default;
   }
 }));
-Object.defineProperty(exports, "subDays", ({
+Object.defineProperty(exports, "startOfMonth", ({
   enumerable: true,
   get: function () {
     return _index186.default;
   }
 }));
-Object.defineProperty(exports, "subHours", ({
+Object.defineProperty(exports, "startOfQuarter", ({
   enumerable: true,
   get: function () {
     return _index187.default;
   }
 }));
-Object.defineProperty(exports, "subISOWeekYears", ({
+Object.defineProperty(exports, "startOfSecond", ({
   enumerable: true,
   get: function () {
     return _index188.default;
   }
 }));
-Object.defineProperty(exports, "subMilliseconds", ({
+Object.defineProperty(exports, "startOfToday", ({
   enumerable: true,
   get: function () {
     return _index189.default;
   }
 }));
-Object.defineProperty(exports, "subMinutes", ({
+Object.defineProperty(exports, "startOfTomorrow", ({
   enumerable: true,
   get: function () {
     return _index190.default;
   }
 }));
-Object.defineProperty(exports, "subMonths", ({
+Object.defineProperty(exports, "startOfWeek", ({
   enumerable: true,
   get: function () {
     return _index191.default;
   }
 }));
-Object.defineProperty(exports, "subQuarters", ({
+Object.defineProperty(exports, "startOfWeekYear", ({
   enumerable: true,
   get: function () {
     return _index192.default;
   }
 }));
-Object.defineProperty(exports, "subSeconds", ({
+Object.defineProperty(exports, "startOfYear", ({
   enumerable: true,
   get: function () {
     return _index193.default;
   }
 }));
-Object.defineProperty(exports, "subWeeks", ({
+Object.defineProperty(exports, "startOfYesterday", ({
   enumerable: true,
   get: function () {
     return _index194.default;
   }
 }));
-Object.defineProperty(exports, "subYears", ({
+Object.defineProperty(exports, "sub", ({
   enumerable: true,
   get: function () {
     return _index195.default;
   }
 }));
-Object.defineProperty(exports, "toDate", ({
+Object.defineProperty(exports, "subBusinessDays", ({
   enumerable: true,
   get: function () {
     return _index196.default;
   }
 }));
+Object.defineProperty(exports, "subDays", ({
+  enumerable: true,
+  get: function () {
+    return _index197.default;
+  }
+}));
+Object.defineProperty(exports, "subHours", ({
+  enumerable: true,
+  get: function () {
+    return _index198.default;
+  }
+}));
+Object.defineProperty(exports, "subISOWeekYears", ({
+  enumerable: true,
+  get: function () {
+    return _index199.default;
+  }
+}));
+Object.defineProperty(exports, "subMilliseconds", ({
+  enumerable: true,
+  get: function () {
+    return _index200.default;
+  }
+}));
+Object.defineProperty(exports, "subMinutes", ({
+  enumerable: true,
+  get: function () {
+    return _index201.default;
+  }
+}));
+Object.defineProperty(exports, "subMonths", ({
+  enumerable: true,
+  get: function () {
+    return _index202.default;
+  }
+}));
+Object.defineProperty(exports, "subQuarters", ({
+  enumerable: true,
+  get: function () {
+    return _index203.default;
+  }
+}));
+Object.defineProperty(exports, "subSeconds", ({
+  enumerable: true,
+  get: function () {
+    return _index204.default;
+  }
+}));
+Object.defineProperty(exports, "subWeeks", ({
+  enumerable: true,
+  get: function () {
+    return _index205.default;
+  }
+}));
+Object.defineProperty(exports, "subYears", ({
+  enumerable: true,
+  get: function () {
+    return _index206.default;
+  }
+}));
+Object.defineProperty(exports, "toDate", ({
+  enumerable: true,
+  get: function () {
+    return _index207.default;
+  }
+}));
 
-var _index = _interopRequireDefault(__webpack_require__(6211));
+var _index = _interopRequireDefault(__nccwpck_require__(6211));
 
-var _index2 = _interopRequireDefault(__webpack_require__(1727));
+var _index2 = _interopRequireDefault(__nccwpck_require__(1727));
 
-var _index3 = _interopRequireDefault(__webpack_require__(6227));
+var _index3 = _interopRequireDefault(__nccwpck_require__(6227));
 
-var _index4 = _interopRequireDefault(__webpack_require__(9956));
+var _index4 = _interopRequireDefault(__nccwpck_require__(9956));
 
-var _index5 = _interopRequireDefault(__webpack_require__(5318));
+var _index5 = _interopRequireDefault(__nccwpck_require__(5318));
 
-var _index6 = _interopRequireDefault(__webpack_require__(524));
+var _index6 = _interopRequireDefault(__nccwpck_require__(524));
 
-var _index7 = _interopRequireDefault(__webpack_require__(5268));
+var _index7 = _interopRequireDefault(__nccwpck_require__(5268));
 
-var _index8 = _interopRequireDefault(__webpack_require__(2995));
+var _index8 = _interopRequireDefault(__nccwpck_require__(2995));
 
-var _index9 = _interopRequireDefault(__webpack_require__(5149));
+var _index9 = _interopRequireDefault(__nccwpck_require__(5149));
 
-var _index10 = _interopRequireDefault(__webpack_require__(4112));
+var _index10 = _interopRequireDefault(__nccwpck_require__(4112));
 
-var _index11 = _interopRequireDefault(__webpack_require__(7195));
+var _index11 = _interopRequireDefault(__nccwpck_require__(7195));
 
-var _index12 = _interopRequireDefault(__webpack_require__(3367));
+var _index12 = _interopRequireDefault(__nccwpck_require__(3367));
 
-var _index13 = _interopRequireDefault(__webpack_require__(2282));
+var _index13 = _interopRequireDefault(__nccwpck_require__(2282));
 
-var _index14 = _interopRequireDefault(__webpack_require__(2264));
+var _index14 = _interopRequireDefault(__nccwpck_require__(2264));
 
-var _index15 = _interopRequireDefault(__webpack_require__(2013));
+var _index15 = _interopRequireDefault(__nccwpck_require__(2013));
 
-var _index16 = _interopRequireDefault(__webpack_require__(9818));
+var _index16 = _interopRequireDefault(__nccwpck_require__(9818));
 
-var _index17 = _interopRequireDefault(__webpack_require__(7783));
+var _index17 = _interopRequireDefault(__nccwpck_require__(7783));
 
-var _index18 = _interopRequireDefault(__webpack_require__(4734));
+var _index18 = _interopRequireDefault(__nccwpck_require__(4734));
 
-var _index19 = _interopRequireDefault(__webpack_require__(3086));
+var _index19 = _interopRequireDefault(__nccwpck_require__(3086));
 
-var _index20 = _interopRequireDefault(__webpack_require__(6778));
+var _index20 = _interopRequireDefault(__nccwpck_require__(6778));
 
-var _index21 = _interopRequireDefault(__webpack_require__(1656));
+var _index21 = _interopRequireDefault(__nccwpck_require__(1656));
 
-var _index22 = _interopRequireDefault(__webpack_require__(5536));
+var _index22 = _interopRequireDefault(__nccwpck_require__(5536));
 
-var _index23 = _interopRequireDefault(__webpack_require__(2342));
+var _index23 = _interopRequireDefault(__nccwpck_require__(2342));
 
-var _index24 = _interopRequireDefault(__webpack_require__(8620));
+var _index24 = _interopRequireDefault(__nccwpck_require__(8620));
 
-var _index25 = _interopRequireDefault(__webpack_require__(5237));
+var _index25 = _interopRequireDefault(__nccwpck_require__(5237));
 
-var _index26 = _interopRequireDefault(__webpack_require__(6311));
+var _index26 = _interopRequireDefault(__nccwpck_require__(6311));
 
-var _index27 = _interopRequireDefault(__webpack_require__(8740));
+var _index27 = _interopRequireDefault(__nccwpck_require__(8740));
 
-var _index28 = _interopRequireDefault(__webpack_require__(8815));
+var _index28 = _interopRequireDefault(__nccwpck_require__(8815));
 
-var _index29 = _interopRequireDefault(__webpack_require__(2288));
+var _index29 = _interopRequireDefault(__nccwpck_require__(2288));
 
-var _index30 = _interopRequireDefault(__webpack_require__(3842));
+var _index30 = _interopRequireDefault(__nccwpck_require__(3842));
 
-var _index31 = _interopRequireDefault(__webpack_require__(2713));
+var _index31 = _interopRequireDefault(__nccwpck_require__(2713));
 
-var _index32 = _interopRequireDefault(__webpack_require__(7074));
+var _index32 = _interopRequireDefault(__nccwpck_require__(7074));
 
-var _index33 = _interopRequireDefault(__webpack_require__(9448));
+var _index33 = _interopRequireDefault(__nccwpck_require__(9448));
 
-var _index34 = _interopRequireDefault(__webpack_require__(2701));
+var _index34 = _interopRequireDefault(__nccwpck_require__(2701));
 
-var _index35 = _interopRequireDefault(__webpack_require__(3959));
+var _index35 = _interopRequireDefault(__nccwpck_require__(3959));
 
-var _index36 = _interopRequireDefault(__webpack_require__(6545));
+var _index36 = _interopRequireDefault(__nccwpck_require__(6545));
 
-var _index37 = _interopRequireDefault(__webpack_require__(6802));
+var _index37 = _interopRequireDefault(__nccwpck_require__(6802));
 
-var _index38 = _interopRequireDefault(__webpack_require__(5879));
+var _index38 = _interopRequireDefault(__nccwpck_require__(2029));
 
-var _index39 = _interopRequireDefault(__webpack_require__(6516));
+var _index39 = _interopRequireDefault(__nccwpck_require__(5879));
 
-var _index40 = _interopRequireDefault(__webpack_require__(5994));
+var _index40 = _interopRequireDefault(__nccwpck_require__(6516));
 
-var _index41 = _interopRequireDefault(__webpack_require__(1944));
+var _index41 = _interopRequireDefault(__nccwpck_require__(5994));
 
-var _index42 = _interopRequireDefault(__webpack_require__(3973));
+var _index42 = _interopRequireDefault(__nccwpck_require__(1944));
 
-var _index43 = _interopRequireDefault(__webpack_require__(7961));
+var _index43 = _interopRequireDefault(__nccwpck_require__(3973));
 
-var _index44 = _interopRequireDefault(__webpack_require__(6525));
+var _index44 = _interopRequireDefault(__nccwpck_require__(7961));
 
-var _index45 = _interopRequireDefault(__webpack_require__(8569));
+var _index45 = _interopRequireDefault(__nccwpck_require__(6525));
 
-var _index46 = _interopRequireDefault(__webpack_require__(1517));
+var _index46 = _interopRequireDefault(__nccwpck_require__(8569));
 
-var _index47 = _interopRequireDefault(__webpack_require__(1894));
+var _index47 = _interopRequireDefault(__nccwpck_require__(1517));
 
-var _index48 = _interopRequireDefault(__webpack_require__(1920));
+var _index48 = _interopRequireDefault(__nccwpck_require__(1894));
 
-var _index49 = _interopRequireDefault(__webpack_require__(9731));
+var _index49 = _interopRequireDefault(__nccwpck_require__(1920));
 
-var _index50 = _interopRequireDefault(__webpack_require__(1389));
+var _index50 = _interopRequireDefault(__nccwpck_require__(9731));
 
-var _index51 = _interopRequireDefault(__webpack_require__(2621));
+var _index51 = _interopRequireDefault(__nccwpck_require__(1389));
 
-var _index52 = _interopRequireDefault(__webpack_require__(5596));
+var _index52 = _interopRequireDefault(__nccwpck_require__(2621));
 
-var _index53 = _interopRequireDefault(__webpack_require__(6121));
+var _index53 = _interopRequireDefault(__nccwpck_require__(5596));
 
-var _index54 = _interopRequireDefault(__webpack_require__(5700));
+var _index54 = _interopRequireDefault(__nccwpck_require__(6121));
 
-var _index55 = _interopRequireDefault(__webpack_require__(6935));
+var _index55 = _interopRequireDefault(__nccwpck_require__(5700));
 
-var _index56 = _interopRequireDefault(__webpack_require__(5218));
+var _index56 = _interopRequireDefault(__nccwpck_require__(6935));
 
-var _index57 = _interopRequireDefault(__webpack_require__(7079));
+var _index57 = _interopRequireDefault(__nccwpck_require__(5218));
 
-var _index58 = _interopRequireDefault(__webpack_require__(66));
+var _index58 = _interopRequireDefault(__nccwpck_require__(7079));
 
-var _index59 = _interopRequireDefault(__webpack_require__(2168));
+var _index59 = _interopRequireDefault(__nccwpck_require__(66));
 
-var _index60 = _interopRequireDefault(__webpack_require__(8149));
+var _index60 = _interopRequireDefault(__nccwpck_require__(2168));
 
-var _index61 = _interopRequireDefault(__webpack_require__(7128));
+var _index61 = _interopRequireDefault(__nccwpck_require__(8149));
 
-var _index62 = _interopRequireDefault(__webpack_require__(1163));
+var _index62 = _interopRequireDefault(__nccwpck_require__(7128));
 
-var _index63 = _interopRequireDefault(__webpack_require__(4741));
+var _index63 = _interopRequireDefault(__nccwpck_require__(1163));
 
-var _index64 = _interopRequireDefault(__webpack_require__(8917));
+var _index64 = _interopRequireDefault(__nccwpck_require__(4741));
 
-var _index65 = _interopRequireDefault(__webpack_require__(3385));
+var _index65 = _interopRequireDefault(__nccwpck_require__(8917));
 
-var _index66 = _interopRequireDefault(__webpack_require__(5296));
+var _index66 = _interopRequireDefault(__nccwpck_require__(3385));
 
-var _index67 = _interopRequireDefault(__webpack_require__(2448));
+var _index67 = _interopRequireDefault(__nccwpck_require__(5296));
 
-var _index68 = _interopRequireDefault(__webpack_require__(4182));
+var _index68 = _interopRequireDefault(__nccwpck_require__(2448));
 
-var _index69 = _interopRequireDefault(__webpack_require__(402));
+var _index69 = _interopRequireDefault(__nccwpck_require__(4182));
 
-var _index70 = _interopRequireDefault(__webpack_require__(675));
+var _index70 = _interopRequireDefault(__nccwpck_require__(402));
 
-var _index71 = _interopRequireDefault(__webpack_require__(4897));
+var _index71 = _interopRequireDefault(__nccwpck_require__(675));
 
-var _index72 = _interopRequireDefault(__webpack_require__(7626));
+var _index72 = _interopRequireDefault(__nccwpck_require__(4897));
 
-var _index73 = _interopRequireDefault(__webpack_require__(9361));
+var _index73 = _interopRequireDefault(__nccwpck_require__(7626));
 
-var _index74 = _interopRequireDefault(__webpack_require__(7468));
+var _index74 = _interopRequireDefault(__nccwpck_require__(9361));
 
-var _index75 = _interopRequireDefault(__webpack_require__(7573));
+var _index75 = _interopRequireDefault(__nccwpck_require__(7468));
 
-var _index76 = _interopRequireDefault(__webpack_require__(2784));
+var _index76 = _interopRequireDefault(__nccwpck_require__(7573));
 
-var _index77 = _interopRequireDefault(__webpack_require__(9322));
+var _index77 = _interopRequireDefault(__nccwpck_require__(2784));
 
-var _index78 = _interopRequireDefault(__webpack_require__(7941));
+var _index78 = _interopRequireDefault(__nccwpck_require__(9322));
 
-var _index79 = _interopRequireDefault(__webpack_require__(8313));
+var _index79 = _interopRequireDefault(__nccwpck_require__(7941));
 
-var _index80 = _interopRequireDefault(__webpack_require__(9894));
+var _index80 = _interopRequireDefault(__nccwpck_require__(8313));
 
-var _index81 = _interopRequireDefault(__webpack_require__(6991));
+var _index81 = _interopRequireDefault(__nccwpck_require__(9894));
 
-var _index82 = _interopRequireDefault(__webpack_require__(3283));
+var _index82 = _interopRequireDefault(__nccwpck_require__(6991));
 
-var _index83 = _interopRequireDefault(__webpack_require__(7560));
+var _index83 = _interopRequireDefault(__nccwpck_require__(3283));
 
-var _index84 = _interopRequireDefault(__webpack_require__(7030));
+var _index84 = _interopRequireDefault(__nccwpck_require__(7560));
 
-var _index85 = _interopRequireDefault(__webpack_require__(2194));
+var _index85 = _interopRequireDefault(__nccwpck_require__(7030));
 
-var _index86 = _interopRequireDefault(__webpack_require__(7647));
+var _index86 = _interopRequireDefault(__nccwpck_require__(2194));
 
-var _index87 = _interopRequireDefault(__webpack_require__(4523));
+var _index87 = _interopRequireDefault(__nccwpck_require__(7647));
 
-var _index88 = _interopRequireDefault(__webpack_require__(8755));
+var _index88 = _interopRequireDefault(__nccwpck_require__(4523));
 
-var _index89 = _interopRequireDefault(__webpack_require__(5052));
+var _index89 = _interopRequireDefault(__nccwpck_require__(8755));
 
-var _index90 = _interopRequireDefault(__webpack_require__(6476));
+var _index90 = _interopRequireDefault(__nccwpck_require__(5052));
 
-var _index91 = _interopRequireDefault(__webpack_require__(81));
+var _index91 = _interopRequireDefault(__nccwpck_require__(6476));
 
-var _index92 = _interopRequireDefault(__webpack_require__(9229));
+var _index92 = _interopRequireDefault(__nccwpck_require__(81));
 
-var _index93 = _interopRequireDefault(__webpack_require__(3494));
+var _index93 = _interopRequireDefault(__nccwpck_require__(9229));
 
-var _index94 = _interopRequireDefault(__webpack_require__(9482));
+var _index94 = _interopRequireDefault(__nccwpck_require__(3494));
 
-var _index95 = _interopRequireDefault(__webpack_require__(5714));
+var _index95 = _interopRequireDefault(__nccwpck_require__(9482));
 
-var _index96 = _interopRequireDefault(__webpack_require__(2079));
+var _index96 = _interopRequireDefault(__nccwpck_require__(5714));
 
-var _index97 = _interopRequireDefault(__webpack_require__(2755));
+var _index97 = _interopRequireDefault(__nccwpck_require__(2079));
 
-var _index98 = _interopRequireDefault(__webpack_require__(9369));
+var _index98 = _interopRequireDefault(__nccwpck_require__(1982));
 
-var _index99 = _interopRequireDefault(__webpack_require__(6801));
+var _index99 = _interopRequireDefault(__nccwpck_require__(2755));
 
-var _index100 = _interopRequireDefault(__webpack_require__(4669));
+var _index100 = _interopRequireDefault(__nccwpck_require__(9369));
 
-var _index101 = _interopRequireDefault(__webpack_require__(7352));
+var _index101 = _interopRequireDefault(__nccwpck_require__(6801));
 
-var _index102 = _interopRequireDefault(__webpack_require__(5387));
+var _index102 = _interopRequireDefault(__nccwpck_require__(4669));
 
-var _index103 = _interopRequireDefault(__webpack_require__(1758));
+var _index103 = _interopRequireDefault(__nccwpck_require__(7352));
 
-var _index104 = _interopRequireDefault(__webpack_require__(6803));
+var _index104 = _interopRequireDefault(__nccwpck_require__(5387));
 
-var _index105 = _interopRequireDefault(__webpack_require__(8506));
+var _index105 = _interopRequireDefault(__nccwpck_require__(1758));
 
-var _index106 = _interopRequireDefault(__webpack_require__(74));
+var _index106 = _interopRequireDefault(__nccwpck_require__(6803));
 
-var _index107 = _interopRequireDefault(__webpack_require__(525));
+var _index107 = _interopRequireDefault(__nccwpck_require__(8506));
 
-var _index108 = _interopRequireDefault(__webpack_require__(6030));
+var _index108 = _interopRequireDefault(__nccwpck_require__(74));
 
-var _index109 = _interopRequireDefault(__webpack_require__(9543));
+var _index109 = _interopRequireDefault(__nccwpck_require__(525));
 
-var _index110 = _interopRequireDefault(__webpack_require__(2154));
+var _index110 = _interopRequireDefault(__nccwpck_require__(6030));
 
-var _index111 = _interopRequireDefault(__webpack_require__(2489));
+var _index111 = _interopRequireDefault(__nccwpck_require__(9543));
 
-var _index112 = _interopRequireDefault(__webpack_require__(9852));
+var _index112 = _interopRequireDefault(__nccwpck_require__(2154));
 
-var _index113 = _interopRequireDefault(__webpack_require__(3944));
+var _index113 = _interopRequireDefault(__nccwpck_require__(2489));
 
-var _index114 = _interopRequireDefault(__webpack_require__(3197));
+var _index114 = _interopRequireDefault(__nccwpck_require__(9852));
 
-var _index115 = _interopRequireDefault(__webpack_require__(5421));
+var _index115 = _interopRequireDefault(__nccwpck_require__(3944));
 
-var _index116 = _interopRequireDefault(__webpack_require__(938));
+var _index116 = _interopRequireDefault(__nccwpck_require__(3197));
 
-var _index117 = _interopRequireDefault(__webpack_require__(1988));
+var _index117 = _interopRequireDefault(__nccwpck_require__(5421));
 
-var _index118 = _interopRequireDefault(__webpack_require__(7013));
+var _index118 = _interopRequireDefault(__nccwpck_require__(938));
 
-var _index119 = _interopRequireDefault(__webpack_require__(9821));
+var _index119 = _interopRequireDefault(__nccwpck_require__(1988));
 
-var _index120 = _interopRequireDefault(__webpack_require__(6308));
+var _index120 = _interopRequireDefault(__nccwpck_require__(7013));
 
-var _index121 = _interopRequireDefault(__webpack_require__(5852));
+var _index121 = _interopRequireDefault(__nccwpck_require__(9821));
 
-var _index122 = _interopRequireDefault(__webpack_require__(4078));
+var _index122 = _interopRequireDefault(__nccwpck_require__(6308));
 
-var _index123 = _interopRequireDefault(__webpack_require__(6065));
+var _index123 = _interopRequireDefault(__nccwpck_require__(5852));
 
-var _index124 = _interopRequireDefault(__webpack_require__(3413));
+var _index124 = _interopRequireDefault(__nccwpck_require__(4078));
 
-var _index125 = _interopRequireDefault(__webpack_require__(1157));
+var _index125 = _interopRequireDefault(__nccwpck_require__(6065));
 
-var _index126 = _interopRequireDefault(__webpack_require__(5122));
+var _index126 = _interopRequireDefault(__nccwpck_require__(3413));
 
-var _index127 = _interopRequireDefault(__webpack_require__(4641));
+var _index127 = _interopRequireDefault(__nccwpck_require__(1157));
 
-var _index128 = _interopRequireDefault(__webpack_require__(2373));
+var _index128 = _interopRequireDefault(__nccwpck_require__(5122));
 
-var _index129 = _interopRequireDefault(__webpack_require__(856));
+var _index129 = _interopRequireDefault(__nccwpck_require__(4641));
 
-var _index130 = _interopRequireDefault(__webpack_require__(4350));
+var _index130 = _interopRequireDefault(__nccwpck_require__(2373));
 
-var _index131 = _interopRequireDefault(__webpack_require__(7185));
+var _index131 = _interopRequireDefault(__nccwpck_require__(856));
 
-var _index132 = _interopRequireDefault(__webpack_require__(3014));
+var _index132 = _interopRequireDefault(__nccwpck_require__(4350));
 
-var _index133 = _interopRequireDefault(__webpack_require__(8235));
+var _index133 = _interopRequireDefault(__nccwpck_require__(7185));
 
-var _index134 = _interopRequireDefault(__webpack_require__(9920));
+var _index134 = _interopRequireDefault(__nccwpck_require__(3014));
 
-var _index135 = _interopRequireDefault(__webpack_require__(9218));
+var _index135 = _interopRequireDefault(__nccwpck_require__(8235));
 
-var _index136 = _interopRequireDefault(__webpack_require__(403));
+var _index136 = _interopRequireDefault(__nccwpck_require__(9920));
 
-var _index137 = _interopRequireDefault(__webpack_require__(4419));
+var _index137 = _interopRequireDefault(__nccwpck_require__(9218));
 
-var _index138 = _interopRequireDefault(__webpack_require__(9583));
+var _index138 = _interopRequireDefault(__nccwpck_require__(403));
 
-var _index139 = _interopRequireDefault(__webpack_require__(4864));
+var _index139 = _interopRequireDefault(__nccwpck_require__(4419));
 
-var _index140 = _interopRequireDefault(__webpack_require__(7692));
+var _index140 = _interopRequireDefault(__nccwpck_require__(9583));
 
-var _index141 = _interopRequireDefault(__webpack_require__(217));
+var _index141 = _interopRequireDefault(__nccwpck_require__(4864));
 
-var _index142 = _interopRequireDefault(__webpack_require__(3346));
+var _index142 = _interopRequireDefault(__nccwpck_require__(7692));
 
-var _index143 = _interopRequireDefault(__webpack_require__(8635));
+var _index143 = _interopRequireDefault(__nccwpck_require__(217));
 
-var _index144 = _interopRequireDefault(__webpack_require__(666));
+var _index144 = _interopRequireDefault(__nccwpck_require__(3346));
 
-var _index145 = _interopRequireDefault(__webpack_require__(9771));
+var _index145 = _interopRequireDefault(__nccwpck_require__(8635));
 
-var _index146 = _interopRequireDefault(__webpack_require__(4018));
+var _index146 = _interopRequireDefault(__nccwpck_require__(666));
 
-var _index147 = _interopRequireDefault(__webpack_require__(5815));
+var _index147 = _interopRequireDefault(__nccwpck_require__(9771));
 
-var _index148 = _interopRequireDefault(__webpack_require__(5310));
+var _index148 = _interopRequireDefault(__nccwpck_require__(4018));
 
-var _index149 = _interopRequireDefault(__webpack_require__(1287));
+var _index149 = _interopRequireDefault(__nccwpck_require__(5815));
 
-var _index150 = _interopRequireDefault(__webpack_require__(3390));
+var _index150 = _interopRequireDefault(__nccwpck_require__(6133));
 
-var _index151 = _interopRequireDefault(__webpack_require__(8159));
+var _index151 = _interopRequireDefault(__nccwpck_require__(5310));
 
-var _index152 = _interopRequireDefault(__webpack_require__(5515));
+var _index152 = _interopRequireDefault(__nccwpck_require__(6771));
 
-var _index153 = _interopRequireDefault(__webpack_require__(2031));
+var _index153 = _interopRequireDefault(__nccwpck_require__(1491));
 
-var _index154 = _interopRequireDefault(__webpack_require__(8760));
+var _index154 = _interopRequireDefault(__nccwpck_require__(5947));
 
-var _index155 = _interopRequireDefault(__webpack_require__(9540));
+var _index155 = _interopRequireDefault(__nccwpck_require__(363));
 
-var _index156 = _interopRequireDefault(__webpack_require__(4002));
+var _index156 = _interopRequireDefault(__nccwpck_require__(7266));
 
-var _index157 = _interopRequireDefault(__webpack_require__(6355));
+var _index157 = _interopRequireDefault(__nccwpck_require__(9457));
 
-var _index158 = _interopRequireDefault(__webpack_require__(3705));
+var _index158 = _interopRequireDefault(__nccwpck_require__(7894));
 
-var _index159 = _interopRequireDefault(__webpack_require__(3035));
+var _index159 = _interopRequireDefault(__nccwpck_require__(29));
 
-var _index160 = _interopRequireDefault(__webpack_require__(822));
+var _index160 = _interopRequireDefault(__nccwpck_require__(1287));
 
-var _index161 = _interopRequireDefault(__webpack_require__(9105));
+var _index161 = _interopRequireDefault(__nccwpck_require__(3390));
 
-var _index162 = _interopRequireDefault(__webpack_require__(9207));
+var _index162 = _interopRequireDefault(__nccwpck_require__(8159));
 
-var _index163 = _interopRequireDefault(__webpack_require__(847));
+var _index163 = _interopRequireDefault(__nccwpck_require__(5515));
 
-var _index164 = _interopRequireDefault(__webpack_require__(621));
+var _index164 = _interopRequireDefault(__nccwpck_require__(2031));
 
-var _index165 = _interopRequireDefault(__webpack_require__(1346));
+var _index165 = _interopRequireDefault(__nccwpck_require__(8760));
 
-var _index166 = _interopRequireDefault(__webpack_require__(2664));
+var _index166 = _interopRequireDefault(__nccwpck_require__(9540));
 
-var _index167 = _interopRequireDefault(__webpack_require__(3438));
+var _index167 = _interopRequireDefault(__nccwpck_require__(4002));
 
-var _index168 = _interopRequireDefault(__webpack_require__(6212));
+var _index168 = _interopRequireDefault(__nccwpck_require__(6355));
 
-var _index169 = _interopRequireDefault(__webpack_require__(1868));
+var _index169 = _interopRequireDefault(__nccwpck_require__(3705));
 
-var _index170 = _interopRequireDefault(__webpack_require__(2025));
+var _index170 = _interopRequireDefault(__nccwpck_require__(3035));
 
-var _index171 = _interopRequireDefault(__webpack_require__(6277));
+var _index171 = _interopRequireDefault(__nccwpck_require__(822));
 
-var _index172 = _interopRequireDefault(__webpack_require__(6307));
+var _index172 = _interopRequireDefault(__nccwpck_require__(9105));
 
-var _index173 = _interopRequireDefault(__webpack_require__(776));
+var _index173 = _interopRequireDefault(__nccwpck_require__(9207));
 
-var _index174 = _interopRequireDefault(__webpack_require__(8567));
+var _index174 = _interopRequireDefault(__nccwpck_require__(847));
 
-var _index175 = _interopRequireDefault(__webpack_require__(7182));
+var _index175 = _interopRequireDefault(__nccwpck_require__(621));
 
-var _index176 = _interopRequireDefault(__webpack_require__(2932));
+var _index176 = _interopRequireDefault(__nccwpck_require__(1346));
 
-var _index177 = _interopRequireDefault(__webpack_require__(6738));
+var _index177 = _interopRequireDefault(__nccwpck_require__(2664));
 
-var _index178 = _interopRequireDefault(__webpack_require__(5516));
+var _index178 = _interopRequireDefault(__nccwpck_require__(3438));
 
-var _index179 = _interopRequireDefault(__webpack_require__(2442));
+var _index179 = _interopRequireDefault(__nccwpck_require__(6212));
 
-var _index180 = _interopRequireDefault(__webpack_require__(9813));
+var _index180 = _interopRequireDefault(__nccwpck_require__(1868));
 
-var _index181 = _interopRequireDefault(__webpack_require__(8014));
+var _index181 = _interopRequireDefault(__nccwpck_require__(2025));
 
-var _index182 = _interopRequireDefault(__webpack_require__(8225));
+var _index182 = _interopRequireDefault(__nccwpck_require__(6277));
 
-var _index183 = _interopRequireDefault(__webpack_require__(1672));
+var _index183 = _interopRequireDefault(__nccwpck_require__(6307));
 
-var _index184 = _interopRequireDefault(__webpack_require__(3875));
+var _index184 = _interopRequireDefault(__nccwpck_require__(776));
 
-var _index185 = _interopRequireDefault(__webpack_require__(1952));
+var _index185 = _interopRequireDefault(__nccwpck_require__(8567));
 
-var _index186 = _interopRequireDefault(__webpack_require__(970));
+var _index186 = _interopRequireDefault(__nccwpck_require__(7182));
 
-var _index187 = _interopRequireDefault(__webpack_require__(2481));
+var _index187 = _interopRequireDefault(__nccwpck_require__(2932));
 
-var _index188 = _interopRequireDefault(__webpack_require__(3925));
+var _index188 = _interopRequireDefault(__nccwpck_require__(6738));
 
-var _index189 = _interopRequireDefault(__webpack_require__(7923));
+var _index189 = _interopRequireDefault(__nccwpck_require__(5516));
 
-var _index190 = _interopRequireDefault(__webpack_require__(7535));
+var _index190 = _interopRequireDefault(__nccwpck_require__(2442));
 
-var _index191 = _interopRequireDefault(__webpack_require__(6752));
+var _index191 = _interopRequireDefault(__nccwpck_require__(9813));
 
-var _index192 = _interopRequireDefault(__webpack_require__(3139));
+var _index192 = _interopRequireDefault(__nccwpck_require__(8014));
 
-var _index193 = _interopRequireDefault(__webpack_require__(138));
+var _index193 = _interopRequireDefault(__nccwpck_require__(8225));
 
-var _index194 = _interopRequireDefault(__webpack_require__(5504));
+var _index194 = _interopRequireDefault(__nccwpck_require__(1672));
 
-var _index195 = _interopRequireDefault(__webpack_require__(843));
+var _index195 = _interopRequireDefault(__nccwpck_require__(3875));
 
-var _index196 = _interopRequireDefault(__webpack_require__(6477));
+var _index196 = _interopRequireDefault(__nccwpck_require__(1952));
 
-var _index197 = __webpack_require__(5756);
+var _index197 = _interopRequireDefault(__nccwpck_require__(970));
 
-Object.keys(_index197).forEach(function (key) {
+var _index198 = _interopRequireDefault(__nccwpck_require__(2481));
+
+var _index199 = _interopRequireDefault(__nccwpck_require__(3925));
+
+var _index200 = _interopRequireDefault(__nccwpck_require__(7923));
+
+var _index201 = _interopRequireDefault(__nccwpck_require__(7535));
+
+var _index202 = _interopRequireDefault(__nccwpck_require__(6752));
+
+var _index203 = _interopRequireDefault(__nccwpck_require__(3139));
+
+var _index204 = _interopRequireDefault(__nccwpck_require__(138));
+
+var _index205 = _interopRequireDefault(__nccwpck_require__(5504));
+
+var _index206 = _interopRequireDefault(__nccwpck_require__(843));
+
+var _index207 = _interopRequireDefault(__nccwpck_require__(6477));
+
+var _index208 = __nccwpck_require__(5756);
+
+Object.keys(_index208).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     get: function () {
-      return _index197[key];
+      return _index208[key];
     }
   });
 });
@@ -15158,7 +15504,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /***/ }),
 
 /***/ 2079:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -15168,27 +15514,27 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = intervalToDuration;
 
-var _index = _interopRequireDefault(__webpack_require__(9818));
+var _index = _interopRequireDefault(__nccwpck_require__(9818));
 
-var _index2 = _interopRequireDefault(__webpack_require__(3959));
+var _index2 = _interopRequireDefault(__nccwpck_require__(3959));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2713));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2713));
 
-var _index4 = _interopRequireDefault(__webpack_require__(6311));
+var _index4 = _interopRequireDefault(__nccwpck_require__(6311));
 
-var _index5 = _interopRequireDefault(__webpack_require__(8740));
+var _index5 = _interopRequireDefault(__nccwpck_require__(8740));
 
-var _index6 = _interopRequireDefault(__webpack_require__(3842));
+var _index6 = _interopRequireDefault(__nccwpck_require__(3842));
 
-var _index7 = _interopRequireDefault(__webpack_require__(9448));
+var _index7 = _interopRequireDefault(__nccwpck_require__(9448));
 
-var _index8 = _interopRequireDefault(__webpack_require__(9920));
+var _index8 = _interopRequireDefault(__nccwpck_require__(9920));
 
-var _index9 = _interopRequireDefault(__webpack_require__(2063));
+var _index9 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index10 = _interopRequireDefault(__webpack_require__(6477));
+var _index10 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index11 = _interopRequireDefault(__webpack_require__(3875));
+var _index11 = _interopRequireDefault(__nccwpck_require__(3875));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15267,8 +15613,116 @@ module.exports = exports.default;
 
 /***/ }),
 
+/***/ 1982:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = intlFormat;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name intlFormat
+ * @category Common Helpers
+ * @summary  Format the date with Intl.DateTimeFormat (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat).
+ *
+ * @description
+ * Return the formatted date string in the given format.
+ * The method uses [`Intl.DateTimeFormat`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat) inside.
+ * formatOptions are the same as [`Intl.DateTimeFormat` options](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat#using_options)
+ *
+ * > ⚠️ Please note that before Node version 13.0.0, only the locale data for en-US is available by default.
+ *
+ * @param {Date|Number} argument - the original date.
+ * @param {Object} [formatOptions] - an object with options.
+ * @param {'lookup'|'best fit'} [formatOptions.localeMatcher='best fit'] - locale selection algorithm.
+ * @param {'narrow'|'short'|'long'} [formatOptions.weekday] - representation the days of the week.
+ * @param {'narrow'|'short'|'long'} [formatOptions.era] - representation of eras.
+ * @param {'numeric'|'2-digit'} [formatOptions.year] - representation of years.
+ * @param {'numeric'|'2-digit'|'narrow'|'short'|'long'} [formatOptions.month='numeric'] - representation of month.
+ * @param {'numeric'|'2-digit'} [formatOptions.day='numeric'] - representation of day.
+ * @param {'numeric'|'2-digit'} [formatOptions.hour='numeric'] - representation of hours.
+ * @param {'numeric'|'2-digit'} [formatOptions.minute] - representation of minutes.
+ * @param {'numeric'|'2-digit'} [formatOptions.second] - representation of seconds.
+ * @param {'short'|'long'} [formatOptions.timeZoneName] - representation of names of time zones.
+ * @param {'basic'|'best fit'} [formatOptions.formatMatcher='best fit'] - format selection algorithm.
+ * @param {Boolean} [formatOptions.hour12] - determines whether to use 12-hour time format.
+ * @param {String} [formatOptions.timeZone] - the time zone to use.
+ * @param {Object} [localeOptions] - an object with locale.
+ * @param {String|String[]} [localeOptions.locale] - the locale code
+ * @returns {String} the formatted date string.
+ * @throws {TypeError} 1 argument required.
+ * @throws {RangeError} `date` must not be Invalid Date
+ *
+ * @example
+ * // Represent 10 October 2019 in German.
+ * // Convert the date with format's options and locale's options.
+ * const result = intlFormat(new Date(2019, 9, 4, 12, 30, 13, 456), {
+ *      weekday: 'long',
+ *      year: 'numeric',
+ *      month: 'long',
+ *      day: 'numeric',
+ *    }, {
+ *      locale: 'de-DE',
+ *  })
+ * //=> Freitag, 4. Oktober 2019
+ *
+ * @example
+ * // Represent 10 October 2019.
+ * // Convert the date with format's options.
+ * const result = intlFormat.default(new Date(2019, 9, 4, 12, 30, 13, 456), {
+ *      year: 'numeric',
+ *      month: 'numeric',
+ *      day: 'numeric',
+ *      hour: 'numeric',
+ *  })
+ * //=> 10/4/2019, 12 PM
+ *
+ * @example
+ * // Represent 10 October 2019 in Korean.
+ * // Convert the date with locale's options.
+ * const result = intlFormat(new Date(2019, 9, 4, 12, 30, 13, 456), {
+ *      locale: 'ko-KR',
+ *  })
+ * //=> 2019. 10. 4.
+ *
+ * @example
+ * // Represent 10 October 2019 in middle-endian format:
+ * const result = intlFormat(new Date(2019, 9, 4, 12, 30, 13, 456))
+ * //=> 10/4/2019
+ */
+function intlFormat(date, formatOrLocale, localeOptions) {
+  var _localeOptions;
+
+  (0, _index.default)(1, arguments);
+  var formatOptions;
+
+  if (isFormatOptions(formatOrLocale)) {
+    formatOptions = formatOrLocale;
+  } else {
+    localeOptions = formatOrLocale;
+  }
+
+  return new Intl.DateTimeFormat((_localeOptions = localeOptions) === null || _localeOptions === void 0 ? void 0 : _localeOptions.locale, formatOptions).format(date);
+}
+
+function isFormatOptions(opts) {
+  return opts !== undefined && !('locale' in opts);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
 /***/ 2755:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -15278,9 +15732,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isAfter;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15318,7 +15772,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9369:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -15328,9 +15782,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isBefore;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15368,7 +15822,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6801:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -15378,7 +15832,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isDate;
 
-var _index = _interopRequireDefault(__webpack_require__(2063));
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15400,22 +15854,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // For a valid date:
- * var result = isDate(new Date())
+ * const result = isDate(new Date())
  * //=> true
  *
  * @example
  * // For an invalid date:
- * var result = isDate(new Date(NaN))
+ * const result = isDate(new Date(NaN))
  * //=> true
  *
  * @example
  * // For some value:
- * var result = isDate('2014-02-31')
+ * const result = isDate('2014-02-31')
  * //=> false
  *
  * @example
  * // For an object:
- * var result = isDate({})
+ * const result = isDate({})
  * //=> false
  */
 function isDate(value) {
@@ -15428,7 +15882,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4669:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -15438,9 +15892,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isEqual;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15529,7 +15983,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5387:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -15539,9 +15993,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isFirstDayOfMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15576,7 +16030,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1758:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -15586,9 +16040,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isFriday;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15623,7 +16077,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6803:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -15633,9 +16087,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isFuture;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15674,7 +16128,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8506:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -15684,13 +16138,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isLastDayOfMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(8569));
+var _index2 = _interopRequireDefault(__nccwpck_require__(8569));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2621));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2621));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15726,7 +16180,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 74:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -15736,9 +16190,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isLeapYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -15775,7 +16229,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 525:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -15785,11 +16239,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isMatch;
 
-var _index = _interopRequireDefault(__webpack_require__(1287));
+var _index = _interopRequireDefault(__nccwpck_require__(1287));
 
-var _index2 = _interopRequireDefault(__webpack_require__(9920));
+var _index2 = _interopRequireDefault(__nccwpck_require__(9920));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16095,7 +16549,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6030:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16105,9 +16559,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isMonday;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16132,9 +16586,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * var result = isMonday(new Date(2014, 8, 22))
  * //=> true
  */
-function isMonday(dirtyDate) {
+function isMonday(date) {
   (0, _index2.default)(1, arguments);
-  return (0, _index.default)(dirtyDate).getDay() === 1;
+  return (0, _index.default)(date).getDay() === 1;
 }
 
 module.exports = exports.default;
@@ -16142,7 +16596,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9543:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16152,9 +16606,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isPast;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16193,7 +16647,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2154:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16203,9 +16657,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSameDay;
 
-var _index = _interopRequireDefault(__webpack_require__(1868));
+var _index = _interopRequireDefault(__nccwpck_require__(1868));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16243,7 +16697,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2489:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16253,9 +16707,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSameHour;
 
-var _index = _interopRequireDefault(__webpack_require__(6277));
+var _index = _interopRequireDefault(__nccwpck_require__(6277));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16293,7 +16747,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9852:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16303,9 +16757,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSameISOWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(7013));
+var _index = _interopRequireDefault(__nccwpck_require__(7013));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16345,7 +16799,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3944:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16355,9 +16809,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSameISOWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(776));
+var _index = _interopRequireDefault(__nccwpck_require__(776));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16402,7 +16856,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3197:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16412,9 +16866,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSameMinute;
 
-var _index = _interopRequireDefault(__webpack_require__(8567));
+var _index = _interopRequireDefault(__nccwpck_require__(8567));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16456,7 +16910,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5421:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16466,9 +16920,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSameMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16506,7 +16960,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 938:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16516,9 +16970,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSameQuarter;
 
-var _index = _interopRequireDefault(__webpack_require__(2932));
+var _index = _interopRequireDefault(__nccwpck_require__(2932));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16556,7 +17010,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1988:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16566,9 +17020,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSameSecond;
 
-var _index = _interopRequireDefault(__webpack_require__(6738));
+var _index = _interopRequireDefault(__nccwpck_require__(6738));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16610,7 +17064,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7013:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16620,9 +17074,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSameWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(9813));
+var _index = _interopRequireDefault(__nccwpck_require__(9813));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16672,7 +17126,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9821:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16682,9 +17136,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSameYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16722,7 +17176,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6308:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16732,9 +17186,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSaturday;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16769,7 +17223,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5852:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16779,9 +17233,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isSunday;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16816,7 +17270,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4078:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16826,9 +17280,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isThisHour;
 
-var _index = _interopRequireDefault(__webpack_require__(2489));
+var _index = _interopRequireDefault(__nccwpck_require__(2489));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16868,7 +17322,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6065:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16878,9 +17332,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isThisISOWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(9852));
+var _index = _interopRequireDefault(__nccwpck_require__(9852));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16921,7 +17375,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3413:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16931,9 +17385,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isThisMinute;
 
-var _index = _interopRequireDefault(__webpack_require__(3197));
+var _index = _interopRequireDefault(__nccwpck_require__(3197));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -16973,7 +17427,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1157:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -16983,9 +17437,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isThisMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(5421));
+var _index = _interopRequireDefault(__nccwpck_require__(5421));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17024,7 +17478,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5122:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17034,9 +17488,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isThisQuarter;
 
-var _index = _interopRequireDefault(__webpack_require__(938));
+var _index = _interopRequireDefault(__nccwpck_require__(938));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17075,7 +17529,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4641:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17085,9 +17539,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isThisSecond;
 
-var _index = _interopRequireDefault(__webpack_require__(1988));
+var _index = _interopRequireDefault(__nccwpck_require__(1988));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17127,7 +17581,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2373:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17137,9 +17591,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isThisWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(7013));
+var _index = _interopRequireDefault(__nccwpck_require__(7013));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17188,7 +17642,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 856:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17198,9 +17652,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isThisYear;
 
-var _index = _interopRequireDefault(__webpack_require__(9821));
+var _index = _interopRequireDefault(__nccwpck_require__(9821));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17239,7 +17693,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4350:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17249,9 +17703,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isThursday;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17286,7 +17740,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7185:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17296,9 +17750,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isToday;
 
-var _index = _interopRequireDefault(__webpack_require__(2154));
+var _index = _interopRequireDefault(__nccwpck_require__(2154));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17337,7 +17791,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3014:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17347,11 +17801,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isTomorrow;
 
-var _index = _interopRequireDefault(__webpack_require__(6227));
+var _index = _interopRequireDefault(__nccwpck_require__(6227));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2154));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2154));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17390,7 +17844,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8235:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17400,9 +17854,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isTuesday;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17437,7 +17891,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9920:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17447,9 +17901,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isValid;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17521,7 +17975,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9218:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17531,9 +17985,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isWednesday;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17555,7 +18009,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Is 24 September 2014 Wednesday?
- * var result = isWednesday(new Date(2014, 8, 24))
+ * const result = isWednesday(new Date(2014, 8, 24))
  * //=> true
  */
 function isWednesday(dirtyDate) {
@@ -17568,7 +18022,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 403:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17578,9 +18032,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isWeekend;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17602,7 +18056,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Does 5 October 2014 fall on a weekend?
- * var result = isWeekend(new Date(2014, 9, 5))
+ * const result = isWeekend(new Date(2014, 9, 5))
  * //=> true
  */
 function isWeekend(dirtyDate) {
@@ -17617,7 +18071,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4419:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17627,9 +18081,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isWithinInterval;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17725,7 +18179,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9583:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17735,11 +18189,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isYesterday;
 
-var _index = _interopRequireDefault(__webpack_require__(2154));
+var _index = _interopRequireDefault(__nccwpck_require__(2154));
 
-var _index2 = _interopRequireDefault(__webpack_require__(970));
+var _index2 = _interopRequireDefault(__nccwpck_require__(970));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17778,7 +18232,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4864:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17788,9 +18242,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = lastDayOfDecade;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17830,7 +18284,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7692:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17840,9 +18294,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = lastDayOfISOWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(666));
+var _index = _interopRequireDefault(__nccwpck_require__(666));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17882,7 +18336,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 217:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17892,11 +18346,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = lastDayOfISOWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6991));
+var _index = _interopRequireDefault(__nccwpck_require__(6991));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6307));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6307));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17946,7 +18400,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3346:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -17956,9 +18410,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = lastDayOfMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17998,7 +18452,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8635:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -18008,9 +18462,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = lastDayOfQuarter;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18054,7 +18508,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 666:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -18064,11 +18518,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = lastDayOfWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(1985));
+var _index2 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18128,7 +18582,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9771:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -18138,9 +18592,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = lastDayOfYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18180,7 +18634,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4018:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -18190,17 +18644,17 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = lightFormat;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(289));
+var _index2 = _interopRequireDefault(__nccwpck_require__(289));
 
-var _index3 = _interopRequireDefault(__webpack_require__(7032));
+var _index3 = _interopRequireDefault(__nccwpck_require__(7032));
 
-var _index4 = _interopRequireDefault(__webpack_require__(9920));
+var _index4 = _interopRequireDefault(__nccwpck_require__(9920));
 
-var _index5 = _interopRequireDefault(__webpack_require__(7923));
+var _index5 = _interopRequireDefault(__nccwpck_require__(7923));
 
-var _index6 = _interopRequireDefault(__webpack_require__(2063));
+var _index6 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18593,7 +19047,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 368:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -18603,7 +19057,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = void 0;
 
-var _index = _interopRequireDefault(__webpack_require__(1244));
+var _index = _interopRequireDefault(__nccwpck_require__(1244));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18673,7 +19127,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5474:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -18683,7 +19137,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = void 0;
 
-var _index = _interopRequireDefault(__webpack_require__(3647));
+var _index = _interopRequireDefault(__nccwpck_require__(3647));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18841,7 +19295,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1338:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -18851,9 +19305,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = void 0;
 
-var _index = _interopRequireDefault(__webpack_require__(3364));
+var _index = _interopRequireDefault(__nccwpck_require__(3364));
 
-var _index2 = _interopRequireDefault(__webpack_require__(4029));
+var _index2 = _interopRequireDefault(__nccwpck_require__(4029));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18959,7 +19413,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1773:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -18969,15 +19423,15 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = void 0;
 
-var _index = _interopRequireDefault(__webpack_require__(4846));
+var _index = _interopRequireDefault(__nccwpck_require__(4846));
 
-var _index2 = _interopRequireDefault(__webpack_require__(368));
+var _index2 = _interopRequireDefault(__nccwpck_require__(368));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2430));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2430));
 
-var _index4 = _interopRequireDefault(__webpack_require__(5474));
+var _index4 = _interopRequireDefault(__nccwpck_require__(5474));
 
-var _index5 = _interopRequireDefault(__webpack_require__(1338));
+var _index5 = _interopRequireDefault(__nccwpck_require__(1338));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19011,7 +19465,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5815:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -19021,9 +19475,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = max;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -19083,7 +19537,7 @@ function max(dirtyDatesArray) {
   datesArray.forEach(function (dirtyDate) {
     var currentDate = (0, _index.default)(dirtyDate);
 
-    if (result === undefined || result < currentDate || isNaN(currentDate)) {
+    if (result === undefined || result < currentDate || isNaN(Number(currentDate))) {
       result = currentDate;
     }
   });
@@ -19094,8 +19548,81 @@ module.exports = exports.default;
 
 /***/ }),
 
+/***/ 6133:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = milliseconds;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// Leap year occures every 4 years, except for years that are divisable by 100 and not divisable by 400.
+// 1 mean year = (365+1/4-1/100+1/400) days = 365.2425 days
+var yearInDays = 365.2425;
+/**
+ * @name milliseconds
+ * @category Millisecond Helpers
+ * @summary
+ * Returns the number of milliseconds in the specified, years, months, weeks, days, hours, minutes and seconds.
+ *
+ * @description
+ * Returns the number of milliseconds in the specified, years, months, weeks, days, hours, minutes and seconds.
+ *
+ * One years equals 365.2425 days according to the formula:
+ *
+ * > Leap year occures every 4 years, except for years that are divisable by 100 and not divisable by 400.
+ * > 1 mean year = (365+1/4-1/100+1/400) days = 365.2425 days
+ *
+ * One month is a year divided by 12.
+ *
+ * @param {Duration} duration - the object with years, months, weeks, days, hours, minutes and seconds to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
+ * @returns {number} the milliseconds
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // 1 year in milliseconds
+ * milliseconds({ years: 1 })
+ * //=> 31556952000
+ *
+ * // 3 months in milliseconds
+ * milliseconds({ months: 3 })
+ * //=> 7889238000
+ */
+
+function milliseconds(_ref) {
+  var years = _ref.years,
+      months = _ref.months,
+      weeks = _ref.weeks,
+      days = _ref.days,
+      hours = _ref.hours,
+      minutes = _ref.minutes,
+      seconds = _ref.seconds;
+  (0, _index.default)(1, arguments);
+  var totalDays = 0;
+  if (years) totalDays += years * yearInDays;
+  if (months) totalDays += months * (yearInDays / 12);
+  if (weeks) totalDays += weeks * 7;
+  if (days) totalDays += days;
+  var totalSeconds = totalDays * 24 * 60 * 60;
+  if (hours) totalSeconds += hours * 60 * 60;
+  if (minutes) totalSeconds += minutes * 60;
+  if (seconds) totalSeconds += seconds;
+  return Math.round(totalSeconds * 1000);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
 /***/ 5310:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -19105,19 +19632,19 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = min;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @name min
  * @category Common Helpers
- * @summary Return the earliest of the given dates.
+ * @summary Returns the earliest of the given dates.
  *
  * @description
- * Return the earliest of the given dates.
+ * Returns the earliest of the given dates.
  *
  * ### v2.0.0 breaking changes:
  *
@@ -19127,22 +19654,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  *   ```javascript
  *   // Before v2.0.0
- *   var date1 = new Date(1989, 6, 10)
- *   var date2 = new Date(1987, 1, 11)
- *   var minDate = min(date1, date2)
+ *   const date1 = new Date(1989, 6, 10)
+ *   const date2 = new Date(1987, 1, 11)
+ *   const minDate = min(date1, date2)
  *
  *   // v2.0.0 onward:
- *   var dates = [new Date(1989, 6, 10), new Date(1987, 1, 11)]
- *   var minDate = min(dates)
+ *   const dates = [new Date(1989, 6, 10), new Date(1987, 1, 11)]
+ *   const minDate = min(dates)
  *   ```
  *
  * @param {Date[]|Number[]} datesArray - the dates to compare
- * @returns {Date} the earliest of the dates
+ * @returns {Date} - the earliest of the dates
  * @throws {TypeError} 1 argument required
  *
  * @example
  * // Which of these dates is the earliest?
- * var result = min([
+ * const result = min([
  *   new Date(1989, 6, 10),
  *   new Date(1987, 1, 11),
  *   new Date(1995, 6, 2),
@@ -19167,7 +19694,7 @@ function min(dirtyDatesArray) {
   datesArray.forEach(function (dirtyDate) {
     var currentDate = (0, _index.default)(dirtyDate);
 
-    if (result === undefined || result > currentDate || isNaN(currentDate)) {
+    if (result === undefined || result > currentDate || isNaN(currentDate.getDate())) {
       result = currentDate;
     }
   });
@@ -19178,8 +19705,389 @@ module.exports = exports.default;
 
 /***/ }),
 
+/***/ 6771:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = nextDay;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(9361));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(6227));
+
+var _index4 = _interopRequireDefault(__nccwpck_require__(6477));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var baseMap = [7, 6, 5, 4, 3, 2, 1];
+/**
+ * @name nextDay
+ * @category Weekday Helpers
+ * @summary When is the next day of the week?
+ *
+ * @description
+ * When is the next day of the week? 0-6 the day of the week, 0 represents Sunday.
+ *
+ * @param {Date | number} date - the date to check
+ * @param {Day} day - day of the week
+ * @returns {Date} - the date is the next day of week
+ * @throws {TypeError} - 2 arguments required
+ *
+ * @example
+ * // When is the next Monday after Mar, 20, 2020?
+ * const result = nextDay(new Date(2020, 2, 20), 1)
+ * //=> Mon Mar 23 2020 00:00:00
+ *
+ * @example
+ * // When is the next Tuesday after Mar, 21, 2020?
+ * const result = nextDay(new Date(2020, 2, 21), 2)
+ * //=> Tue Mar 24 2020 00:00:00
+ */
+
+function nextDay(date, day) {
+  (0, _index.default)(2, arguments);
+  var map = genMap(day);
+  return (0, _index3.default)((0, _index4.default)(date), map[(0, _index2.default)((0, _index4.default)(date))]);
+}
+
+function genMap(daysToMove) {
+  if (daysToMove === 0) {
+    return baseMap;
+  } else {
+    var mapStart = baseMap.slice(-daysToMove);
+    var mapEnd = baseMap.slice(0, baseMap.length - daysToMove);
+    return mapStart.concat(mapEnd);
+  }
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 1491:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = nextFriday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name nextFriday
+ * @category Weekday Helpers
+ * @summary When is the next Friday?
+ *
+ * @description
+ * When is the next Friday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the next Friday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the next Friday after Mar, 22, 2020?
+ * const result = nextFriday(new Date(2020, 2, 22))
+ * //=> Fri Mar 27 2020 00:00:00
+ */
+function nextFriday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)((0, _index3.default)(date), 5);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 5947:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = nextMonday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name nextMonday
+ * @category Weekday Helpers
+ * @summary When is the next Monday?
+ *
+ * @description
+ * When is the next Monday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the next Monday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the next Monday after Mar, 22, 2020?
+ * const result = nextMonday(new Date(2020, 2, 22))
+ * //=> Mon Mar 23 2020 00:00:00
+ */
+function nextMonday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)((0, _index3.default)(date), 1);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 363:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = nextSaturday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name nextSaturday
+ * @category Weekday Helpers
+ * @summary When is the next Saturday?
+ *
+ * @description
+ * When is the next Saturday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the next Saturday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the next Saturday after Mar, 22, 2020?
+ * const result = nextSaturday(new Date(2020, 2, 22))
+ * //=> Sat Mar 28 2020 00:00:00
+ */
+function nextSaturday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)((0, _index3.default)(date), 6);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 7266:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = nextSunday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name nextSunday
+ * @category Weekday Helpers
+ * @summary When is the next Sunday?
+ *
+ * @description
+ * When is the next Sunday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the next Sunday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the next Sunday after Mar, 22, 2020?
+ * const result = nextSunday(new Date(2020, 2, 22))
+ * //=> Sun Mar 29 2020 00:00:00
+ */
+function nextSunday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)((0, _index3.default)(date), 0);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 9457:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = nextThursday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name nextThursday
+ * @category Weekday Helpers
+ * @summary When is the next Thursday?
+ *
+ * @description
+ * When is the next Thursday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the next Thursday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the next Thursday after Mar, 22, 2020?
+ * const result = nextThursday(new Date(2020, 2, 22))
+ * //=> Thur Mar 26 2020 00:00:00
+ */
+function nextThursday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)((0, _index3.default)(date), 4);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 7894:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = nextTuesday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name nextTuesday
+ * @category Weekday Helpers
+ * @summary When is the next Tuesday?
+ *
+ * @description
+ * When is the next Tuesday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the next Tuesday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the next Tuesday after Mar, 22, 2020?
+ * const result = nextTuesday(new Date(2020, 2, 22))
+ * //=> Tue Mar 24 2020 00:00:00
+ */
+function nextTuesday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)((0, _index3.default)(date), 2);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 29:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = nextWednesday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name nextWednesday
+ * @category Weekday Helpers
+ * @summary When is the next Wednesday?
+ *
+ * @description
+ * When is the next Wednesday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the next Wednesday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the next Wednesday after Mar, 22, 2020?
+ * const result = nextWednesday(new Date(2020, 2, 22))
+ * //=> Wed Mar 25 2020 00:00:00
+ */
+function nextWednesday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)((0, _index3.default)(date), 3);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
 /***/ 5193:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -19189,19 +20097,19 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = void 0;
 
-var _index = _interopRequireDefault(__webpack_require__(8050));
+var _index = _interopRequireDefault(__nccwpck_require__(8050));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2694));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2694));
 
-var _index3 = _interopRequireDefault(__webpack_require__(7985));
+var _index3 = _interopRequireDefault(__nccwpck_require__(7985));
 
-var _index4 = _interopRequireDefault(__webpack_require__(8921));
+var _index4 = _interopRequireDefault(__nccwpck_require__(8921));
 
-var _index5 = _interopRequireDefault(__webpack_require__(3285));
+var _index5 = _interopRequireDefault(__nccwpck_require__(3285));
 
-var _index6 = _interopRequireDefault(__webpack_require__(3061));
+var _index6 = _interopRequireDefault(__nccwpck_require__(3061));
 
-var _index7 = _interopRequireDefault(__webpack_require__(2258));
+var _index7 = _interopRequireDefault(__nccwpck_require__(2258));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20707,7 +21615,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1287:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -20717,25 +21625,25 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = parse;
 
-var _index = _interopRequireDefault(__webpack_require__(1773));
+var _index = _interopRequireDefault(__nccwpck_require__(1773));
 
-var _index2 = _interopRequireDefault(__webpack_require__(7923));
+var _index2 = _interopRequireDefault(__nccwpck_require__(7923));
 
-var _index3 = _interopRequireDefault(__webpack_require__(6477));
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2631));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2631));
 
-var _index5 = _interopRequireDefault(__webpack_require__(8387));
+var _index5 = _interopRequireDefault(__nccwpck_require__(8387));
 
-var _index6 = _interopRequireDefault(__webpack_require__(7032));
+var _index6 = _interopRequireDefault(__nccwpck_require__(7032));
 
-var _index7 = __webpack_require__(2509);
+var _index7 = __nccwpck_require__(2509);
 
-var _index8 = _interopRequireDefault(__webpack_require__(1985));
+var _index8 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index9 = _interopRequireDefault(__webpack_require__(5193));
+var _index9 = _interopRequireDefault(__nccwpck_require__(5193));
 
-var _index10 = _interopRequireDefault(__webpack_require__(2063));
+var _index10 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21036,8 +21944,9 @@ var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
  *   // Before v2.0.0
  *   parse('2016-01-01')
  *
- *   // v2.0.0 onward
- *   toDate('2016-01-01')
+ *   // v2.0.0 onward (toDate no longer accepts a string)
+ *   toDate(1392098430000) // Unix to timestamp
+ *   toDate(new Date(2014, 1, 11, 11, 30, 30)) // Cloning the date
  *   parse('2016-01-01', 'yyyy-MM-dd', new Date())
  *   ```
  *
@@ -21285,7 +22194,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3390:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -21295,9 +22204,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = parseISO;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21420,8 +22329,9 @@ function parseISO(argument, dirtyOptions) {
     // Year values from 0 to 99 map to the years 1900 to 1999
     // so set year explicitly with setFullYear.
 
-    var result = new Date(dirtyDate.getUTCFullYear(), dirtyDate.getUTCMonth(), dirtyDate.getUTCDate(), dirtyDate.getUTCHours(), dirtyDate.getUTCMinutes(), dirtyDate.getUTCSeconds(), dirtyDate.getUTCMilliseconds());
-    result.setFullYear(dirtyDate.getUTCFullYear());
+    var result = new Date(0);
+    result.setFullYear(dirtyDate.getUTCFullYear(), dirtyDate.getUTCMonth(), dirtyDate.getUTCDate());
+    result.setHours(dirtyDate.getUTCHours(), dirtyDate.getUTCMinutes(), dirtyDate.getUTCSeconds(), dirtyDate.getUTCMilliseconds());
     return result;
   }
 
@@ -21595,7 +22505,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8159:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -21605,9 +22515,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = parseJSON;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21627,6 +22537,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * - `2000-03-15T05:20:10.123Z`: The output of `.toISOString()` and `JSON.stringify(new Date())`
  * - `2000-03-15T05:20:10Z`: Without milliseconds
  * - `2000-03-15T05:20:10+00:00`: With a zero offset, the default JSON encoded format in some other languages
+ * - `2000-03-15T05:20:10+05:45`: With a positive or negative offset, the default JSON encoded format in some other languages
  * - `2000-03-15T05:20:10+0000`: With a zero offset without a colon
  * - `2000-03-15T05:20:10`: Without a trailing 'Z' symbol
  * - `2000-03-15T05:20:10.1234567`: Up to 7 digits in milliseconds field. Only first 3 are taken into account since JS does not allow fractional milliseconds
@@ -21648,10 +22559,11 @@ function parseJSON(argument) {
   (0, _index2.default)(1, arguments);
 
   if (typeof argument === 'string') {
-    var parts = argument.match(/(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})(?:\.(\d{0,7}))?(?:Z|\+00:?00)?/);
+    var parts = argument.match(/(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2}):(\d{2})(?:\.(\d{0,7}))?(?:Z|(.)(\d{2}):?(\d{2})?)?/);
 
     if (parts) {
-      return new Date(Date.UTC(+parts[1], parts[2] - 1, +parts[3], +parts[4], +parts[5], +parts[6], +((parts[7] || '0') + '00').substring(0, 3)));
+      // Group 8 matches the sign
+      return new Date(Date.UTC(+parts[1], parts[2] - 1, +parts[3], +parts[4] - (parts[9] || 0) * (parts[8] == '-' ? -1 : 1), +parts[5] - (parts[10] || 0) * (parts[8] == '-' ? -1 : 1), +parts[6], +((parts[7] || '0') + '00').substring(0, 3)));
     }
 
     return new Date(NaN);
@@ -21665,7 +22577,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5515:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -21675,9 +22587,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = roundToNearestMinutes;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(1985));
+var _index2 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21738,7 +22650,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2031:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -21748,13 +22660,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = set;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(847));
+var _index2 = _interopRequireDefault(__nccwpck_require__(847));
 
-var _index3 = _interopRequireDefault(__webpack_require__(1985));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21805,7 +22717,7 @@ function set(dirtyDate, values) {
 
   var date = (0, _index.default)(dirtyDate); // Check if date is Invalid Date because Date.prototype.setFullYear ignores the value of Invalid Date
 
-  if (isNaN(date)) {
+  if (isNaN(date.getTime())) {
     return new Date(NaN);
   }
 
@@ -21845,7 +22757,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8760:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -21855,11 +22767,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setDate;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21898,7 +22810,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9540:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -21908,13 +22820,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setDay;
 
-var _index = _interopRequireDefault(__webpack_require__(6227));
+var _index = _interopRequireDefault(__nccwpck_require__(6227));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(1985));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21976,7 +22888,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 4002:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -21986,11 +22898,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setDayOfYear;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22030,7 +22942,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6355:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22040,11 +22952,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setHours;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22083,7 +22995,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3705:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22093,15 +23005,15 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setISODay;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(6227));
+var _index3 = _interopRequireDefault(__nccwpck_require__(6227));
 
-var _index4 = _interopRequireDefault(__webpack_require__(8313));
+var _index4 = _interopRequireDefault(__nccwpck_require__(8313));
 
-var _index5 = _interopRequireDefault(__webpack_require__(2063));
+var _index5 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22126,7 +23038,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Set Sunday to 1 September 2014:
- * var result = setISODay(new Date(2014, 8, 1), 7)
+ * const result = setISODay(new Date(2014, 8, 1), 7)
  * //=> Sun Sep 07 2014 00:00:00
  */
 function setISODay(dirtyDate, dirtyDay) {
@@ -22143,7 +23055,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3035:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22153,13 +23065,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setISOWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(9894));
+var _index3 = _interopRequireDefault(__nccwpck_require__(9894));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22184,7 +23096,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Set the 53rd ISO week to 7 August 2004:
- * var result = setISOWeek(new Date(2004, 7, 7), 53)
+ * const result = setISOWeek(new Date(2004, 7, 7), 53)
  * //=> Sat Jan 01 2005 00:00:00
  */
 function setISOWeek(dirtyDate, dirtyISOWeek) {
@@ -22201,7 +23113,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 822:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22211,15 +23123,15 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setISOWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(776));
+var _index3 = _interopRequireDefault(__nccwpck_require__(776));
 
-var _index4 = _interopRequireDefault(__webpack_require__(3086));
+var _index4 = _interopRequireDefault(__nccwpck_require__(3086));
 
-var _index5 = _interopRequireDefault(__webpack_require__(2063));
+var _index5 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22250,7 +23162,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Set ISO week-numbering year 2007 to 29 December 2008:
- * var result = setISOWeekYear(new Date(2008, 11, 29), 2007)
+ * const result = setISOWeekYear(new Date(2008, 11, 29), 2007)
  * //=> Mon Jan 01 2007 00:00:00
  */
 function setISOWeekYear(dirtyDate, dirtyISOWeekYear) {
@@ -22271,7 +23183,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9105:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22281,11 +23193,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setMilliseconds;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22308,7 +23220,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Set 300 milliseconds to 1 September 2014 11:30:40.500:
- * var result = setMilliseconds(new Date(2014, 8, 1, 11, 30, 40, 500), 300)
+ * const result = setMilliseconds(new Date(2014, 8, 1, 11, 30, 40, 500), 300)
  * //=> Mon Sep 01 2014 11:30:40.300
  */
 function setMilliseconds(dirtyDate, dirtyMilliseconds) {
@@ -22324,7 +23236,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9207:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22334,11 +23246,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setMinutes;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22377,7 +23289,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 847:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22387,13 +23299,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(7573));
+var _index3 = _interopRequireDefault(__nccwpck_require__(7573));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22416,7 +23328,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Set February to 1 September 2014:
- * var result = setMonth(new Date(2014, 8, 1), 1)
+ * const result = setMonth(new Date(2014, 8, 1), 1)
  * //=> Sat Feb 01 2014 00:00:00
  */
 function setMonth(dirtyDate, dirtyMonth) {
@@ -22440,7 +23352,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 621:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22450,13 +23362,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setQuarter;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(847));
+var _index3 = _interopRequireDefault(__nccwpck_require__(847));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22479,7 +23391,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Set the 2nd quarter to 2 July 2014:
- * var result = setQuarter(new Date(2014, 6, 2), 2)
+ * const result = setQuarter(new Date(2014, 6, 2), 2)
  * //=> Wed Apr 02 2014 00:00:00
  */
 function setQuarter(dirtyDate, dirtyQuarter) {
@@ -22496,7 +23408,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1346:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22506,11 +23418,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setSeconds;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22533,7 +23445,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Set 45 seconds to 1 September 2014 11:30:40:
- * var result = setSeconds(new Date(2014, 8, 1, 11, 30, 40), 45)
+ * const result = setSeconds(new Date(2014, 8, 1, 11, 30, 40), 45)
  * //=> Mon Sep 01 2014 11:30:45
  */
 function setSeconds(dirtyDate, dirtySeconds) {
@@ -22549,7 +23461,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2664:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22559,13 +23471,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(81));
+var _index = _interopRequireDefault(__nccwpck_require__(81));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(1985));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22627,7 +23539,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3438:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22637,15 +23549,15 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(3086));
+var _index = _interopRequireDefault(__nccwpck_require__(3086));
 
-var _index2 = _interopRequireDefault(__webpack_require__(8014));
+var _index2 = _interopRequireDefault(__nccwpck_require__(8014));
 
-var _index3 = _interopRequireDefault(__webpack_require__(6477));
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index4 = _interopRequireDefault(__webpack_require__(1985));
+var _index4 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index5 = _interopRequireDefault(__webpack_require__(2063));
+var _index5 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22717,7 +23629,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6212:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22727,11 +23639,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setYear;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22754,7 +23666,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Set year 2013 to 1 September 2014:
- * var result = setYear(new Date(2014, 8, 1), 2013)
+ * const result = setYear(new Date(2014, 8, 1), 2013)
  * //=> Sun Sep 01 2013 00:00:00
  */
 function setYear(dirtyDate, dirtyYear) {
@@ -22762,7 +23674,7 @@ function setYear(dirtyDate, dirtyYear) {
   var date = (0, _index2.default)(dirtyDate);
   var year = (0, _index.default)(dirtyYear); // Check if date is Invalid Date because Date.prototype.setFullYear ignores the value of Invalid Date
 
-  if (isNaN(date)) {
+  if (isNaN(date.getTime())) {
     return new Date(NaN);
   }
 
@@ -22775,7 +23687,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1868:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22785,9 +23697,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfDay;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22810,7 +23722,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The start of a day for 2 September 2014 11:55:00:
- * var result = startOfDay(new Date(2014, 8, 2, 11, 55, 0))
+ * const result = startOfDay(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Tue Sep 02 2014 00:00:00
  */
 function startOfDay(dirtyDate) {
@@ -22825,7 +23737,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2025:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22835,9 +23747,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfDecade;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22859,7 +23771,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The start of a decade for 21 October 2015 00:00:00:
- * var result = startOfDecade(new Date(2015, 9, 21, 00, 00, 00))
+ * const result = startOfDecade(new Date(2015, 9, 21, 00, 00, 00))
  * //=> Jan 01 2010 00:00:00
  */
 function startOfDecade(dirtyDate) {
@@ -22877,7 +23789,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6277:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22887,9 +23799,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfHour;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22912,7 +23824,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The start of an hour for 2 September 2014 11:55:00:
- * var result = startOfHour(new Date(2014, 8, 2, 11, 55))
+ * const result = startOfHour(new Date(2014, 8, 2, 11, 55))
  * //=> Tue Sep 02 2014 11:00:00
  */
 function startOfHour(dirtyDate) {
@@ -22927,7 +23839,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6307:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22937,9 +23849,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfISOWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(9813));
+var _index = _interopRequireDefault(__nccwpck_require__(9813));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -22979,7 +23891,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 776:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -22989,11 +23901,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfISOWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6991));
+var _index = _interopRequireDefault(__nccwpck_require__(6991));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6307));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6307));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23019,7 +23931,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The start of an ISO week-numbering year for 2 July 2005:
- * var result = startOfISOWeekYear(new Date(2005, 6, 2))
+ * const result = startOfISOWeekYear(new Date(2005, 6, 2))
  * //=> Mon Jan 03 2005 00:00:00
  */
 function startOfISOWeekYear(dirtyDate) {
@@ -23037,7 +23949,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8567:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23047,9 +23959,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfMinute;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23072,7 +23984,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The start of a minute for 1 December 2014 22:15:45.400:
- * var result = startOfMinute(new Date(2014, 11, 1, 22, 15, 45, 400))
+ * const result = startOfMinute(new Date(2014, 11, 1, 22, 15, 45, 400))
  * //=> Mon Dec 01 2014 22:15:00
  */
 function startOfMinute(dirtyDate) {
@@ -23087,7 +23999,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7182:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23097,9 +24009,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfMonth;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23122,7 +24034,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The start of a month for 2 September 2014 11:55:00:
- * var result = startOfMonth(new Date(2014, 8, 2, 11, 55, 0))
+ * const result = startOfMonth(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Mon Sep 01 2014 00:00:00
  */
 function startOfMonth(dirtyDate) {
@@ -23138,7 +24050,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2932:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23148,9 +24060,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfQuarter;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23173,7 +24085,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The start of a quarter for 2 September 2014 11:55:00:
- * var result = startOfQuarter(new Date(2014, 8, 2, 11, 55, 0))
+ * const result = startOfQuarter(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Tue Jul 01 2014 00:00:00
  */
 function startOfQuarter(dirtyDate) {
@@ -23191,7 +24103,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6738:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23201,9 +24113,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfSecond;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23226,7 +24138,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The start of a second for 1 December 2014 22:15:45.400:
- * var result = startOfSecond(new Date(2014, 11, 1, 22, 15, 45, 400))
+ * const result = startOfSecond(new Date(2014, 11, 1, 22, 15, 45, 400))
  * //=> Mon Dec 01 2014 22:15:45.000
  */
 function startOfSecond(dirtyDate) {
@@ -23241,7 +24153,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5516:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23251,7 +24163,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfToday;
 
-var _index = _interopRequireDefault(__webpack_require__(1868));
+var _index = _interopRequireDefault(__nccwpck_require__(1868));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23317,7 +24229,7 @@ exports.default = startOfTomorrow;
  *
  * @example
  * // If today is 6 October 2014:
- * var result = startOfTomorrow()
+ * const result = startOfTomorrow()
  * //=> Tue Oct 7 2014 00:00:00
  */
 function startOfTomorrow() {
@@ -23336,7 +24248,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 9813:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23346,11 +24258,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfWeek;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(1985));
+var _index2 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23377,12 +24289,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The start of a week for 2 September 2014 11:55:00:
- * var result = startOfWeek(new Date(2014, 8, 2, 11, 55, 0))
+ * const result = startOfWeek(new Date(2014, 8, 2, 11, 55, 0))
  * //=> Sun Aug 31 2014 00:00:00
  *
  * @example
  * // If the week starts on Monday, the start of the week for 2 September 2014 11:55:00:
- * var result = startOfWeek(new Date(2014, 8, 2, 11, 55, 0), { weekStartsOn: 1 })
+ * const result = startOfWeek(new Date(2014, 8, 2, 11, 55, 0), { weekStartsOn: 1 })
  * //=> Mon Sep 01 2014 00:00:00
  */
 function startOfWeek(dirtyDate, dirtyOptions) {
@@ -23410,7 +24322,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8014:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23420,13 +24332,13 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfWeekYear;
 
-var _index = _interopRequireDefault(__webpack_require__(3494));
+var _index = _interopRequireDefault(__nccwpck_require__(3494));
 
-var _index2 = _interopRequireDefault(__webpack_require__(9813));
+var _index2 = _interopRequireDefault(__nccwpck_require__(9813));
 
-var _index3 = _interopRequireDefault(__webpack_require__(1985));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23493,7 +24405,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 8225:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23503,9 +24415,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfYear;
 
-var _index = _interopRequireDefault(__webpack_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23528,7 +24440,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The start of a year for 2 September 2014 11:55:00:
- * var result = startOfYear(new Date(2014, 8, 2, 11, 55, 00))
+ * const result = startOfYear(new Date(2014, 8, 2, 11, 55, 00))
  * //=> Wed Jan 01 2014 00:00:00
  */
 function startOfYear(dirtyDate) {
@@ -23575,7 +24487,7 @@ exports.default = startOfYesterday;
  *
  * @example
  * // If today is 6 October 2014:
- * var result = startOfYesterday()
+ * const result = startOfYesterday()
  * //=> Sun Oct 5 2014 00:00:00
  */
 function startOfYesterday() {
@@ -23594,7 +24506,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3875:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23604,15 +24516,15 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = sub;
 
-var _index = _interopRequireDefault(__webpack_require__(970));
+var _index = _interopRequireDefault(__nccwpck_require__(970));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6752));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6752));
 
-var _index3 = _interopRequireDefault(__webpack_require__(6477));
+var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index4 = _interopRequireDefault(__webpack_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index5 = _interopRequireDefault(__webpack_require__(1985));
+var _index5 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23682,7 +24594,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 1952:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23692,11 +24604,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subBusinessDays;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(1727));
+var _index2 = _interopRequireDefault(__nccwpck_require__(1727));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23729,7 +24641,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 970:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23739,11 +24651,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subDays;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(6227));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6227));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23766,7 +24678,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Subtract 10 days from 1 September 2014:
- * var result = subDays(new Date(2014, 8, 1), 10)
+ * const result = subDays(new Date(2014, 8, 1), 10)
  * //=> Fri Aug 22 2014 00:00:00
  */
 function subDays(dirtyDate, dirtyAmount) {
@@ -23780,7 +24692,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 2481:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23790,11 +24702,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subHours;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(9956));
+var _index2 = _interopRequireDefault(__nccwpck_require__(9956));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23817,7 +24729,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Subtract 2 hours from 11 July 2014 01:00:00:
- * var result = subHours(new Date(2014, 6, 11, 1, 0), 2)
+ * const result = subHours(new Date(2014, 6, 11, 1, 0), 2)
  * //=> Thu Jul 10 2014 23:00:00
  */
 function subHours(dirtyDate, dirtyAmount) {
@@ -23831,7 +24743,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3925:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23841,11 +24753,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subISOWeekYears;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(5318));
+var _index2 = _interopRequireDefault(__nccwpck_require__(5318));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23875,7 +24787,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Subtract 5 ISO week-numbering years from 1 September 2014:
- * var result = subISOWeekYears(new Date(2014, 8, 1), 5)
+ * const result = subISOWeekYears(new Date(2014, 8, 1), 5)
  * //=> Mon Aug 31 2009 00:00:00
  */
 function subISOWeekYears(dirtyDate, dirtyAmount) {
@@ -23889,7 +24801,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7923:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23899,11 +24811,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subMilliseconds;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(524));
+var _index2 = _interopRequireDefault(__nccwpck_require__(524));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23926,7 +24838,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Subtract 750 milliseconds from 10 July 2014 12:45:30.000:
- * var result = subMilliseconds(new Date(2014, 6, 10, 12, 45, 30, 0), 750)
+ * const result = subMilliseconds(new Date(2014, 6, 10, 12, 45, 30, 0), 750)
  * //=> Thu Jul 10 2014 12:45:29.250
  */
 function subMilliseconds(dirtyDate, dirtyAmount) {
@@ -23940,7 +24852,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 7535:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -23950,11 +24862,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subMinutes;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(5268));
+var _index2 = _interopRequireDefault(__nccwpck_require__(5268));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23977,7 +24889,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Subtract 30 minutes from 10 July 2014 12:00:00:
- * var result = subMinutes(new Date(2014, 6, 10, 12, 0), 30)
+ * const result = subMinutes(new Date(2014, 6, 10, 12, 0), 30)
  * //=> Thu Jul 10 2014 11:30:00
  */
 function subMinutes(dirtyDate, dirtyAmount) {
@@ -23991,7 +24903,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6752:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -24001,11 +24913,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subMonths;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(2995));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2995));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24028,7 +24940,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Subtract 5 months from 1 February 2015:
- * var result = subMonths(new Date(2015, 1, 1), 5)
+ * const result = subMonths(new Date(2015, 1, 1), 5)
  * //=> Mon Sep 01 2014 00:00:00
  */
 function subMonths(dirtyDate, dirtyAmount) {
@@ -24042,7 +24954,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 3139:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -24052,11 +24964,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subQuarters;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(5149));
+var _index2 = _interopRequireDefault(__nccwpck_require__(5149));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24079,7 +24991,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Subtract 3 quarters from 1 September 2014:
- * var result = subQuarters(new Date(2014, 8, 1), 3)
+ * const result = subQuarters(new Date(2014, 8, 1), 3)
  * //=> Sun Dec 01 2013 00:00:00
  */
 function subQuarters(dirtyDate, dirtyAmount) {
@@ -24093,7 +25005,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 138:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -24103,11 +25015,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subSeconds;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(4112));
+var _index2 = _interopRequireDefault(__nccwpck_require__(4112));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24130,7 +25042,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Subtract 30 seconds from 10 July 2014 12:45:00:
- * var result = subSeconds(new Date(2014, 6, 10, 12, 45, 0), 30)
+ * const result = subSeconds(new Date(2014, 6, 10, 12, 45, 0), 30)
  * //=> Thu Jul 10 2014 12:44:30
  */
 function subSeconds(dirtyDate, dirtyAmount) {
@@ -24144,7 +25056,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 5504:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -24154,11 +25066,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subWeeks;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(7195));
+var _index2 = _interopRequireDefault(__nccwpck_require__(7195));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24181,7 +25093,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Subtract 4 weeks from 1 September 2014:
- * var result = subWeeks(new Date(2014, 8, 1), 4)
+ * const result = subWeeks(new Date(2014, 8, 1), 4)
  * //=> Mon Aug 04 2014 00:00:00
  */
 function subWeeks(dirtyDate, dirtyAmount) {
@@ -24195,7 +25107,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 843:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -24205,11 +25117,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subYears;
 
-var _index = _interopRequireDefault(__webpack_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1985));
 
-var _index2 = _interopRequireDefault(__webpack_require__(3367));
+var _index2 = _interopRequireDefault(__nccwpck_require__(3367));
 
-var _index3 = _interopRequireDefault(__webpack_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24232,7 +25144,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Subtract 5 years from 1 September 2014:
- * var result = subYears(new Date(2014, 8, 1), 5)
+ * const result = subYears(new Date(2014, 8, 1), 5)
  * //=> Tue Sep 01 2009 00:00:00
  */
 function subYears(dirtyDate, dirtyAmount) {
@@ -24246,7 +25158,7 @@ module.exports = exports.default;
 /***/ }),
 
 /***/ 6477:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -24256,7 +25168,7 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = toDate;
 
-var _index = _interopRequireDefault(__webpack_require__(2063));
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24390,68 +25302,61 @@ exports.isPlainObject = isPlainObject;
 /***/ }),
 
 /***/ 1917:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
 
-var yaml = __webpack_require__(916);
+var loader = __nccwpck_require__(1161);
+var dumper = __nccwpck_require__(8866);
 
 
-module.exports = yaml;
-
-
-/***/ }),
-
-/***/ 916:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-
-var loader = __webpack_require__(5190);
-var dumper = __webpack_require__(3034);
-
-
-function deprecated(name) {
+function renamed(from, to) {
   return function () {
-    throw new Error('Function ' + name + ' is deprecated and cannot be used.');
+    throw new Error('Function yaml.' + from + ' is removed in js-yaml 4. ' +
+      'Use yaml.' + to + ' instead, which is now safe by default.');
   };
 }
 
 
-module.exports.Type = __webpack_require__(967);
-module.exports.Schema = __webpack_require__(6514);
-module.exports.FAILSAFE_SCHEMA = __webpack_require__(6037);
-module.exports.JSON_SCHEMA = __webpack_require__(1571);
-module.exports.CORE_SCHEMA = __webpack_require__(2183);
-module.exports.DEFAULT_SAFE_SCHEMA = __webpack_require__(8949);
-module.exports.DEFAULT_FULL_SCHEMA = __webpack_require__(6874);
+module.exports.Type = __nccwpck_require__(6073);
+module.exports.Schema = __nccwpck_require__(1082);
+module.exports.FAILSAFE_SCHEMA = __nccwpck_require__(8562);
+module.exports.JSON_SCHEMA = __nccwpck_require__(1035);
+module.exports.CORE_SCHEMA = __nccwpck_require__(2011);
+module.exports.DEFAULT_SCHEMA = __nccwpck_require__(8759);
 module.exports.load                = loader.load;
 module.exports.loadAll             = loader.loadAll;
-module.exports.safeLoad            = loader.safeLoad;
-module.exports.safeLoadAll         = loader.safeLoadAll;
 module.exports.dump                = dumper.dump;
-module.exports.safeDump            = dumper.safeDump;
-module.exports.YAMLException = __webpack_require__(5199);
+module.exports.YAMLException = __nccwpck_require__(8179);
 
-// Deprecated schema names from JS-YAML 2.0.x
-module.exports.MINIMAL_SCHEMA = __webpack_require__(6037);
-module.exports.SAFE_SCHEMA = __webpack_require__(8949);
-module.exports.DEFAULT_SCHEMA = __webpack_require__(6874);
+// Re-export all types in case user wants to create custom schema
+module.exports.types = {
+  binary:    __nccwpck_require__(7900),
+  float:     __nccwpck_require__(2705),
+  map:       __nccwpck_require__(6150),
+  null:      __nccwpck_require__(721),
+  pairs:     __nccwpck_require__(6860),
+  set:       __nccwpck_require__(9548),
+  timestamp: __nccwpck_require__(9212),
+  bool:      __nccwpck_require__(4993),
+  int:       __nccwpck_require__(1615),
+  merge:     __nccwpck_require__(6104),
+  omap:      __nccwpck_require__(9046),
+  seq:       __nccwpck_require__(7283),
+  str:       __nccwpck_require__(3619)
+};
 
-// Deprecated functions from JS-YAML 1.x.x
-module.exports.scan           = deprecated('scan');
-module.exports.parse          = deprecated('parse');
-module.exports.compose        = deprecated('compose');
-module.exports.addConstructor = deprecated('addConstructor');
+// Removed functions from JS-YAML 3.0.x
+module.exports.safeLoad            = renamed('safeLoad', 'load');
+module.exports.safeLoadAll         = renamed('safeLoadAll', 'loadAll');
+module.exports.safeDump            = renamed('safeDump', 'dump');
 
 
 /***/ }),
 
-/***/ 9136:
+/***/ 6829:
 /***/ ((module) => {
 
 "use strict";
@@ -24518,22 +25423,22 @@ module.exports.extend         = extend;
 
 /***/ }),
 
-/***/ 3034:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 8866:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
 /*eslint-disable no-use-before-define*/
 
-var common              = __webpack_require__(9136);
-var YAMLException       = __webpack_require__(5199);
-var DEFAULT_FULL_SCHEMA = __webpack_require__(6874);
-var DEFAULT_SAFE_SCHEMA = __webpack_require__(8949);
+var common              = __nccwpck_require__(6829);
+var YAMLException       = __nccwpck_require__(8179);
+var DEFAULT_SCHEMA      = __nccwpck_require__(8759);
 
 var _toString       = Object.prototype.toString;
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
+var CHAR_BOM                  = 0xFEFF;
 var CHAR_TAB                  = 0x09; /* Tab */
 var CHAR_LINE_FEED            = 0x0A; /* LF */
 var CHAR_CARRIAGE_RETURN      = 0x0D; /* CR */
@@ -24581,6 +25486,8 @@ var DEPRECATED_BOOLEANS_SYNTAX = [
   'y', 'Y', 'yes', 'Yes', 'YES', 'on', 'On', 'ON',
   'n', 'N', 'no', 'No', 'NO', 'off', 'Off', 'OFF'
 ];
+
+var DEPRECATED_BASE60_SYNTAX = /^[-+]?[0-9_]+(?::[0-9_]+)+(?:\.[0-9_]*)?$/;
 
 function compileStyleMap(schema, map) {
   var result, keys, index, length, tag, style, type;
@@ -24630,8 +25537,12 @@ function encodeHex(character) {
   return '\\' + handle + common.repeat('0', length - string.length) + string;
 }
 
+
+var QUOTING_TYPE_SINGLE = 1,
+    QUOTING_TYPE_DOUBLE = 2;
+
 function State(options) {
-  this.schema        = options['schema'] || DEFAULT_FULL_SCHEMA;
+  this.schema        = options['schema'] || DEFAULT_SCHEMA;
   this.indent        = Math.max(1, (options['indent'] || 2));
   this.noArrayIndent = options['noArrayIndent'] || false;
   this.skipInvalid   = options['skipInvalid'] || false;
@@ -24642,6 +25553,9 @@ function State(options) {
   this.noRefs        = options['noRefs'] || false;
   this.noCompatMode  = options['noCompatMode'] || false;
   this.condenseFlow  = options['condenseFlow'] || false;
+  this.quotingType   = options['quotingType'] === '"' ? QUOTING_TYPE_DOUBLE : QUOTING_TYPE_SINGLE;
+  this.forceQuotes   = options['forceQuotes'] || false;
+  this.replacer      = typeof options['replacer'] === 'function' ? options['replacer'] : null;
 
   this.implicitTypes = this.schema.compiledImplicit;
   this.explicitTypes = this.schema.compiledExplicit;
@@ -24710,47 +25624,60 @@ function isWhitespace(c) {
 function isPrintable(c) {
   return  (0x00020 <= c && c <= 0x00007E)
       || ((0x000A1 <= c && c <= 0x00D7FF) && c !== 0x2028 && c !== 0x2029)
-      || ((0x0E000 <= c && c <= 0x00FFFD) && c !== 0xFEFF /* BOM */)
+      || ((0x0E000 <= c && c <= 0x00FFFD) && c !== CHAR_BOM)
       ||  (0x10000 <= c && c <= 0x10FFFF);
 }
 
 // [34] ns-char ::= nb-char - s-white
 // [27] nb-char ::= c-printable - b-char - c-byte-order-mark
 // [26] b-char  ::= b-line-feed | b-carriage-return
-// [24] b-line-feed       ::=     #xA    /* LF */
-// [25] b-carriage-return ::=     #xD    /* CR */
-// [3]  c-byte-order-mark ::=     #xFEFF
-function isNsChar(c) {
-  return isPrintable(c) && !isWhitespace(c)
-    // byte-order-mark
-    && c !== 0xFEFF
-    // b-char
+// Including s-white (for some reason, examples doesn't match specs in this aspect)
+// ns-char ::= c-printable - b-line-feed - b-carriage-return - c-byte-order-mark
+function isNsCharOrWhitespace(c) {
+  return isPrintable(c)
+    && c !== CHAR_BOM
+    // - b-char
     && c !== CHAR_CARRIAGE_RETURN
     && c !== CHAR_LINE_FEED;
 }
 
-// Simplified test for values allowed after the first character in plain style.
-function isPlainSafe(c, prev) {
-  // Uses a subset of nb-char - c-flow-indicator - ":" - "#"
-  // where nb-char ::= c-printable - b-char - c-byte-order-mark.
-  return isPrintable(c) && c !== 0xFEFF
-    // - c-flow-indicator
-    && c !== CHAR_COMMA
-    && c !== CHAR_LEFT_SQUARE_BRACKET
-    && c !== CHAR_RIGHT_SQUARE_BRACKET
-    && c !== CHAR_LEFT_CURLY_BRACKET
-    && c !== CHAR_RIGHT_CURLY_BRACKET
-    // - ":" - "#"
-    // /* An ns-char preceding */ "#"
-    && c !== CHAR_COLON
-    && ((c !== CHAR_SHARP) || (prev && isNsChar(prev)));
+// [127]  ns-plain-safe(c) ::= c = flow-out  ⇒ ns-plain-safe-out
+//                             c = flow-in   ⇒ ns-plain-safe-in
+//                             c = block-key ⇒ ns-plain-safe-out
+//                             c = flow-key  ⇒ ns-plain-safe-in
+// [128] ns-plain-safe-out ::= ns-char
+// [129]  ns-plain-safe-in ::= ns-char - c-flow-indicator
+// [130]  ns-plain-char(c) ::=  ( ns-plain-safe(c) - “:” - “#” )
+//                            | ( /* An ns-char preceding */ “#” )
+//                            | ( “:” /* Followed by an ns-plain-safe(c) */ )
+function isPlainSafe(c, prev, inblock) {
+  var cIsNsCharOrWhitespace = isNsCharOrWhitespace(c);
+  var cIsNsChar = cIsNsCharOrWhitespace && !isWhitespace(c);
+  return (
+    // ns-plain-safe
+    inblock ? // c = flow-in
+      cIsNsCharOrWhitespace
+      : cIsNsCharOrWhitespace
+        // - c-flow-indicator
+        && c !== CHAR_COMMA
+        && c !== CHAR_LEFT_SQUARE_BRACKET
+        && c !== CHAR_RIGHT_SQUARE_BRACKET
+        && c !== CHAR_LEFT_CURLY_BRACKET
+        && c !== CHAR_RIGHT_CURLY_BRACKET
+  )
+    // ns-plain-char
+    && c !== CHAR_SHARP // false on '#'
+    && !(prev === CHAR_COLON && !cIsNsChar) // false on ': '
+    || (isNsCharOrWhitespace(prev) && !isWhitespace(prev) && c === CHAR_SHARP) // change to true on '[^ ]#'
+    || (prev === CHAR_COLON && cIsNsChar); // change to true on ':[^ ]'
 }
 
 // Simplified test for values allowed as the first character in plain style.
 function isPlainSafeFirst(c) {
   // Uses a subset of ns-char - c-indicator
   // where ns-char = nb-char - s-white.
-  return isPrintable(c) && c !== 0xFEFF
+  // No support of ( ( “?” | “:” | “-” ) /* Followed by an ns-plain-safe(c)) */ ) part
+  return isPrintable(c) && c !== CHAR_BOM
     && !isWhitespace(c) // - s-white
     // - (c-indicator ::=
     // “-” | “?” | “:” | “,” | “[” | “]” | “{” | “}”
@@ -24778,6 +25705,25 @@ function isPlainSafeFirst(c) {
     && c !== CHAR_GRAVE_ACCENT;
 }
 
+// Simplified test for values allowed as the last character in plain style.
+function isPlainSafeLast(c) {
+  // just not whitespace or colon, it will be checked to be plain character later
+  return !isWhitespace(c) && c !== CHAR_COLON;
+}
+
+// Same as 'string'.codePointAt(pos), but works in older browsers.
+function codePointAt(string, pos) {
+  var first = string.charCodeAt(pos), second;
+  if (first >= 0xD800 && first <= 0xDBFF && pos + 1 < string.length) {
+    second = string.charCodeAt(pos + 1);
+    if (second >= 0xDC00 && second <= 0xDFFF) {
+      // https://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+      return (first - 0xD800) * 0x400 + second - 0xDC00 + 0x10000;
+    }
+  }
+  return first;
+}
+
 // Determines whether block indentation indicator is required.
 function needIndentIndicator(string) {
   var leadingSpaceRe = /^\n* /;
@@ -24797,31 +25743,34 @@ var STYLE_PLAIN   = 1,
 //    STYLE_PLAIN or STYLE_SINGLE => no \n are in the string.
 //    STYLE_LITERAL => no lines are suitable for folding (or lineWidth is -1).
 //    STYLE_FOLDED => a line > lineWidth and can be folded (and lineWidth != -1).
-function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth, testAmbiguousType) {
+function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth,
+  testAmbiguousType, quotingType, forceQuotes, inblock) {
+
   var i;
-  var char, prev_char;
+  var char = 0;
+  var prevChar = null;
   var hasLineBreak = false;
   var hasFoldableLine = false; // only checked if shouldTrackWidth
   var shouldTrackWidth = lineWidth !== -1;
   var previousLineBreak = -1; // count the first line correctly
-  var plain = isPlainSafeFirst(string.charCodeAt(0))
-          && !isWhitespace(string.charCodeAt(string.length - 1));
+  var plain = isPlainSafeFirst(codePointAt(string, 0))
+          && isPlainSafeLast(codePointAt(string, string.length - 1));
 
-  if (singleLineOnly) {
+  if (singleLineOnly || forceQuotes) {
     // Case: no block styles.
     // Check for disallowed characters to rule out plain and single.
-    for (i = 0; i < string.length; i++) {
-      char = string.charCodeAt(i);
+    for (i = 0; i < string.length; char >= 0x10000 ? i += 2 : i++) {
+      char = codePointAt(string, i);
       if (!isPrintable(char)) {
         return STYLE_DOUBLE;
       }
-      prev_char = i > 0 ? string.charCodeAt(i - 1) : null;
-      plain = plain && isPlainSafe(char, prev_char);
+      plain = plain && isPlainSafe(char, prevChar, inblock);
+      prevChar = char;
     }
   } else {
     // Case: block styles permitted.
-    for (i = 0; i < string.length; i++) {
-      char = string.charCodeAt(i);
+    for (i = 0; i < string.length; char >= 0x10000 ? i += 2 : i++) {
+      char = codePointAt(string, i);
       if (char === CHAR_LINE_FEED) {
         hasLineBreak = true;
         // Check if any line can be folded.
@@ -24835,8 +25784,8 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth, te
       } else if (!isPrintable(char)) {
         return STYLE_DOUBLE;
       }
-      prev_char = i > 0 ? string.charCodeAt(i - 1) : null;
-      plain = plain && isPlainSafe(char, prev_char);
+      plain = plain && isPlainSafe(char, prevChar, inblock);
+      prevChar = char;
     }
     // in case the end is missing a \n
     hasFoldableLine = hasFoldableLine || (shouldTrackWidth &&
@@ -24849,8 +25798,10 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth, te
   if (!hasLineBreak && !hasFoldableLine) {
     // Strings interpretable as another type have to be quoted;
     // e.g. the string 'true' vs. the boolean true.
-    return plain && !testAmbiguousType(string)
-      ? STYLE_PLAIN : STYLE_SINGLE;
+    if (plain && !forceQuotes && !testAmbiguousType(string)) {
+      return STYLE_PLAIN;
+    }
+    return quotingType === QUOTING_TYPE_DOUBLE ? STYLE_DOUBLE : STYLE_SINGLE;
   }
   // Edge case: block indentation indicator can only have one digit.
   if (indentPerLevel > 9 && needIndentIndicator(string)) {
@@ -24858,7 +25809,10 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth, te
   }
   // At this point we know block styles are valid.
   // Prefer literal style unless we want to fold.
-  return hasFoldableLine ? STYLE_FOLDED : STYLE_LITERAL;
+  if (!forceQuotes) {
+    return hasFoldableLine ? STYLE_FOLDED : STYLE_LITERAL;
+  }
+  return quotingType === QUOTING_TYPE_DOUBLE ? STYLE_DOUBLE : STYLE_SINGLE;
 }
 
 // Note: line breaking/folding is implemented for only the folded style.
@@ -24867,14 +25821,15 @@ function chooseScalarStyle(string, singleLineOnly, indentPerLevel, lineWidth, te
 //    • No ending newline => unaffected; already using strip "-" chomping.
 //    • Ending newline    => removed then restored.
 //  Importantly, this keeps the "+" chomp indicator from gaining an extra line.
-function writeScalar(state, string, level, iskey) {
+function writeScalar(state, string, level, iskey, inblock) {
   state.dump = (function () {
     if (string.length === 0) {
-      return "''";
+      return state.quotingType === QUOTING_TYPE_DOUBLE ? '""' : "''";
     }
-    if (!state.noCompatMode &&
-        DEPRECATED_BOOLEANS_SYNTAX.indexOf(string) !== -1) {
-      return "'" + string + "'";
+    if (!state.noCompatMode) {
+      if (DEPRECATED_BOOLEANS_SYNTAX.indexOf(string) !== -1 || DEPRECATED_BASE60_SYNTAX.test(string)) {
+        return state.quotingType === QUOTING_TYPE_DOUBLE ? ('"' + string + '"') : ("'" + string + "'");
+      }
     }
 
     var indent = state.indent * Math.max(1, level); // no 0-indent scalars
@@ -24896,7 +25851,9 @@ function writeScalar(state, string, level, iskey) {
       return testImplicitResolving(state, string);
     }
 
-    switch (chooseScalarStyle(string, singleLineOnly, state.indent, lineWidth, testAmbiguity)) {
+    switch (chooseScalarStyle(string, singleLineOnly, state.indent, lineWidth,
+      testAmbiguity, state.quotingType, state.forceQuotes && !iskey, inblock)) {
+
       case STYLE_PLAIN:
         return string;
       case STYLE_SINGLE:
@@ -25013,25 +25970,19 @@ function foldLine(line, width) {
 // Escapes a double-quoted string.
 function escapeString(string) {
   var result = '';
-  var char, nextChar;
+  var char = 0;
   var escapeSeq;
 
-  for (var i = 0; i < string.length; i++) {
-    char = string.charCodeAt(i);
-    // Check for surrogate pairs (reference Unicode 3.0 section "3.7 Surrogates").
-    if (char >= 0xD800 && char <= 0xDBFF/* high surrogate */) {
-      nextChar = string.charCodeAt(i + 1);
-      if (nextChar >= 0xDC00 && nextChar <= 0xDFFF/* low surrogate */) {
-        // Combine the surrogate pair and store it escaped.
-        result += encodeHex((char - 0xD800) * 0x400 + nextChar - 0xDC00 + 0x10000);
-        // Advance index one extra since we already used that char here.
-        i++; continue;
-      }
-    }
+  for (var i = 0; i < string.length; char >= 0x10000 ? i += 2 : i++) {
+    char = codePointAt(string, i);
     escapeSeq = ESCAPE_SEQUENCES[char];
-    result += !escapeSeq && isPrintable(char)
-      ? string[i]
-      : escapeSeq || encodeHex(char);
+
+    if (!escapeSeq && isPrintable(char)) {
+      result += string[i];
+      if (char >= 0x10000) result += string[i + 1];
+    } else {
+      result += escapeSeq || encodeHex(char);
+    }
   }
 
   return result;
@@ -25041,12 +25992,22 @@ function writeFlowSequence(state, level, object) {
   var _result = '',
       _tag    = state.tag,
       index,
-      length;
+      length,
+      value;
 
   for (index = 0, length = object.length; index < length; index += 1) {
-    // Write only valid elements.
-    if (writeNode(state, level, object[index], false, false)) {
-      if (index !== 0) _result += ',' + (!state.condenseFlow ? ' ' : '');
+    value = object[index];
+
+    if (state.replacer) {
+      value = state.replacer.call(object, String(index), value);
+    }
+
+    // Write only valid elements, put null instead of invalid elements.
+    if (writeNode(state, level, value, false, false) ||
+        (typeof value === 'undefined' &&
+         writeNode(state, level, null, false, false))) {
+
+      if (_result !== '') _result += ',' + (!state.condenseFlow ? ' ' : '');
       _result += state.dump;
     }
   }
@@ -25059,12 +26020,22 @@ function writeBlockSequence(state, level, object, compact) {
   var _result = '',
       _tag    = state.tag,
       index,
-      length;
+      length,
+      value;
 
   for (index = 0, length = object.length; index < length; index += 1) {
-    // Write only valid elements.
-    if (writeNode(state, level + 1, object[index], true, true)) {
-      if (!compact || index !== 0) {
+    value = object[index];
+
+    if (state.replacer) {
+      value = state.replacer.call(object, String(index), value);
+    }
+
+    // Write only valid elements, put null instead of invalid elements.
+    if (writeNode(state, level + 1, value, true, true, false, true) ||
+        (typeof value === 'undefined' &&
+         writeNode(state, level + 1, null, true, true, false, true))) {
+
+      if (!compact || _result !== '') {
         _result += generateNextLine(state, level);
       }
 
@@ -25095,12 +26066,16 @@ function writeFlowMapping(state, level, object) {
   for (index = 0, length = objectKeyList.length; index < length; index += 1) {
 
     pairBuffer = '';
-    if (index !== 0) pairBuffer += ', ';
+    if (_result !== '') pairBuffer += ', ';
 
     if (state.condenseFlow) pairBuffer += '"';
 
     objectKey = objectKeyList[index];
     objectValue = object[objectKey];
+
+    if (state.replacer) {
+      objectValue = state.replacer.call(object, objectKey, objectValue);
+    }
 
     if (!writeNode(state, level, objectKey, false, false)) {
       continue; // Skip this pair because of invalid key;
@@ -25150,12 +26125,16 @@ function writeBlockMapping(state, level, object, compact) {
   for (index = 0, length = objectKeyList.length; index < length; index += 1) {
     pairBuffer = '';
 
-    if (!compact || index !== 0) {
+    if (!compact || _result !== '') {
       pairBuffer += generateNextLine(state, level);
     }
 
     objectKey = objectKeyList[index];
     objectValue = object[objectKey];
+
+    if (state.replacer) {
+      objectValue = state.replacer.call(object, objectKey, objectValue);
+    }
 
     if (!writeNode(state, level + 1, objectKey, true, true, true)) {
       continue; // Skip this pair because of invalid key.
@@ -25210,7 +26189,15 @@ function detectType(state, object, explicit) {
         (!type.instanceOf || ((typeof object === 'object') && (object instanceof type.instanceOf))) &&
         (!type.predicate  || type.predicate(object))) {
 
-      state.tag = explicit ? type.tag : '?';
+      if (explicit) {
+        if (type.multi && type.representName) {
+          state.tag = type.representName(object);
+        } else {
+          state.tag = type.tag;
+        }
+      } else {
+        state.tag = '?';
+      }
 
       if (type.represent) {
         style = state.styleMap[type.tag] || type.defaultStyle;
@@ -25236,7 +26223,7 @@ function detectType(state, object, explicit) {
 // Serializes `object` and writes it to global `result`.
 // Returns true on success, or false on invalid object.
 //
-function writeNode(state, level, object, block, compact, iskey) {
+function writeNode(state, level, object, block, compact, iskey, isblockseq) {
   state.tag = null;
   state.dump = object;
 
@@ -25245,6 +26232,8 @@ function writeNode(state, level, object, block, compact, iskey) {
   }
 
   var type = _toString.call(state.dump);
+  var inblock = block;
+  var tagStr;
 
   if (block) {
     block = (state.flowLevel < 0 || state.flowLevel > level);
@@ -25282,29 +26271,59 @@ function writeNode(state, level, object, block, compact, iskey) {
         }
       }
     } else if (type === '[object Array]') {
-      var arrayLevel = (state.noArrayIndent && (level > 0)) ? level - 1 : level;
       if (block && (state.dump.length !== 0)) {
-        writeBlockSequence(state, arrayLevel, state.dump, compact);
+        if (state.noArrayIndent && !isblockseq && level > 0) {
+          writeBlockSequence(state, level - 1, state.dump, compact);
+        } else {
+          writeBlockSequence(state, level, state.dump, compact);
+        }
         if (duplicate) {
           state.dump = '&ref_' + duplicateIndex + state.dump;
         }
       } else {
-        writeFlowSequence(state, arrayLevel, state.dump);
+        writeFlowSequence(state, level, state.dump);
         if (duplicate) {
           state.dump = '&ref_' + duplicateIndex + ' ' + state.dump;
         }
       }
     } else if (type === '[object String]') {
       if (state.tag !== '?') {
-        writeScalar(state, state.dump, level, iskey);
+        writeScalar(state, state.dump, level, iskey, inblock);
       }
+    } else if (type === '[object Undefined]') {
+      return false;
     } else {
       if (state.skipInvalid) return false;
       throw new YAMLException('unacceptable kind of an object to dump ' + type);
     }
 
     if (state.tag !== null && state.tag !== '?') {
-      state.dump = '!<' + state.tag + '> ' + state.dump;
+      // Need to encode all characters except those allowed by the spec:
+      //
+      // [35] ns-dec-digit    ::=  [#x30-#x39] /* 0-9 */
+      // [36] ns-hex-digit    ::=  ns-dec-digit
+      //                         | [#x41-#x46] /* A-F */ | [#x61-#x66] /* a-f */
+      // [37] ns-ascii-letter ::=  [#x41-#x5A] /* A-Z */ | [#x61-#x7A] /* a-z */
+      // [38] ns-word-char    ::=  ns-dec-digit | ns-ascii-letter | “-”
+      // [39] ns-uri-char     ::=  “%” ns-hex-digit ns-hex-digit | ns-word-char | “#”
+      //                         | “;” | “/” | “?” | “:” | “@” | “&” | “=” | “+” | “$” | “,”
+      //                         | “_” | “.” | “!” | “~” | “*” | “'” | “(” | “)” | “[” | “]”
+      //
+      // Also need to encode '!' because it has special meaning (end of tag prefix).
+      //
+      tagStr = encodeURI(
+        state.tag[0] === '!' ? state.tag.slice(1) : state.tag
+      ).replace(/!/g, '%21');
+
+      if (state.tag[0] === '!') {
+        tagStr = '!' + tagStr;
+      } else if (tagStr.slice(0, 18) === 'tag:yaml.org,2002:') {
+        tagStr = '!!' + tagStr.slice(18);
+      } else {
+        tagStr = '!<' + tagStr + '>';
+      }
+
+      state.dump = tagStr + ' ' + state.dump;
     }
   }
 
@@ -25361,27 +26380,48 @@ function dump(input, options) {
 
   if (!state.noRefs) getDuplicateReferences(input, state);
 
-  if (writeNode(state, 0, input, true, true)) return state.dump + '\n';
+  var value = input;
+
+  if (state.replacer) {
+    value = state.replacer.call({ '': value }, '', value);
+  }
+
+  if (writeNode(state, 0, value, true, true)) return state.dump + '\n';
 
   return '';
 }
 
-function safeDump(input, options) {
-  return dump(input, common.extend({ schema: DEFAULT_SAFE_SCHEMA }, options));
-}
-
-module.exports.dump     = dump;
-module.exports.safeDump = safeDump;
+module.exports.dump = dump;
 
 
 /***/ }),
 
-/***/ 5199:
+/***/ 8179:
 /***/ ((module) => {
 
 "use strict";
 // YAML error class. http://stackoverflow.com/questions/8458984
 //
+
+
+
+function formatError(exception, compact) {
+  var where = '', message = exception.reason || '(unknown reason)';
+
+  if (!exception.mark) return message;
+
+  if (exception.mark.name) {
+    where += 'in "' + exception.mark.name + '" ';
+  }
+
+  where += '(' + (exception.mark.line + 1) + ':' + (exception.mark.column + 1) + ')';
+
+  if (!compact && exception.mark.snippet) {
+    where += '\n\n' + exception.mark.snippet;
+  }
+
+  return message + ' ' + where;
+}
 
 
 function YAMLException(reason, mark) {
@@ -25391,7 +26431,7 @@ function YAMLException(reason, mark) {
   this.name = 'YAMLException';
   this.reason = reason;
   this.mark = mark;
-  this.message = (this.reason || '(unknown reason)') + (this.mark ? ' ' + this.mark.toString() : '');
+  this.message = formatError(this, false);
 
   // Include stack trace in error object
   if (Error.captureStackTrace) {
@@ -25410,15 +26450,7 @@ YAMLException.prototype.constructor = YAMLException;
 
 
 YAMLException.prototype.toString = function toString(compact) {
-  var result = this.name + ': ';
-
-  result += this.reason || '(unknown reason)';
-
-  if (!compact && this.mark) {
-    result += ' ' + this.mark.toString();
-  }
-
-  return result;
+  return this.name + ': ' + formatError(this, compact);
 };
 
 
@@ -25427,19 +26459,18 @@ module.exports = YAMLException;
 
 /***/ }),
 
-/***/ 5190:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 1161:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
 /*eslint-disable max-len,no-use-before-define*/
 
-var common              = __webpack_require__(9136);
-var YAMLException       = __webpack_require__(5199);
-var Mark                = __webpack_require__(5426);
-var DEFAULT_SAFE_SCHEMA = __webpack_require__(8949);
-var DEFAULT_FULL_SCHEMA = __webpack_require__(6874);
+var common              = __nccwpck_require__(6829);
+var YAMLException       = __nccwpck_require__(8179);
+var makeSnippet         = __nccwpck_require__(6975);
+var DEFAULT_SCHEMA      = __nccwpck_require__(8759);
 
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -25566,9 +26597,12 @@ function State(input, options) {
   this.input = input;
 
   this.filename  = options['filename']  || null;
-  this.schema    = options['schema']    || DEFAULT_FULL_SCHEMA;
+  this.schema    = options['schema']    || DEFAULT_SCHEMA;
   this.onWarning = options['onWarning'] || null;
+  // (Hidden) Remove? makes the loader to expect YAML 1.1 documents
+  // if such documents have no explicit %YAML directive
   this.legacy    = options['legacy']    || false;
+
   this.json      = options['json']      || false;
   this.listener  = options['listener']  || null;
 
@@ -25580,6 +26614,10 @@ function State(input, options) {
   this.line       = 0;
   this.lineStart  = 0;
   this.lineIndent = 0;
+
+  // position of first leading tab in the current line,
+  // used to make sure there are no tabs in the indentation
+  this.firstTabInLine = -1;
 
   this.documents = [];
 
@@ -25597,9 +26635,17 @@ function State(input, options) {
 
 
 function generateError(state, message) {
-  return new YAMLException(
-    message,
-    new Mark(state.filename, state.input, state.position, state.line, (state.position - state.lineStart)));
+  var mark = {
+    name:     state.filename,
+    buffer:   state.input.slice(0, -1), // omit trailing \0
+    position: state.position,
+    line:     state.line,
+    column:   state.position - state.lineStart
+  };
+
+  mark.snippet = makeSnippet(mark);
+
+  return new YAMLException(message, mark);
 }
 
 function throwError(state, message) {
@@ -25671,6 +26717,12 @@ var directiveHandlers = {
       throwError(state, 'ill-formed tag prefix (second argument) of the TAG directive');
     }
 
+    try {
+      prefix = decodeURIComponent(prefix);
+    } catch (err) {
+      throwError(state, 'tag prefix is malformed: ' + prefix);
+    }
+
     state.tagMap[handle] = prefix;
   }
 };
@@ -25717,7 +26769,9 @@ function mergeMappings(state, destination, source, overridableKeys) {
   }
 }
 
-function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, startLine, startPos) {
+function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode,
+  startLine, startLineStart, startPos) {
+
   var index, quantity;
 
   // The output is a plain object here, so keys can only be strings.
@@ -25764,10 +26818,22 @@ function storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valu
         !_hasOwnProperty.call(overridableKeys, keyNode) &&
         _hasOwnProperty.call(_result, keyNode)) {
       state.line = startLine || state.line;
+      state.lineStart = startLineStart || state.lineStart;
       state.position = startPos || state.position;
       throwError(state, 'duplicated mapping key');
     }
-    _result[keyNode] = valueNode;
+
+    // used for this specific key only because Object.defineProperty is slow
+    if (keyNode === '__proto__') {
+      Object.defineProperty(_result, keyNode, {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        value: valueNode
+      });
+    } else {
+      _result[keyNode] = valueNode;
+    }
     delete overridableKeys[keyNode];
   }
 
@@ -25792,6 +26858,7 @@ function readLineBreak(state) {
 
   state.line += 1;
   state.lineStart = state.position;
+  state.firstTabInLine = -1;
 }
 
 function skipSeparationSpace(state, allowComments, checkIndent) {
@@ -25800,6 +26867,9 @@ function skipSeparationSpace(state, allowComments, checkIndent) {
 
   while (ch !== 0) {
     while (is_WHITE_SPACE(ch)) {
+      if (ch === 0x09/* Tab */ && state.firstTabInLine === -1) {
+        state.firstTabInLine = state.position;
+      }
       ch = state.input.charCodeAt(++state.position);
     }
 
@@ -26101,6 +27171,8 @@ function readDoubleQuotedScalar(state, nodeIndent) {
 function readFlowCollection(state, nodeIndent) {
   var readNext = true,
       _line,
+      _lineStart,
+      _pos,
       _tag     = state.tag,
       _result,
       _anchor  = state.anchor,
@@ -26109,7 +27181,7 @@ function readFlowCollection(state, nodeIndent) {
       isPair,
       isExplicitPair,
       isMapping,
-      overridableKeys = {},
+      overridableKeys = Object.create(null),
       keyNode,
       keyTag,
       valueNode,
@@ -26149,6 +27221,9 @@ function readFlowCollection(state, nodeIndent) {
       return true;
     } else if (!readNext) {
       throwError(state, 'missed comma between flow collection entries');
+    } else if (ch === 0x2C/* , */) {
+      // "flow collection entries can never be completely empty", as per YAML 1.2, section 7.4
+      throwError(state, "expected the node content, but found ','");
     }
 
     keyTag = keyNode = valueNode = null;
@@ -26164,7 +27239,9 @@ function readFlowCollection(state, nodeIndent) {
       }
     }
 
-    _line = state.line;
+    _line = state.line; // Save the current line.
+    _lineStart = state.lineStart;
+    _pos = state.position;
     composeNode(state, nodeIndent, CONTEXT_FLOW_IN, false, true);
     keyTag = state.tag;
     keyNode = state.result;
@@ -26181,9 +27258,9 @@ function readFlowCollection(state, nodeIndent) {
     }
 
     if (isMapping) {
-      storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode);
+      storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, _line, _lineStart, _pos);
     } else if (isPair) {
-      _result.push(storeMappingPair(state, null, overridableKeys, keyTag, keyNode, valueNode));
+      _result.push(storeMappingPair(state, null, overridableKeys, keyTag, keyNode, valueNode, _line, _lineStart, _pos));
     } else {
       _result.push(keyNode);
     }
@@ -26355,6 +27432,10 @@ function readBlockSequence(state, nodeIndent) {
       detected  = false,
       ch;
 
+  // there is a leading tab before this token, so it can't be a block sequence/mapping;
+  // it can still be flow sequence/mapping or a scalar
+  if (state.firstTabInLine !== -1) return false;
+
   if (state.anchor !== null) {
     state.anchorMap[state.anchor] = _result;
   }
@@ -26362,6 +27443,10 @@ function readBlockSequence(state, nodeIndent) {
   ch = state.input.charCodeAt(state.position);
 
   while (ch !== 0) {
+    if (state.firstTabInLine !== -1) {
+      state.position = state.firstTabInLine;
+      throwError(state, 'tab characters must not be used in indentation');
+    }
 
     if (ch !== 0x2D/* - */) {
       break;
@@ -26412,17 +27497,23 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
   var following,
       allowCompact,
       _line,
-      _pos,
+      _keyLine,
+      _keyLineStart,
+      _keyPos,
       _tag          = state.tag,
       _anchor       = state.anchor,
       _result       = {},
-      overridableKeys = {},
+      overridableKeys = Object.create(null),
       keyTag        = null,
       keyNode       = null,
       valueNode     = null,
       atExplicitKey = false,
       detected      = false,
       ch;
+
+  // there is a leading tab before this token, so it can't be a block sequence/mapping;
+  // it can still be flow sequence/mapping or a scalar
+  if (state.firstTabInLine !== -1) return false;
 
   if (state.anchor !== null) {
     state.anchorMap[state.anchor] = _result;
@@ -26431,9 +27522,13 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
   ch = state.input.charCodeAt(state.position);
 
   while (ch !== 0) {
+    if (!atExplicitKey && state.firstTabInLine !== -1) {
+      state.position = state.firstTabInLine;
+      throwError(state, 'tab characters must not be used in indentation');
+    }
+
     following = state.input.charCodeAt(state.position + 1);
     _line = state.line; // Save the current line.
-    _pos = state.position;
 
     //
     // Explicit notation case. There are two separate blocks:
@@ -26443,7 +27538,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
 
       if (ch === 0x3F/* ? */) {
         if (atExplicitKey) {
-          storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
+          storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null, _keyLine, _keyLineStart, _keyPos);
           keyTag = keyNode = valueNode = null;
         }
 
@@ -26466,7 +27561,16 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
     //
     // Implicit notation case. Flow-style node as the key first, then ":", and the value.
     //
-    } else if (composeNode(state, flowIndent, CONTEXT_FLOW_OUT, false, true)) {
+    } else {
+      _keyLine = state.line;
+      _keyLineStart = state.lineStart;
+      _keyPos = state.position;
+
+      if (!composeNode(state, flowIndent, CONTEXT_FLOW_OUT, false, true)) {
+        // Neither implicit nor explicit notation.
+        // Reading is done. Go to the epilogue.
+        break;
+      }
 
       if (state.line === _line) {
         ch = state.input.charCodeAt(state.position);
@@ -26483,7 +27587,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
           }
 
           if (atExplicitKey) {
-            storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
+            storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null, _keyLine, _keyLineStart, _keyPos);
             keyTag = keyNode = valueNode = null;
           }
 
@@ -26510,15 +27614,18 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
         state.anchor = _anchor;
         return true; // Keep the result of `composeNode`.
       }
-
-    } else {
-      break; // Reading is done. Go to the epilogue.
     }
 
     //
     // Common reading code for both explicit and implicit notations.
     //
     if (state.line === _line || state.lineIndent > nodeIndent) {
+      if (atExplicitKey) {
+        _keyLine = state.line;
+        _keyLineStart = state.lineStart;
+        _keyPos = state.position;
+      }
+
       if (composeNode(state, nodeIndent, CONTEXT_BLOCK_OUT, true, allowCompact)) {
         if (atExplicitKey) {
           keyNode = state.result;
@@ -26528,7 +27635,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
       }
 
       if (!atExplicitKey) {
-        storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, _line, _pos);
+        storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, valueNode, _keyLine, _keyLineStart, _keyPos);
         keyTag = keyNode = valueNode = null;
       }
 
@@ -26536,7 +27643,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
       ch = state.input.charCodeAt(state.position);
     }
 
-    if (state.lineIndent > nodeIndent && (ch !== 0)) {
+    if ((state.line === _line || state.lineIndent > nodeIndent) && (ch !== 0)) {
       throwError(state, 'bad indentation of a mapping entry');
     } else if (state.lineIndent < nodeIndent) {
       break;
@@ -26549,7 +27656,7 @@ function readBlockMapping(state, nodeIndent, flowIndent) {
 
   // Special case: last mapping's node contains only the key in explicit notation.
   if (atExplicitKey) {
-    storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null);
+    storeMappingPair(state, _result, overridableKeys, keyTag, keyNode, null, _keyLine, _keyLineStart, _keyPos);
   }
 
   // Expose the resulting mapping.
@@ -26638,6 +27745,12 @@ function readTagProperty(state) {
     throwError(state, 'tag name cannot contain such characters: ' + tagName);
   }
 
+  try {
+    tagName = decodeURIComponent(tagName);
+  } catch (err) {
+    throwError(state, 'tag name is malformed: ' + tagName);
+  }
+
   if (isVerbatim) {
     state.tag = tagName;
 
@@ -26705,7 +27818,7 @@ function readAlias(state) {
 
   alias = state.input.slice(_position, state.position);
 
-  if (!state.anchorMap.hasOwnProperty(alias)) {
+  if (!_hasOwnProperty.call(state.anchorMap, alias)) {
     throwError(state, 'unidentified alias "' + alias + '"');
   }
 
@@ -26723,6 +27836,7 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
       hasContent = false,
       typeIndex,
       typeQuantity,
+      typeList,
       type,
       flowIndent,
       blockIndent;
@@ -26824,47 +27938,65 @@ function composeNode(state, parentIndent, nodeContext, allowToSeek, allowCompact
     }
   }
 
-  if (state.tag !== null && state.tag !== '!') {
-    if (state.tag === '?') {
-      // Implicit resolving is not allowed for non-scalar types, and '?'
-      // non-specific tag is only automatically assigned to plain scalars.
-      //
-      // We only need to check kind conformity in case user explicitly assigns '?'
-      // tag, for example like this: "!<?> [0]"
-      //
-      if (state.result !== null && state.kind !== 'scalar') {
-        throwError(state, 'unacceptable node kind for !<?> tag; it should be "scalar", not "' + state.kind + '"');
-      }
+  if (state.tag === null) {
+    if (state.anchor !== null) {
+      state.anchorMap[state.anchor] = state.result;
+    }
 
-      for (typeIndex = 0, typeQuantity = state.implicitTypes.length; typeIndex < typeQuantity; typeIndex += 1) {
-        type = state.implicitTypes[typeIndex];
+  } else if (state.tag === '?') {
+    // Implicit resolving is not allowed for non-scalar types, and '?'
+    // non-specific tag is only automatically assigned to plain scalars.
+    //
+    // We only need to check kind conformity in case user explicitly assigns '?'
+    // tag, for example like this: "!<?> [0]"
+    //
+    if (state.result !== null && state.kind !== 'scalar') {
+      throwError(state, 'unacceptable node kind for !<?> tag; it should be "scalar", not "' + state.kind + '"');
+    }
 
-        if (type.resolve(state.result)) { // `state.result` updated in resolver if matched
-          state.result = type.construct(state.result);
-          state.tag = type.tag;
-          if (state.anchor !== null) {
-            state.anchorMap[state.anchor] = state.result;
-          }
-          break;
-        }
-      }
-    } else if (_hasOwnProperty.call(state.typeMap[state.kind || 'fallback'], state.tag)) {
-      type = state.typeMap[state.kind || 'fallback'][state.tag];
+    for (typeIndex = 0, typeQuantity = state.implicitTypes.length; typeIndex < typeQuantity; typeIndex += 1) {
+      type = state.implicitTypes[typeIndex];
 
-      if (state.result !== null && type.kind !== state.kind) {
-        throwError(state, 'unacceptable node kind for !<' + state.tag + '> tag; it should be "' + type.kind + '", not "' + state.kind + '"');
-      }
-
-      if (!type.resolve(state.result)) { // `state.result` updated in resolver if matched
-        throwError(state, 'cannot resolve a node with !<' + state.tag + '> explicit tag');
-      } else {
+      if (type.resolve(state.result)) { // `state.result` updated in resolver if matched
         state.result = type.construct(state.result);
+        state.tag = type.tag;
         if (state.anchor !== null) {
           state.anchorMap[state.anchor] = state.result;
         }
+        break;
       }
+    }
+  } else if (state.tag !== '!') {
+    if (_hasOwnProperty.call(state.typeMap[state.kind || 'fallback'], state.tag)) {
+      type = state.typeMap[state.kind || 'fallback'][state.tag];
     } else {
+      // looking for multi type
+      type = null;
+      typeList = state.typeMap.multi[state.kind || 'fallback'];
+
+      for (typeIndex = 0, typeQuantity = typeList.length; typeIndex < typeQuantity; typeIndex += 1) {
+        if (state.tag.slice(0, typeList[typeIndex].tag.length) === typeList[typeIndex].tag) {
+          type = typeList[typeIndex];
+          break;
+        }
+      }
+    }
+
+    if (!type) {
       throwError(state, 'unknown tag !<' + state.tag + '>');
+    }
+
+    if (state.result !== null && type.kind !== state.kind) {
+      throwError(state, 'unacceptable node kind for !<' + state.tag + '> tag; it should be "' + type.kind + '", not "' + state.kind + '"');
+    }
+
+    if (!type.resolve(state.result, state.tag)) { // `state.result` updated in resolver if matched
+      throwError(state, 'cannot resolve a node with !<' + state.tag + '> explicit tag');
+    } else {
+      state.result = type.construct(state.result, state.tag);
+      if (state.anchor !== null) {
+        state.anchorMap[state.anchor] = state.result;
+      }
     }
   }
 
@@ -26884,8 +28016,8 @@ function readDocument(state) {
 
   state.version = null;
   state.checkLineBreaks = state.legacy;
-  state.tagMap = {};
-  state.anchorMap = {};
+  state.tagMap = Object.create(null);
+  state.anchorMap = Object.create(null);
 
   while ((ch = state.input.charCodeAt(state.position)) !== 0) {
     skipSeparationSpace(state, true, -1);
@@ -27056,146 +28188,43 @@ function load(input, options) {
 }
 
 
-function safeLoadAll(input, iterator, options) {
-  if (typeof iterator === 'object' && iterator !== null && typeof options === 'undefined') {
-    options = iterator;
-    iterator = null;
-  }
-
-  return loadAll(input, iterator, common.extend({ schema: DEFAULT_SAFE_SCHEMA }, options));
-}
-
-
-function safeLoad(input, options) {
-  return load(input, common.extend({ schema: DEFAULT_SAFE_SCHEMA }, options));
-}
-
-
-module.exports.loadAll     = loadAll;
-module.exports.load        = load;
-module.exports.safeLoadAll = safeLoadAll;
-module.exports.safeLoad    = safeLoad;
+module.exports.loadAll = loadAll;
+module.exports.load    = load;
 
 
 /***/ }),
 
-/***/ 5426:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-
-var common = __webpack_require__(9136);
-
-
-function Mark(name, buffer, position, line, column) {
-  this.name     = name;
-  this.buffer   = buffer;
-  this.position = position;
-  this.line     = line;
-  this.column   = column;
-}
-
-
-Mark.prototype.getSnippet = function getSnippet(indent, maxLength) {
-  var head, start, tail, end, snippet;
-
-  if (!this.buffer) return null;
-
-  indent = indent || 4;
-  maxLength = maxLength || 75;
-
-  head = '';
-  start = this.position;
-
-  while (start > 0 && '\x00\r\n\x85\u2028\u2029'.indexOf(this.buffer.charAt(start - 1)) === -1) {
-    start -= 1;
-    if (this.position - start > (maxLength / 2 - 1)) {
-      head = ' ... ';
-      start += 5;
-      break;
-    }
-  }
-
-  tail = '';
-  end = this.position;
-
-  while (end < this.buffer.length && '\x00\r\n\x85\u2028\u2029'.indexOf(this.buffer.charAt(end)) === -1) {
-    end += 1;
-    if (end - this.position > (maxLength / 2 - 1)) {
-      tail = ' ... ';
-      end -= 5;
-      break;
-    }
-  }
-
-  snippet = this.buffer.slice(start, end);
-
-  return common.repeat(' ', indent) + head + snippet + tail + '\n' +
-         common.repeat(' ', indent + this.position - start + head.length) + '^';
-};
-
-
-Mark.prototype.toString = function toString(compact) {
-  var snippet, where = '';
-
-  if (this.name) {
-    where += 'in "' + this.name + '" ';
-  }
-
-  where += 'at line ' + (this.line + 1) + ', column ' + (this.column + 1);
-
-  if (!compact) {
-    snippet = this.getSnippet();
-
-    if (snippet) {
-      where += ':\n' + snippet;
-    }
-  }
-
-  return where;
-};
-
-
-module.exports = Mark;
-
-
-/***/ }),
-
-/***/ 6514:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 1082:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
 /*eslint-disable max-len*/
 
-var common        = __webpack_require__(9136);
-var YAMLException = __webpack_require__(5199);
-var Type          = __webpack_require__(967);
+var YAMLException = __nccwpck_require__(8179);
+var Type          = __nccwpck_require__(6073);
 
 
-function compileList(schema, name, result) {
-  var exclude = [];
-
-  schema.include.forEach(function (includedSchema) {
-    result = compileList(includedSchema, name, result);
-  });
+function compileList(schema, name) {
+  var result = [];
 
   schema[name].forEach(function (currentType) {
+    var newIndex = result.length;
+
     result.forEach(function (previousType, previousIndex) {
-      if (previousType.tag === currentType.tag && previousType.kind === currentType.kind) {
-        exclude.push(previousIndex);
+      if (previousType.tag === currentType.tag &&
+          previousType.kind === currentType.kind &&
+          previousType.multi === currentType.multi) {
+
+        newIndex = previousIndex;
       }
     });
 
-    result.push(currentType);
+    result[newIndex] = currentType;
   });
 
-  return result.filter(function (type, index) {
-    return exclude.indexOf(index) === -1;
-  });
+  return result;
 }
 
 
@@ -27204,11 +28233,22 @@ function compileMap(/* lists... */) {
         scalar: {},
         sequence: {},
         mapping: {},
-        fallback: {}
+        fallback: {},
+        multi: {
+          scalar: [],
+          sequence: [],
+          mapping: [],
+          fallback: []
+        }
       }, index, length;
 
   function collectType(type) {
-    result[type.kind][type.tag] = result['fallback'][type.tag] = type;
+    if (type.multi) {
+      result.multi[type.kind].push(type);
+      result.multi['fallback'].push(type);
+    } else {
+      result[type.kind][type.tag] = result['fallback'][type.tag] = type;
+    }
   }
 
   for (index = 0, length = arguments.length; index < length; index += 1) {
@@ -27219,58 +28259,62 @@ function compileMap(/* lists... */) {
 
 
 function Schema(definition) {
-  this.include  = definition.include  || [];
-  this.implicit = definition.implicit || [];
-  this.explicit = definition.explicit || [];
-
-  this.implicit.forEach(function (type) {
-    if (type.loadKind && type.loadKind !== 'scalar') {
-      throw new YAMLException('There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.');
-    }
-  });
-
-  this.compiledImplicit = compileList(this, 'implicit', []);
-  this.compiledExplicit = compileList(this, 'explicit', []);
-  this.compiledTypeMap  = compileMap(this.compiledImplicit, this.compiledExplicit);
+  return this.extend(definition);
 }
 
 
-Schema.DEFAULT = null;
+Schema.prototype.extend = function extend(definition) {
+  var implicit = [];
+  var explicit = [];
 
+  if (definition instanceof Type) {
+    // Schema.extend(type)
+    explicit.push(definition);
 
-Schema.create = function createSchema() {
-  var schemas, types;
+  } else if (Array.isArray(definition)) {
+    // Schema.extend([ type1, type2, ... ])
+    explicit = explicit.concat(definition);
 
-  switch (arguments.length) {
-    case 1:
-      schemas = Schema.DEFAULT;
-      types = arguments[0];
-      break;
+  } else if (definition && (Array.isArray(definition.implicit) || Array.isArray(definition.explicit))) {
+    // Schema.extend({ explicit: [ type1, type2, ... ], implicit: [ type1, type2, ... ] })
+    if (definition.implicit) implicit = implicit.concat(definition.implicit);
+    if (definition.explicit) explicit = explicit.concat(definition.explicit);
 
-    case 2:
-      schemas = arguments[0];
-      types = arguments[1];
-      break;
-
-    default:
-      throw new YAMLException('Wrong number of arguments for Schema.create function');
+  } else {
+    throw new YAMLException('Schema.extend argument should be a Type, [ Type ], ' +
+      'or a schema definition ({ implicit: [...], explicit: [...] })');
   }
 
-  schemas = common.toArray(schemas);
-  types = common.toArray(types);
+  implicit.forEach(function (type) {
+    if (!(type instanceof Type)) {
+      throw new YAMLException('Specified list of YAML types (or a single Type object) contains a non-Type object.');
+    }
 
-  if (!schemas.every(function (schema) { return schema instanceof Schema; })) {
-    throw new YAMLException('Specified list of super schemas (or a single Schema object) contains a non-Schema object.');
-  }
+    if (type.loadKind && type.loadKind !== 'scalar') {
+      throw new YAMLException('There is a non-scalar type in the implicit list of a schema. Implicit resolving of such types is not supported.');
+    }
 
-  if (!types.every(function (type) { return type instanceof Type; })) {
-    throw new YAMLException('Specified list of YAML types (or a single Type object) contains a non-Type object.');
-  }
-
-  return new Schema({
-    include: schemas,
-    explicit: types
+    if (type.multi) {
+      throw new YAMLException('There is a multi type in the implicit list of a schema. Multi tags can only be listed as explicit.');
+    }
   });
+
+  explicit.forEach(function (type) {
+    if (!(type instanceof Type)) {
+      throw new YAMLException('Specified list of YAML types (or a single Type object) contains a non-Type object.');
+    }
+  });
+
+  var result = Object.create(Schema.prototype);
+
+  result.implicit = (this.implicit || []).concat(implicit);
+  result.explicit = (this.explicit || []).concat(explicit);
+
+  result.compiledImplicit = compileList(result, 'implicit');
+  result.compiledExplicit = compileList(result, 'explicit');
+  result.compiledTypeMap  = compileMap(result.compiledImplicit, result.compiledExplicit);
+
+  return result;
 };
 
 
@@ -27279,8 +28323,8 @@ module.exports = Schema;
 
 /***/ }),
 
-/***/ 2183:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 2011:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 // Standard YAML's Core schema.
@@ -27293,53 +28337,13 @@ module.exports = Schema;
 
 
 
-var Schema = __webpack_require__(6514);
-
-
-module.exports = new Schema({
-  include: [
-    __webpack_require__(1571)
-  ]
-});
+module.exports = __nccwpck_require__(1035);
 
 
 /***/ }),
 
-/***/ 6874:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-// JS-YAML's default schema for `load` function.
-// It is not described in the YAML specification.
-//
-// This schema is based on JS-YAML's default safe schema and includes
-// JavaScript-specific types: !!js/undefined, !!js/regexp and !!js/function.
-//
-// Also this schema is used as default base schema at `Schema.create` function.
-
-
-
-
-
-var Schema = __webpack_require__(6514);
-
-
-module.exports = Schema.DEFAULT = new Schema({
-  include: [
-    __webpack_require__(8949)
-  ],
-  explicit: [
-    __webpack_require__(5914),
-    __webpack_require__(9242),
-    __webpack_require__(7278)
-  ]
-});
-
-
-/***/ }),
-
-/***/ 8949:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 8759:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 // JS-YAML's default schema for `safeLoad` function.
@@ -27352,30 +28356,24 @@ module.exports = Schema.DEFAULT = new Schema({
 
 
 
-var Schema = __webpack_require__(6514);
-
-
-module.exports = new Schema({
-  include: [
-    __webpack_require__(2183)
-  ],
+module.exports = __nccwpck_require__(2011).extend({
   implicit: [
-    __webpack_require__(3714),
-    __webpack_require__(1393)
+    __nccwpck_require__(9212),
+    __nccwpck_require__(6104)
   ],
   explicit: [
-    __webpack_require__(2551),
-    __webpack_require__(6668),
-    __webpack_require__(6039),
-    __webpack_require__(9237)
+    __nccwpck_require__(7900),
+    __nccwpck_require__(9046),
+    __nccwpck_require__(6860),
+    __nccwpck_require__(9548)
   ]
 });
 
 
 /***/ }),
 
-/***/ 6037:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 8562:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 // Standard YAML's Failsafe schema.
@@ -27385,22 +28383,22 @@ module.exports = new Schema({
 
 
 
-var Schema = __webpack_require__(6514);
+var Schema = __nccwpck_require__(1082);
 
 
 module.exports = new Schema({
   explicit: [
-    __webpack_require__(2672),
-    __webpack_require__(5490),
-    __webpack_require__(1173)
+    __nccwpck_require__(3619),
+    __nccwpck_require__(7283),
+    __nccwpck_require__(6150)
   ]
 });
 
 
 /***/ }),
 
-/***/ 1571:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 1035:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 // Standard YAML's JSON schema.
@@ -27414,39 +28412,144 @@ module.exports = new Schema({
 
 
 
-var Schema = __webpack_require__(6514);
-
-
-module.exports = new Schema({
-  include: [
-    __webpack_require__(6037)
-  ],
+module.exports = __nccwpck_require__(8562).extend({
   implicit: [
-    __webpack_require__(2671),
-    __webpack_require__(4675),
-    __webpack_require__(9963),
-    __webpack_require__(5564)
+    __nccwpck_require__(721),
+    __nccwpck_require__(4993),
+    __nccwpck_require__(1615),
+    __nccwpck_require__(2705)
   ]
 });
 
 
 /***/ }),
 
-/***/ 967:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 6975:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var YAMLException = __webpack_require__(5199);
+
+var common = __nccwpck_require__(6829);
+
+
+// get snippet for a single line, respecting maxLength
+function getLine(buffer, lineStart, lineEnd, position, maxLineLength) {
+  var head = '';
+  var tail = '';
+  var maxHalfLength = Math.floor(maxLineLength / 2) - 1;
+
+  if (position - lineStart > maxHalfLength) {
+    head = ' ... ';
+    lineStart = position - maxHalfLength + head.length;
+  }
+
+  if (lineEnd - position > maxHalfLength) {
+    tail = ' ...';
+    lineEnd = position + maxHalfLength - tail.length;
+  }
+
+  return {
+    str: head + buffer.slice(lineStart, lineEnd).replace(/\t/g, '→') + tail,
+    pos: position - lineStart + head.length // relative position
+  };
+}
+
+
+function padStart(string, max) {
+  return common.repeat(' ', max - string.length) + string;
+}
+
+
+function makeSnippet(mark, options) {
+  options = Object.create(options || null);
+
+  if (!mark.buffer) return null;
+
+  if (!options.maxLength) options.maxLength = 79;
+  if (typeof options.indent      !== 'number') options.indent      = 1;
+  if (typeof options.linesBefore !== 'number') options.linesBefore = 3;
+  if (typeof options.linesAfter  !== 'number') options.linesAfter  = 2;
+
+  var re = /\r?\n|\r|\0/g;
+  var lineStarts = [ 0 ];
+  var lineEnds = [];
+  var match;
+  var foundLineNo = -1;
+
+  while ((match = re.exec(mark.buffer))) {
+    lineEnds.push(match.index);
+    lineStarts.push(match.index + match[0].length);
+
+    if (mark.position <= match.index && foundLineNo < 0) {
+      foundLineNo = lineStarts.length - 2;
+    }
+  }
+
+  if (foundLineNo < 0) foundLineNo = lineStarts.length - 1;
+
+  var result = '', i, line;
+  var lineNoLength = Math.min(mark.line + options.linesAfter, lineEnds.length).toString().length;
+  var maxLineLength = options.maxLength - (options.indent + lineNoLength + 3);
+
+  for (i = 1; i <= options.linesBefore; i++) {
+    if (foundLineNo - i < 0) break;
+    line = getLine(
+      mark.buffer,
+      lineStarts[foundLineNo - i],
+      lineEnds[foundLineNo - i],
+      mark.position - (lineStarts[foundLineNo] - lineStarts[foundLineNo - i]),
+      maxLineLength
+    );
+    result = common.repeat(' ', options.indent) + padStart((mark.line - i + 1).toString(), lineNoLength) +
+      ' | ' + line.str + '\n' + result;
+  }
+
+  line = getLine(mark.buffer, lineStarts[foundLineNo], lineEnds[foundLineNo], mark.position, maxLineLength);
+  result += common.repeat(' ', options.indent) + padStart((mark.line + 1).toString(), lineNoLength) +
+    ' | ' + line.str + '\n';
+  result += common.repeat('-', options.indent + lineNoLength + 3 + line.pos) + '^' + '\n';
+
+  for (i = 1; i <= options.linesAfter; i++) {
+    if (foundLineNo + i >= lineEnds.length) break;
+    line = getLine(
+      mark.buffer,
+      lineStarts[foundLineNo + i],
+      lineEnds[foundLineNo + i],
+      mark.position - (lineStarts[foundLineNo] - lineStarts[foundLineNo + i]),
+      maxLineLength
+    );
+    result += common.repeat(' ', options.indent) + padStart((mark.line + i + 1).toString(), lineNoLength) +
+      ' | ' + line.str + '\n';
+  }
+
+  return result.replace(/\n$/, '');
+}
+
+
+module.exports = makeSnippet;
+
+
+/***/ }),
+
+/***/ 6073:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var YAMLException = __nccwpck_require__(8179);
 
 var TYPE_CONSTRUCTOR_OPTIONS = [
   'kind',
+  'multi',
   'resolve',
   'construct',
   'instanceOf',
   'predicate',
   'represent',
+  'representName',
   'defaultStyle',
   'styleAliases'
 ];
@@ -27481,15 +28584,18 @@ function Type(tag, options) {
   });
 
   // TODO: Add tag format check.
-  this.tag          = tag;
-  this.kind         = options['kind']         || null;
-  this.resolve      = options['resolve']      || function () { return true; };
-  this.construct    = options['construct']    || function (data) { return data; };
-  this.instanceOf   = options['instanceOf']   || null;
-  this.predicate    = options['predicate']    || null;
-  this.represent    = options['represent']    || null;
-  this.defaultStyle = options['defaultStyle'] || null;
-  this.styleAliases = compileStyleAliases(options['styleAliases'] || null);
+  this.options       = options; // keep original options in case user wants to extend this type later
+  this.tag           = tag;
+  this.kind          = options['kind']          || null;
+  this.resolve       = options['resolve']       || function () { return true; };
+  this.construct     = options['construct']     || function (data) { return data; };
+  this.instanceOf    = options['instanceOf']    || null;
+  this.predicate     = options['predicate']     || null;
+  this.represent     = options['represent']     || null;
+  this.representName = options['representName'] || null;
+  this.defaultStyle  = options['defaultStyle']  || null;
+  this.multi         = options['multi']         || false;
+  this.styleAliases  = compileStyleAliases(options['styleAliases'] || null);
 
   if (YAML_NODE_KINDS.indexOf(this.kind) === -1) {
     throw new YAMLException('Unknown kind "' + this.kind + '" is specified for "' + tag + '" YAML type.');
@@ -27501,23 +28607,16 @@ module.exports = Type;
 
 /***/ }),
 
-/***/ 2551:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 7900:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
 /*eslint-disable no-bitwise*/
 
-var NodeBuffer;
 
-try {
-  // A trick for browserified version, to not include `Buffer` shim
-  var _require = require;
-  NodeBuffer = _require('buffer').Buffer;
-} catch (__) {}
-
-var Type       = __webpack_require__(967);
+var Type = __nccwpck_require__(6073);
 
 
 // [ 64, 65, 66 ] -> [ padding, CR, LF ]
@@ -27581,13 +28680,7 @@ function constructYamlBinary(data) {
     result.push((bits >> 4) & 0xFF);
   }
 
-  // Wrap into Buffer for NodeJS and leave Array for browser
-  if (NodeBuffer) {
-    // Support node 6.+ Buffer API when available
-    return NodeBuffer.from ? NodeBuffer.from(result) : new NodeBuffer(result);
-  }
-
-  return result;
+  return new Uint8Array(result);
 }
 
 function representYamlBinary(object /*, style*/) {
@@ -27632,8 +28725,8 @@ function representYamlBinary(object /*, style*/) {
   return result;
 }
 
-function isBinary(object) {
-  return NodeBuffer && NodeBuffer.isBuffer(object);
+function isBinary(obj) {
+  return Object.prototype.toString.call(obj) ===  '[object Uint8Array]';
 }
 
 module.exports = new Type('tag:yaml.org,2002:binary', {
@@ -27647,13 +28740,13 @@ module.exports = new Type('tag:yaml.org,2002:binary', {
 
 /***/ }),
 
-/***/ 4675:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 4993:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var Type = __webpack_require__(967);
+var Type = __nccwpck_require__(6073);
 
 function resolveYamlBoolean(data) {
   if (data === null) return false;
@@ -27690,23 +28783,21 @@ module.exports = new Type('tag:yaml.org,2002:bool', {
 
 /***/ }),
 
-/***/ 5564:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 2705:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var common = __webpack_require__(9136);
-var Type   = __webpack_require__(967);
+var common = __nccwpck_require__(6829);
+var Type   = __nccwpck_require__(6073);
 
 var YAML_FLOAT_PATTERN = new RegExp(
   // 2.5e4, 2.5 and integers
-  '^(?:[-+]?(?:0|[1-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?' +
+  '^(?:[-+]?(?:[0-9][0-9_]*)(?:\\.[0-9_]*)?(?:[eE][-+]?[0-9]+)?' +
   // .2e4, .2
   // special case, seems not from spec
   '|\\.[0-9_]+(?:[eE][-+]?[0-9]+)?' +
-  // 20:59
-  '|[-+]?[0-9][0-9_]*(?::[0-5]?[0-9])+\\.[0-9_]*' +
   // .inf
   '|[-+]?\\.(?:inf|Inf|INF)' +
   // .nan
@@ -27726,11 +28817,10 @@ function resolveYamlFloat(data) {
 }
 
 function constructYamlFloat(data) {
-  var value, sign, base, digits;
+  var value, sign;
 
   value  = data.replace(/_/g, '').toLowerCase();
   sign   = value[0] === '-' ? -1 : 1;
-  digits = [];
 
   if ('+-'.indexOf(value[0]) >= 0) {
     value = value.slice(1);
@@ -27741,22 +28831,6 @@ function constructYamlFloat(data) {
 
   } else if (value === '.nan') {
     return NaN;
-
-  } else if (value.indexOf(':') >= 0) {
-    value.split(':').forEach(function (v) {
-      digits.unshift(parseFloat(v, 10));
-    });
-
-    value = 0.0;
-    base = 1;
-
-    digits.forEach(function (d) {
-      value += d * base;
-      base *= 60;
-    });
-
-    return sign * value;
-
   }
   return sign * parseFloat(value, 10);
 }
@@ -27814,14 +28888,14 @@ module.exports = new Type('tag:yaml.org,2002:float', {
 
 /***/ }),
 
-/***/ 9963:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 1615:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var common = __webpack_require__(9136);
-var Type   = __webpack_require__(967);
+var common = __nccwpck_require__(6829);
+var Type   = __nccwpck_require__(6073);
 
 function isHexCode(c) {
   return ((0x30/* 0 */ <= c) && (c <= 0x39/* 9 */)) ||
@@ -27888,17 +28962,22 @@ function resolveYamlInteger(data) {
       return hasDigits && ch !== '_';
     }
 
-    // base 8
-    for (; index < max; index++) {
-      ch = data[index];
-      if (ch === '_') continue;
-      if (!isOctCode(data.charCodeAt(index))) return false;
-      hasDigits = true;
+
+    if (ch === 'o') {
+      // base 8
+      index++;
+
+      for (; index < max; index++) {
+        ch = data[index];
+        if (ch === '_') continue;
+        if (!isOctCode(data.charCodeAt(index))) return false;
+        hasDigits = true;
+      }
+      return hasDigits && ch !== '_';
     }
-    return hasDigits && ch !== '_';
   }
 
-  // base 10 (except 0) or base 60
+  // base 10 (except 0)
 
   // value should not start with `_`;
   if (ch === '_') return false;
@@ -27906,7 +28985,6 @@ function resolveYamlInteger(data) {
   for (; index < max; index++) {
     ch = data[index];
     if (ch === '_') continue;
-    if (ch === ':') break;
     if (!isDecCode(data.charCodeAt(index))) {
       return false;
     }
@@ -27916,15 +28994,11 @@ function resolveYamlInteger(data) {
   // Should have digits and should not end with `_`
   if (!hasDigits || ch === '_') return false;
 
-  // if !base60 - done;
-  if (ch !== ':') return true;
-
-  // base60 almost not used, no needs to optimize
-  return /^(:[0-5]?[0-9])+$/.test(data.slice(index));
+  return true;
 }
 
 function constructYamlInteger(data) {
-  var value = data, sign = 1, ch, base, digits = [];
+  var value = data, sign = 1, ch;
 
   if (value.indexOf('_') !== -1) {
     value = value.replace(/_/g, '');
@@ -27942,25 +29016,8 @@ function constructYamlInteger(data) {
 
   if (ch === '0') {
     if (value[1] === 'b') return sign * parseInt(value.slice(2), 2);
-    if (value[1] === 'x') return sign * parseInt(value, 16);
-    return sign * parseInt(value, 8);
-  }
-
-  if (value.indexOf(':') !== -1) {
-    value.split(':').forEach(function (v) {
-      digits.unshift(parseInt(v, 10));
-    });
-
-    value = 0;
-    base = 1;
-
-    digits.forEach(function (d) {
-      value += (d * base);
-      base *= 60;
-    });
-
-    return sign * value;
-
+    if (value[1] === 'x') return sign * parseInt(value.slice(2), 16);
+    if (value[1] === 'o') return sign * parseInt(value.slice(2), 8);
   }
 
   return sign * parseInt(value, 10);
@@ -27978,7 +29035,7 @@ module.exports = new Type('tag:yaml.org,2002:int', {
   predicate: isInteger,
   represent: {
     binary:      function (obj) { return obj >= 0 ? '0b' + obj.toString(2) : '-0b' + obj.toString(2).slice(1); },
-    octal:       function (obj) { return obj >= 0 ? '0'  + obj.toString(8) : '-0'  + obj.toString(8).slice(1); },
+    octal:       function (obj) { return obj >= 0 ? '0o'  + obj.toString(8) : '-0o'  + obj.toString(8).slice(1); },
     decimal:     function (obj) { return obj.toString(10); },
     /* eslint-disable max-len */
     hexadecimal: function (obj) { return obj >= 0 ? '0x' + obj.toString(16).toUpperCase() :  '-0x' + obj.toString(16).toUpperCase().slice(1); }
@@ -27995,218 +29052,13 @@ module.exports = new Type('tag:yaml.org,2002:int', {
 
 /***/ }),
 
-/***/ 7278:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 6150:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var esprima;
-
-// Browserified version does not have esprima
-//
-// 1. For node.js just require module as deps
-// 2. For browser try to require mudule via external AMD system.
-//    If not found - try to fallback to window.esprima. If not
-//    found too - then fail to parse.
-//
-try {
-  // workaround to exclude package from browserify list.
-  var _require = require;
-  esprima = _require('esprima');
-} catch (_) {
-  /* eslint-disable no-redeclare */
-  /* global window */
-  if (typeof window !== 'undefined') esprima = window.esprima;
-}
-
-var Type = __webpack_require__(967);
-
-function resolveJavascriptFunction(data) {
-  if (data === null) return false;
-
-  try {
-    var source = '(' + data + ')',
-        ast    = esprima.parse(source, { range: true });
-
-    if (ast.type                    !== 'Program'             ||
-        ast.body.length             !== 1                     ||
-        ast.body[0].type            !== 'ExpressionStatement' ||
-        (ast.body[0].expression.type !== 'ArrowFunctionExpression' &&
-          ast.body[0].expression.type !== 'FunctionExpression')) {
-      return false;
-    }
-
-    return true;
-  } catch (err) {
-    return false;
-  }
-}
-
-function constructJavascriptFunction(data) {
-  /*jslint evil:true*/
-
-  var source = '(' + data + ')',
-      ast    = esprima.parse(source, { range: true }),
-      params = [],
-      body;
-
-  if (ast.type                    !== 'Program'             ||
-      ast.body.length             !== 1                     ||
-      ast.body[0].type            !== 'ExpressionStatement' ||
-      (ast.body[0].expression.type !== 'ArrowFunctionExpression' &&
-        ast.body[0].expression.type !== 'FunctionExpression')) {
-    throw new Error('Failed to resolve function');
-  }
-
-  ast.body[0].expression.params.forEach(function (param) {
-    params.push(param.name);
-  });
-
-  body = ast.body[0].expression.body.range;
-
-  // Esprima's ranges include the first '{' and the last '}' characters on
-  // function expressions. So cut them out.
-  if (ast.body[0].expression.body.type === 'BlockStatement') {
-    /*eslint-disable no-new-func*/
-    return new Function(params, source.slice(body[0] + 1, body[1] - 1));
-  }
-  // ES6 arrow functions can omit the BlockStatement. In that case, just return
-  // the body.
-  /*eslint-disable no-new-func*/
-  return new Function(params, 'return ' + source.slice(body[0], body[1]));
-}
-
-function representJavascriptFunction(object /*, style*/) {
-  return object.toString();
-}
-
-function isFunction(object) {
-  return Object.prototype.toString.call(object) === '[object Function]';
-}
-
-module.exports = new Type('tag:yaml.org,2002:js/function', {
-  kind: 'scalar',
-  resolve: resolveJavascriptFunction,
-  construct: constructJavascriptFunction,
-  predicate: isFunction,
-  represent: representJavascriptFunction
-});
-
-
-/***/ }),
-
-/***/ 9242:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var Type = __webpack_require__(967);
-
-function resolveJavascriptRegExp(data) {
-  if (data === null) return false;
-  if (data.length === 0) return false;
-
-  var regexp = data,
-      tail   = /\/([gim]*)$/.exec(data),
-      modifiers = '';
-
-  // if regexp starts with '/' it can have modifiers and must be properly closed
-  // `/foo/gim` - modifiers tail can be maximum 3 chars
-  if (regexp[0] === '/') {
-    if (tail) modifiers = tail[1];
-
-    if (modifiers.length > 3) return false;
-    // if expression starts with /, is should be properly terminated
-    if (regexp[regexp.length - modifiers.length - 1] !== '/') return false;
-  }
-
-  return true;
-}
-
-function constructJavascriptRegExp(data) {
-  var regexp = data,
-      tail   = /\/([gim]*)$/.exec(data),
-      modifiers = '';
-
-  // `/foo/gim` - tail can be maximum 4 chars
-  if (regexp[0] === '/') {
-    if (tail) modifiers = tail[1];
-    regexp = regexp.slice(1, regexp.length - modifiers.length - 1);
-  }
-
-  return new RegExp(regexp, modifiers);
-}
-
-function representJavascriptRegExp(object /*, style*/) {
-  var result = '/' + object.source + '/';
-
-  if (object.global) result += 'g';
-  if (object.multiline) result += 'm';
-  if (object.ignoreCase) result += 'i';
-
-  return result;
-}
-
-function isRegExp(object) {
-  return Object.prototype.toString.call(object) === '[object RegExp]';
-}
-
-module.exports = new Type('tag:yaml.org,2002:js/regexp', {
-  kind: 'scalar',
-  resolve: resolveJavascriptRegExp,
-  construct: constructJavascriptRegExp,
-  predicate: isRegExp,
-  represent: representJavascriptRegExp
-});
-
-
-/***/ }),
-
-/***/ 5914:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var Type = __webpack_require__(967);
-
-function resolveJavascriptUndefined() {
-  return true;
-}
-
-function constructJavascriptUndefined() {
-  /*eslint-disable no-undefined*/
-  return undefined;
-}
-
-function representJavascriptUndefined() {
-  return '';
-}
-
-function isUndefined(object) {
-  return typeof object === 'undefined';
-}
-
-module.exports = new Type('tag:yaml.org,2002:js/undefined', {
-  kind: 'scalar',
-  resolve: resolveJavascriptUndefined,
-  construct: constructJavascriptUndefined,
-  predicate: isUndefined,
-  represent: representJavascriptUndefined
-});
-
-
-/***/ }),
-
-/***/ 1173:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-"use strict";
-
-
-var Type = __webpack_require__(967);
+var Type = __nccwpck_require__(6073);
 
 module.exports = new Type('tag:yaml.org,2002:map', {
   kind: 'mapping',
@@ -28216,13 +29068,13 @@ module.exports = new Type('tag:yaml.org,2002:map', {
 
 /***/ }),
 
-/***/ 1393:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 6104:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var Type = __webpack_require__(967);
+var Type = __nccwpck_require__(6073);
 
 function resolveYamlMerge(data) {
   return data === '<<' || data === null;
@@ -28236,13 +29088,13 @@ module.exports = new Type('tag:yaml.org,2002:merge', {
 
 /***/ }),
 
-/***/ 2671:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 721:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var Type = __webpack_require__(967);
+var Type = __nccwpck_require__(6073);
 
 function resolveYamlNull(data) {
   if (data === null) return true;
@@ -28270,7 +29122,8 @@ module.exports = new Type('tag:yaml.org,2002:null', {
     canonical: function () { return '~';    },
     lowercase: function () { return 'null'; },
     uppercase: function () { return 'NULL'; },
-    camelcase: function () { return 'Null'; }
+    camelcase: function () { return 'Null'; },
+    empty:     function () { return '';     }
   },
   defaultStyle: 'lowercase'
 });
@@ -28278,13 +29131,13 @@ module.exports = new Type('tag:yaml.org,2002:null', {
 
 /***/ }),
 
-/***/ 6668:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 9046:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var Type = __webpack_require__(967);
+var Type = __nccwpck_require__(6073);
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 var _toString       = Object.prototype.toString;
@@ -28330,13 +29183,13 @@ module.exports = new Type('tag:yaml.org,2002:omap', {
 
 /***/ }),
 
-/***/ 6039:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 6860:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var Type = __webpack_require__(967);
+var Type = __nccwpck_require__(6073);
 
 var _toString = Object.prototype.toString;
 
@@ -28391,13 +29244,13 @@ module.exports = new Type('tag:yaml.org,2002:pairs', {
 
 /***/ }),
 
-/***/ 5490:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 7283:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var Type = __webpack_require__(967);
+var Type = __nccwpck_require__(6073);
 
 module.exports = new Type('tag:yaml.org,2002:seq', {
   kind: 'sequence',
@@ -28407,13 +29260,13 @@ module.exports = new Type('tag:yaml.org,2002:seq', {
 
 /***/ }),
 
-/***/ 9237:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 9548:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var Type = __webpack_require__(967);
+var Type = __nccwpck_require__(6073);
 
 var _hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -28444,13 +29297,13 @@ module.exports = new Type('tag:yaml.org,2002:set', {
 
 /***/ }),
 
-/***/ 2672:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 3619:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var Type = __webpack_require__(967);
+var Type = __nccwpck_require__(6073);
 
 module.exports = new Type('tag:yaml.org,2002:str', {
   kind: 'scalar',
@@ -28460,13 +29313,13 @@ module.exports = new Type('tag:yaml.org,2002:str', {
 
 /***/ }),
 
-/***/ 3714:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ 9212:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var Type = __webpack_require__(967);
+var Type = __nccwpck_require__(6073);
 
 var YAML_DATE_REGEXP = new RegExp(
   '^([0-9][0-9][0-9][0-9])'          + // [1] year
@@ -28557,7 +29410,7 @@ module.exports = new Type('tag:yaml.org,2002:timestamp', {
 /***/ }),
 
 /***/ 467:
-/***/ ((module, exports, __webpack_require__) => {
+/***/ ((module, exports, __nccwpck_require__) => {
 
 "use strict";
 
@@ -28566,11 +29419,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var Stream = _interopDefault(__webpack_require__(2413));
-var http = _interopDefault(__webpack_require__(8605));
-var Url = _interopDefault(__webpack_require__(8835));
-var https = _interopDefault(__webpack_require__(7211));
-var zlib = _interopDefault(__webpack_require__(8761));
+var Stream = _interopDefault(__nccwpck_require__(2413));
+var http = _interopDefault(__nccwpck_require__(8605));
+var Url = _interopDefault(__nccwpck_require__(8835));
+var https = _interopDefault(__nccwpck_require__(7211));
+var zlib = _interopDefault(__nccwpck_require__(8761));
 
 // Based on https://github.com/tmpvar/jsdom/blob/aa85b2abf07766ff7bf5c1f6daafb3726f2f2db5/lib/jsdom/living/blob.js
 
@@ -28721,7 +29574,7 @@ FetchError.prototype.name = 'FetchError';
 
 let convert;
 try {
-	convert = __webpack_require__(2877).convert;
+	convert = __nccwpck_require__(2877).convert;
 } catch (e) {}
 
 const INTERNALS = Symbol('Body internals');
@@ -30214,9 +31067,9 @@ exports.FetchError = FetchError;
 /***/ }),
 
 /***/ 1223:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var wrappy = __webpack_require__(2940)
+var wrappy = __nccwpck_require__(2940)
 module.exports = wrappy(once)
 module.exports.strict = wrappy(onceStrict)
 
@@ -30263,26 +31116,26 @@ function onceStrict (fn) {
 /***/ }),
 
 /***/ 4294:
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-module.exports = __webpack_require__(4219);
+module.exports = __nccwpck_require__(4219);
 
 
 /***/ }),
 
 /***/ 4219:
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var net = __webpack_require__(1631);
-var tls = __webpack_require__(4016);
-var http = __webpack_require__(8605);
-var https = __webpack_require__(7211);
-var events = __webpack_require__(8614);
-var assert = __webpack_require__(2357);
-var util = __webpack_require__(1669);
+var net = __nccwpck_require__(1631);
+var tls = __nccwpck_require__(4016);
+var http = __nccwpck_require__(8605);
+var https = __nccwpck_require__(7211);
+var events = __nccwpck_require__(8614);
+var assert = __nccwpck_require__(2357);
+var util = __nccwpck_require__(1669);
 
 
 exports.httpOverHttp = httpOverHttp;
@@ -30620,7 +31473,7 @@ module.exports = eval("require")("encoding");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("assert");
+module.exports = require("assert");;
 
 /***/ }),
 
@@ -30628,7 +31481,7 @@ module.exports = require("assert");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("events");
+module.exports = require("events");;
 
 /***/ }),
 
@@ -30636,7 +31489,7 @@ module.exports = require("events");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("fs");
+module.exports = require("fs");;
 
 /***/ }),
 
@@ -30644,7 +31497,7 @@ module.exports = require("fs");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("http");
+module.exports = require("http");;
 
 /***/ }),
 
@@ -30652,7 +31505,7 @@ module.exports = require("http");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("https");
+module.exports = require("https");;
 
 /***/ }),
 
@@ -30660,7 +31513,7 @@ module.exports = require("https");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("net");
+module.exports = require("net");;
 
 /***/ }),
 
@@ -30668,7 +31521,7 @@ module.exports = require("net");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("os");
+module.exports = require("os");;
 
 /***/ }),
 
@@ -30676,7 +31529,7 @@ module.exports = require("os");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("path");
+module.exports = require("path");;
 
 /***/ }),
 
@@ -30684,7 +31537,7 @@ module.exports = require("path");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("stream");
+module.exports = require("stream");;
 
 /***/ }),
 
@@ -30692,7 +31545,7 @@ module.exports = require("stream");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("tls");
+module.exports = require("tls");;
 
 /***/ }),
 
@@ -30700,7 +31553,7 @@ module.exports = require("tls");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("url");
+module.exports = require("url");;
 
 /***/ }),
 
@@ -30708,7 +31561,7 @@ module.exports = require("url");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("util");
+module.exports = require("util");;
 
 /***/ }),
 
@@ -30716,7 +31569,7 @@ module.exports = require("util");
 /***/ ((module) => {
 
 "use strict";
-module.exports = require("zlib");
+module.exports = require("zlib");;
 
 /***/ })
 
@@ -30726,10 +31579,11 @@ module.exports = require("zlib");
 /******/ 	var __webpack_module_cache__ = {};
 /******/ 	
 /******/ 	// The require function
-/******/ 	function __webpack_require__(moduleId) {
+/******/ 	function __nccwpck_require__(moduleId) {
 /******/ 		// Check if module is in cache
-/******/ 		if(__webpack_module_cache__[moduleId]) {
-/******/ 			return __webpack_module_cache__[moduleId].exports;
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
@@ -30741,7 +31595,7 @@ module.exports = require("zlib");
 /******/ 		// Execute the module function
 /******/ 		var threw = true;
 /******/ 		try {
-/******/ 			__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 			__webpack_modules__[moduleId].call(module.exports, module, module.exports, __nccwpck_require__);
 /******/ 			threw = false;
 /******/ 		} finally {
 /******/ 			if(threw) delete __webpack_module_cache__[moduleId];
@@ -30754,11 +31608,14 @@ module.exports = require("zlib");
 /************************************************************************/
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
-/******/ 	__webpack_require__.ab = __dirname + "/";/************************************************************************/
-/******/ 	// module exports must be returned from runtime so entry inlining is disabled
+/******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";/************************************************************************/
+/******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(3109);
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(3109);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=index.js.map
