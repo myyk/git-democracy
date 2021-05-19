@@ -12,16 +12,20 @@ export class Comment {
   body: string
 
   constructor(commentResponse: CommentResponse) {
+    if (commentResponse.body == null) {
+      throw new Error('body must be defined')
+    }
+
     this.id = commentResponse.id
     this.createdAt = new Date(commentResponse.created_at)
-    this.body = commentResponse.body
+    this.body = commentResponse.body //this must be defined
   }
 }
 
 interface CommentResponse {
   id: number
   created_at: string
-  body: string
+  body?: string | undefined
 }
 
 export async function findVotingComment(
@@ -31,14 +35,14 @@ export async function findVotingComment(
   issueNumber: number,
   bodyIncludes: string
 ): Promise<Comment | null> {
-  const {data: comments} = await octokit.issues.listComments({
+  const {data: comments} = await octokit.rest.issues.listComments({
     owner,
     repo,
     issue_number: issueNumber
   })
 
   const comment = comments.find(next => {
-    return next.body.includes(bodyIncludes)
+    return next.body?.includes(bodyIncludes)
   })
 
   if (!comment) {
@@ -89,7 +93,7 @@ export async function createVotingComment(
   issueNumber: number,
   body: string
 ): Promise<Comment> {
-  const {data: comment} = await octokit.issues.createComment({
+  const {data: comment} = await octokit.rest.issues.createComment({
     owner,
     repo,
     issue_number: issueNumber,
@@ -109,7 +113,7 @@ export async function updateVotingComment(
   commentId: Promise<number>,
   body: Promise<string>
 ): Promise<void> {
-  await octokit.issues.updateComment({
+  await octokit.rest.issues.updateComment({
     owner,
     repo,
     comment_id: await commentId,
