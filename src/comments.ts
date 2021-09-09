@@ -1,8 +1,10 @@
-import {inspect} from 'util'
-import {GitHub} from '@actions/github/lib/utils'
 import * as core from '@actions/core'
-import {Reactions, forIt, againstIt} from './reactions'
+
+import {Reactions, againstIt, forIt} from './reactions'
+
 import {Config} from './config'
+import {GitHub} from '@actions/github/lib/utils'
+import {inspect} from 'util'
 
 type Octokit = InstanceType<typeof GitHub>
 
