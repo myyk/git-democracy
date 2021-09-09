@@ -1,7 +1,9 @@
-import {inspect} from 'util'
-import {promises as fsPromises, PathLike} from 'fs'
-import {load as yamlSafeLoad} from 'js-yaml'
 import * as core from '@actions/core'
+
+import {PathLike, promises as fsPromises} from 'fs'
+
+import {inspect} from 'util'
+import {load as yamlSafeLoad} from 'js-yaml'
 
 export class Voters extends Map<string, number> {
   constructor(obj?: object) {

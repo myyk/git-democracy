@@ -1,8 +1,10 @@
-import {inspect} from 'util'
 import * as core from '@actions/core'
+
+import {Reactions, againstIt, forIt} from './reactions'
+
 import {Config} from './config'
-import {Reactions, forIt, againstIt} from './reactions'
 import {add} from 'date-fns'
+import {inspect} from 'util'
 
 // evaluateVote returns "" on success and the reasons for the vote failing on
 // a non-passing vote.

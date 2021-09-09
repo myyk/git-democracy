@@ -1,7 +1,8 @@
-import {inspect} from 'util'
-import {GitHub} from '@actions/github/lib/utils'
 import * as core from '@actions/core'
+
+import {GitHub} from '@actions/github/lib/utils'
 import {Voters} from './voters'
+import {inspect} from 'util'
 
 type Octokit = InstanceType<typeof GitHub>
 
@@ -91,9 +92,9 @@ export async function weightedVoteTotaling(
   const userReactions = await promisedUserReactions
   const voters = await promisedVoters
 
-  let forItVotes = 0,
-    againstItVotes = 0,
-    numVoters = 0
+  let forItVotes = 0
+  let againstItVotes = 0
+  let numVoters = 0
   for (const [user, vote] of userReactions) {
     const voteWeight = voters.get(user) ?? 0
 

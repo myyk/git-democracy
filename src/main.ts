@@ -1,25 +1,28 @@
-import {inspect} from 'util'
+/* eslint-disable i18n-text/no-en */
 import * as core from '@actions/core'
 import * as github from '@actions/github'
+
+import {Config, readVotingConfig} from './config'
+import {Voters, readVoters} from './voters'
 import {
-  findVotingComment,
-  findOrCreateVotingComment,
-  createVotingCommentBody,
-  updateVotingComment,
-  commentToId,
-  commentToCreatedAt,
-  closeVotingComment
-} from './comments'
-import {
-  readReactionsCounts,
-  weightedVoteTotaling,
+  againstIt,
   forIt,
-  againstIt
+  readReactionsCounts,
+  weightedVoteTotaling
 } from './reactions'
-import {readVotingConfig, Config} from './config'
-import {readVoters, Voters} from './voters'
-import {evaluateVote} from './voting'
+import {
+  closeVotingComment,
+  commentToCreatedAt,
+  commentToId,
+  createVotingCommentBody,
+  findOrCreateVotingComment,
+  findVotingComment,
+  updateVotingComment
+} from './comments'
+
 import {GitHub} from '@actions/github/lib/utils'
+import {evaluateVote} from './voting'
+import {inspect} from 'util'
 
 type Octokit = InstanceType<typeof GitHub>
 
@@ -273,7 +276,7 @@ export async function run(): Promise<void> {
     const payload = JSON.stringify(github.context.payload, undefined, 2)
     core.info(`The event payload: ${payload}`)
   } catch (error) {
-    core.setFailed(`error while running action: ${error.message}`)
+    core.setFailed(`error while running action: ${error}`)
   }
 }
 

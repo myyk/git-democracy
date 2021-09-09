@@ -36,9 +36,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.commentToCreatedAt = exports.commentToId = exports.closeVotingComment = exports.createVotingCommentBody = exports.updateVotingComment = exports.createVotingComment = exports.findOrCreateVotingComment = exports.findVotingComment = exports.Comment = void 0;
-const util_1 = __nccwpck_require__(1669);
 const core = __importStar(__nccwpck_require__(2186));
 const reactions_1 = __nccwpck_require__(7344);
+const util_1 = __nccwpck_require__(1669);
 class Comment {
     constructor(commentResponse) {
         if (commentResponse.body == null) {
@@ -68,7 +68,7 @@ function findVotingComment(octokit, owner, repo, issueNumber, bodyIncludes) {
         if (isNaN(comment.id)) {
             return Promise.reject(Error('commentId not a number'));
         }
-        core.info(`comment: ${util_1.inspect(comment)}`);
+        core.info(`comment: ${(0, util_1.inspect)(comment)}`);
         return new Comment(comment);
     });
 }
@@ -194,10 +194,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.readVotingConfig = exports.Config = void 0;
-const util_1 = __nccwpck_require__(1669);
-const fs_1 = __nccwpck_require__(5747);
-const js_yaml_1 = __nccwpck_require__(1917);
 const core = __importStar(__nccwpck_require__(2186));
+const fs_1 = __nccwpck_require__(5747);
+const util_1 = __nccwpck_require__(1669);
+const js_yaml_1 = __nccwpck_require__(1917);
 class Config {
     constructor({ percentageToApprove = 0, minVotersRequired = 0, minVotingWindowMinutes = 0 }) {
         this.percentageToApprove = percentageToApprove;
@@ -210,9 +210,9 @@ function readVotingConfig(path) {
     return __awaiter(this, void 0, void 0, function* () {
         // read voting config
         const fileContents = yield fs_1.promises.readFile(path, 'utf8');
-        const configData = js_yaml_1.load(fileContents);
+        const configData = (0, js_yaml_1.load)(fileContents);
         // validate and sanitize values
-        core.info(`voting config: ${util_1.inspect(configData)}`);
+        core.info(`voting config: ${(0, util_1.inspect)(configData)}`);
         if (!(configData instanceof Object)) {
             throw new Error(`config data is not object type`);
         }
@@ -275,32 +275,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
-const util_1 = __nccwpck_require__(1669);
+/* eslint-disable i18n-text/no-en */
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-const comments_1 = __nccwpck_require__(1910);
-const reactions_1 = __nccwpck_require__(7344);
 const config_1 = __nccwpck_require__(88);
 const voters_1 = __nccwpck_require__(6934);
+const reactions_1 = __nccwpck_require__(7344);
+const comments_1 = __nccwpck_require__(1910);
 const voting_1 = __nccwpck_require__(7838);
+const util_1 = __nccwpck_require__(1669);
 function startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
     return __awaiter(this, void 0, void 0, function* () {
-        const createCommentBody = comments_1.createVotingCommentBody(serverURL, owner, repo, github.context.ref, badgeText, Promise.resolve({
+        const createCommentBody = (0, comments_1.createVotingCommentBody)(serverURL, owner, repo, github.context.ref, badgeText, Promise.resolve({
             [reactions_1.forIt]: 0,
             [reactions_1.againstIt]: 0,
             numVoters: 0,
             voteStartedAt: null
         }), votingConfigPromise);
-        const comment = comments_1.findOrCreateVotingComment(octokit, owner, repo, issueNumber, badgeText, createCommentBody);
-        const commentID = comments_1.commentToId(comment);
+        const comment = (0, comments_1.findOrCreateVotingComment)(octokit, owner, repo, issueNumber, badgeText, createCommentBody);
+        const commentID = (0, comments_1.commentToId)(comment);
         core.info(`commentId: ${yield commentID}`);
         const voters = yield votersPromise;
-        core.info(`voters: ${util_1.inspect(voters)}`);
-        const reactionCountsPromise = reactions_1.readReactionsCounts(octokit, owner, repo, commentID);
-        const votesPromise = reactions_1.weightedVoteTotaling(reactionCountsPromise, votersPromise, comments_1.commentToCreatedAt(comment));
-        const errorMessage = yield voting_1.evaluateVote(votingConfigPromise, votesPromise);
+        core.info(`voters: ${(0, util_1.inspect)(voters)}`);
+        const reactionCountsPromise = (0, reactions_1.readReactionsCounts)(octokit, owner, repo, commentID);
+        const votesPromise = (0, reactions_1.weightedVoteTotaling)(reactionCountsPromise, votersPromise, (0, comments_1.commentToCreatedAt)(comment));
+        const errorMessage = yield (0, voting_1.evaluateVote)(votingConfigPromise, votesPromise);
         // Write summary to issue comment.
-        yield comments_1.updateVotingComment(octokit, owner, repo, commentID, comments_1.createVotingCommentBody(serverURL, owner, repo, github.context.ref, badgeText, votesPromise, votingConfigPromise));
+        yield (0, comments_1.updateVotingComment)(octokit, owner, repo, commentID, (0, comments_1.createVotingCommentBody)(serverURL, owner, repo, github.context.ref, badgeText, votesPromise, votingConfigPromise));
         if (errorMessage) {
             return errorMessage;
         }
@@ -318,12 +319,12 @@ function startOrUpdate(octokit, owner, repo, serverURL, issueNumber, badgeText, 
 }
 function close(octokit, owner, repo, issueNumber, badgeText, closedVotingBodyTag) {
     return __awaiter(this, void 0, void 0, function* () {
-        const comment = yield comments_1.findVotingComment(octokit, owner, repo, issueNumber, badgeText);
+        const comment = yield (0, comments_1.findVotingComment)(octokit, owner, repo, issueNumber, badgeText);
         if (!comment) {
             core.warning(`no vote started, this may be because something is misconfigured or the action was recently added`);
             return;
         }
-        yield comments_1.closeVotingComment(octokit, owner, repo, comment, badgeText, closedVotingBodyTag);
+        yield (0, comments_1.closeVotingComment)(octokit, owner, repo, comment, badgeText, closedVotingBodyTag);
     });
 }
 function restart(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
@@ -348,7 +349,7 @@ function run() {
                 issueNumber: core.getInput('issueNumber'),
                 serverURL: core.getInput('serverURL')
             };
-            core.info(`Inputs: ${util_1.inspect(inputs)}`);
+            core.info(`Inputs: ${(0, util_1.inspect)(inputs)}`);
             const [owner, repo] = inputs.repository.split('/');
             core.info(`repository: ${owner}/${repo}`);
             const octokit = github.getOctokit(inputs.token, {
@@ -358,8 +359,8 @@ function run() {
                 ? Number(inputs.issueNumber)
                 : github.context.issue.number;
             core.info(`issueNumber: ${issueNumber}`);
-            const votingConfigPromise = config_1.readVotingConfig(`./.voting.yml`);
-            const votersPromise = voters_1.readVoters(`./.voters.yml`);
+            const votingConfigPromise = (0, config_1.readVotingConfig)(`./.voting.yml`);
+            const votersPromise = (0, voters_1.readVoters)(`./.voters.yml`);
             const badgeText = 'Current Voting Result';
             switch (inputs.payloadAction) {
                 case 'opened':
@@ -380,7 +381,7 @@ function run() {
             core.info(`The event payload: ${payload}`);
         }
         catch (error) {
-            core.setFailed(`error while running action: ${error.message}`);
+            core.setFailed(`error while running action: ${error}`);
         }
     });
 }
@@ -425,8 +426,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.weightedVoteTotaling = exports.readReactionsCounts = exports.readReactionsCountsFromSummary = exports.againstIt = exports.forIt = void 0;
-const util_1 = __nccwpck_require__(1669);
 const core = __importStar(__nccwpck_require__(2186));
+const util_1 = __nccwpck_require__(1669);
 exports.forIt = '+1';
 exports.againstIt = '-1';
 // These are summarized reactions which is nice and simple but not useful if we
@@ -439,10 +440,10 @@ function readReactionsCountsFromSummary(octokit, owner, repo, promisedCommentId)
             repo,
             comment_id: commentId
         });
-        core.info(`data: ${util_1.inspect(data)}`);
+        core.info(`data: ${(0, util_1.inspect)(data)}`);
         const dataWithReactions = data; // eslint-disable-line @typescript-eslint/no-explicit-any
         const reactions = dataWithReactions['reactions'];
-        core.info(`reactions: ${util_1.inspect(reactions)}`);
+        core.info(`reactions: ${(0, util_1.inspect)(reactions)}`);
         return {
             [exports.forIt]: reactions[exports.forIt],
             [exports.againstIt]: reactions[exports.againstIt],
@@ -463,7 +464,7 @@ function readReactionsCounts(octokit, owner, repo, promisedCommentId) {
             repo,
             comment_id: commentId
         });
-        core.info(`listForIssueComment data: ${util_1.inspect(data)}`);
+        core.info(`listForIssueComment data: ${(0, util_1.inspect)(data)}`);
         const votingData = data.filter(next => next.content === exports.forIt || next.content === exports.againstIt);
         const result = new Map();
         for (const { user, content } of votingData) {
@@ -475,7 +476,7 @@ function readReactionsCounts(octokit, owner, repo, promisedCommentId) {
                 result.set(login, total);
             }
         }
-        core.info(`readReactionsCounts: ${util_1.inspect(result)}`);
+        core.info(`readReactionsCounts: ${(0, util_1.inspect)(result)}`);
         return result;
     });
 }
@@ -485,7 +486,9 @@ function weightedVoteTotaling(promisedUserReactions, promisedVoters, promisedVot
     return __awaiter(this, void 0, void 0, function* () {
         const userReactions = yield promisedUserReactions;
         const voters = yield promisedVoters;
-        let forItVotes = 0, againstItVotes = 0, numVoters = 0;
+        let forItVotes = 0;
+        let againstItVotes = 0;
+        let numVoters = 0;
         for (const [user, vote] of userReactions) {
             const voteWeight = (_a = voters.get(user)) !== null && _a !== void 0 ? _a : 0;
             if (voteWeight > 0 && vote !== 0) {
@@ -557,10 +560,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.readVoters = exports.Voters = void 0;
-const util_1 = __nccwpck_require__(1669);
-const fs_1 = __nccwpck_require__(5747);
-const js_yaml_1 = __nccwpck_require__(1917);
 const core = __importStar(__nccwpck_require__(2186));
+const fs_1 = __nccwpck_require__(5747);
+const util_1 = __nccwpck_require__(1669);
+const js_yaml_1 = __nccwpck_require__(1917);
 class Voters extends Map {
     constructor(obj) {
         super();
@@ -578,9 +581,9 @@ exports.Voters = Voters;
 function readVoters(path) {
     return __awaiter(this, void 0, void 0, function* () {
         const fileContents = yield fs_1.promises.readFile(path, 'utf8');
-        const data = js_yaml_1.load(fileContents);
+        const data = (0, js_yaml_1.load)(fileContents);
         // validate and sanitize values
-        core.info(`voters: ${util_1.inspect(data)}`);
+        core.info(`voters: ${(0, util_1.inspect)(data)}`);
         if (!(data instanceof Object)) {
             throw new Error(`voters data is not object type`);
         }
@@ -627,10 +630,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.evaluateVote = void 0;
-const util_1 = __nccwpck_require__(1669);
 const core = __importStar(__nccwpck_require__(2186));
 const reactions_1 = __nccwpck_require__(7344);
 const date_fns_1 = __nccwpck_require__(3314);
+const util_1 = __nccwpck_require__(1669);
 // evaluateVote returns "" on success and the reasons for the vote failing on
 // a non-passing vote.
 function evaluateVote(promisedVotingConfig, promisedVotes) {
@@ -646,7 +649,7 @@ function evaluateVote(promisedVotingConfig, promisedVotes) {
             failures.push(`- Vote has ${votes.numVoters} voters, did not have the required min ${votingConfig.minVotersRequired} voters required to pass a vote.`);
         }
         if (votes.voteStartedAt) {
-            const votingEarliestEnd = date_fns_1.add(votes.voteStartedAt, {
+            const votingEarliestEnd = (0, date_fns_1.add)(votes.voteStartedAt, {
                 minutes: votingConfig.minVotingWindowMinutes
             });
             if (votingEarliestEnd > new Date()) {
@@ -655,7 +658,7 @@ function evaluateVote(promisedVotingConfig, promisedVotes) {
             }
         }
         const failureMessage = failures.join('\n');
-        core.info(`voting failure message: ${util_1.inspect(failureMessage)}`);
+        core.info(`voting failure message: ${(0, util_1.inspect)(failureMessage)}`);
         return failureMessage;
     });
 }
@@ -797,7 +800,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
+exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.notice = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
 const command_1 = __nccwpck_require__(7351);
 const file_command_1 = __nccwpck_require__(717);
 const utils_1 = __nccwpck_require__(5278);
@@ -975,19 +978,30 @@ exports.debug = debug;
 /**
  * Adds an error issue
  * @param message error issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
  */
-function error(message) {
-    command_1.issue('error', message instanceof Error ? message.toString() : message);
+function error(message, properties = {}) {
+    command_1.issueCommand('error', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
 exports.error = error;
 /**
- * Adds an warning issue
+ * Adds a warning issue
  * @param message warning issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
  */
-function warning(message) {
-    command_1.issue('warning', message instanceof Error ? message.toString() : message);
+function warning(message, properties = {}) {
+    command_1.issueCommand('warning', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
 exports.warning = warning;
+/**
+ * Adds a notice issue
+ * @param message notice issue message. Errors will be converted to string via toString()
+ * @param properties optional properties to add to the annotation.
+ */
+function notice(message, properties = {}) {
+    command_1.issueCommand('notice', utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
+}
+exports.notice = notice;
 /**
  * Writes info to log with console.log.
  * @param message info message
@@ -1121,7 +1135,7 @@ exports.issueCommand = issueCommand;
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.toCommandValue = void 0;
+exports.toCommandProperties = exports.toCommandValue = void 0;
 /**
  * Sanitizes an input into a string so it can be passed into issueCommand safely
  * @param input input to sanitize into a string
@@ -1136,6 +1150,25 @@ function toCommandValue(input) {
     return JSON.stringify(input);
 }
 exports.toCommandValue = toCommandValue;
+/**
+ *
+ * @param annotationProperties
+ * @returns The command properties to send with the actual annotation command
+ * See IssueCommandProperties: https://github.com/actions/runner/blob/main/src/Runner.Worker/ActionCommandManager.cs#L646
+ */
+function toCommandProperties(annotationProperties) {
+    if (!Object.keys(annotationProperties).length) {
+        return {};
+    }
+    return {
+        title: annotationProperties.title,
+        line: annotationProperties.startLine,
+        endLine: annotationProperties.endLine,
+        col: annotationProperties.startColumn,
+        endColumn: annotationProperties.endColumn
+    };
+}
+exports.toCommandProperties = toCommandProperties;
 //# sourceMappingURL=utils.js.map
 
 /***/ }),
