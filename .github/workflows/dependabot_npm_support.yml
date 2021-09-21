@@ -1,0 +1,35 @@
+name: Update npm Dependencies after Dependabot package upgrade
+on:
+  push:
+    branches:
+      - dependabot/npm_and_yarn/**
+  pull_request:
+    branches:
+      - dependabot/npm_and_yarn/**
+
+jobs:
+  run:
+    name: Run pod install
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          npm install
+      - run: |
+          GITHUB_TOKEN=${{ github.token }} npm run all
+
+      - name: Generate Commit Message
+        id: generate_commit_message
+        # eg: ⬆️ Bump npm Packages for @types/node-16.9.4
+        run: |
+          branch=${GITHUB_REF#refs/heads/}
+          # add `[dependabot skip]` prefix so Dependabot force pushes any rebases over our changes triggering the action again
+          commit_message="[dependabot skip] :arrow_up: Bump npm Packages for${branch//dependabot\/npm_and_yarn\// }"
+          echo ::set-output name=commit_message::$commit_message
+
+      - uses: stefanzweifel/git-auto-commit-action@v4.1.1
+        with:
+          branch: ${{ github.head_ref }}
+          commit_message: ${{ steps.generate_commit_message.outputs.commit_message }}
+
