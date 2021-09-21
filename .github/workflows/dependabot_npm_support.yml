@@ -9,7 +9,7 @@ on:
 
 jobs:
   run:
-    name: Run pod install
+    name: Run npm install
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
