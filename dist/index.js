@@ -6188,6 +6188,33 @@ module.exports = exports.default;
 
 /***/ }),
 
+/***/ 8016:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.getRoundingMethod = getRoundingMethod;
+var roundingMap = {
+  ceil: Math.ceil,
+  round: Math.round,
+  floor: Math.floor,
+  trunc: function (value) {
+    return value < 0 ? Math.ceil(value) : Math.floor(value);
+  } // Math.trunc is not supported by IE
+
+};
+var defaultRoundingMethod = 'trunc';
+
+function getRoundingMethod(method) {
+  return method ? roundingMap[method] : roundingMap[defaultRoundingMethod];
+}
+
+/***/ }),
+
 /***/ 2694:
 /***/ ((module, exports, __nccwpck_require__) => {
 
@@ -8621,13 +8648,16 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInHours;
 
-var _index = _interopRequireDefault(__nccwpck_require__(2288));
+var _index = __nccwpck_require__(5756);
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2288));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index4 = __nccwpck_require__(8016);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var MILLISECONDS_IN_HOUR = 3600000;
 /**
  * @name differenceInHours
  * @category Hour Helpers
@@ -8642,22 +8672,25 @@ var MILLISECONDS_IN_HOUR = 3600000;
  *
  * @param {Date|Number} dateLeft - the later date
  * @param {Date|Number} dateRight - the earlier date
+ * @param {Object} [options] - an object with options.
+ * @param {String} [options.roundingMethod='trunc'] - a rounding method (`ceil`, `floor`, `round` or `trunc`)
  * @returns {Number} the number of hours
  * @throws {TypeError} 2 arguments required
  *
  * @example
  * // How many hours are between 2 July 2014 06:50:00 and 2 July 2014 19:00:00?
- * var result = differenceInHours(
+ * const result = differenceInHours(
  *   new Date(2014, 6, 2, 19, 0),
  *   new Date(2014, 6, 2, 6, 50)
  * )
  * //=> 12
  */
+function differenceInHours(dateLeft, dateRight, options) {
+  (0, _index3.default)(2, arguments);
 
-function differenceInHours(dirtyDateLeft, dirtyDateRight) {
-  (0, _index2.default)(2, arguments);
-  var diff = (0, _index.default)(dirtyDateLeft, dirtyDateRight) / MILLISECONDS_IN_HOUR;
-  return diff > 0 ? Math.floor(diff) : Math.ceil(diff);
+  var diff = (0, _index2.default)(dateLeft, dateRight) / _index.millisecondsInHour;
+
+  return (0, _index4.getRoundingMethod)(options === null || options === void 0 ? void 0 : options.roundingMethod)(diff);
 }
 
 module.exports = exports.default;
@@ -8782,11 +8815,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * )
  * //=> 1100
  */
-function differenceInMilliseconds(dirtyDateLeft, dirtyDateRight) {
+function differenceInMilliseconds(dateLeft, dateRight) {
   (0, _index2.default)(2, arguments);
-  var dateLeft = (0, _index.default)(dirtyDateLeft);
-  var dateRight = (0, _index.default)(dirtyDateRight);
-  return dateLeft.getTime() - dateRight.getTime();
+  return (0, _index.default)(dateLeft).getTime() - (0, _index.default)(dateRight).getTime();
 }
 
 module.exports = exports.default;
@@ -8804,13 +8835,16 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInMinutes;
 
-var _index = _interopRequireDefault(__nccwpck_require__(2288));
+var _index = __nccwpck_require__(5756);
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2288));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index4 = __nccwpck_require__(8016);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var MILLISECONDS_IN_MINUTE = 60000;
 /**
  * @name differenceInMinutes
  * @category Minute Helpers
@@ -8825,30 +8859,33 @@ var MILLISECONDS_IN_MINUTE = 60000;
  *
  * @param {Date|Number} dateLeft - the later date
  * @param {Date|Number} dateRight - the earlier date
+ * @param {Object} [options] - an object with options.
+ * @param {String} [options.roundingMethod='trunc'] - a rounding method (`ceil`, `floor`, `round` or `trunc`)
  * @returns {Number} the number of minutes
  * @throws {TypeError} 2 arguments required
  *
  * @example
  * // How many minutes are between 2 July 2014 12:07:59 and 2 July 2014 12:20:00?
- * var result = differenceInMinutes(
+ * const result = differenceInMinutes(
  *   new Date(2014, 6, 2, 12, 20, 0),
  *   new Date(2014, 6, 2, 12, 7, 59)
  * )
  * //=> 12
  *
  * @example
- * // How many minutes are from 10:01:59 to 10:00:00
- * var result = differenceInMinutes(
+ * // How many minutes are between 10:01:59 and 10:00:00
+ * const result = differenceInMinutes(
  *   new Date(2000, 0, 1, 10, 0, 0),
  *   new Date(2000, 0, 1, 10, 1, 59)
  * )
  * //=> -1
  */
+function differenceInMinutes(dateLeft, dateRight, options) {
+  (0, _index3.default)(2, arguments);
 
-function differenceInMinutes(dirtyDateLeft, dirtyDateRight) {
-  (0, _index2.default)(2, arguments);
-  var diff = (0, _index.default)(dirtyDateLeft, dirtyDateRight) / MILLISECONDS_IN_MINUTE;
-  return diff > 0 ? Math.floor(diff) : Math.ceil(diff);
+  var diff = (0, _index2.default)(dateLeft, dateRight) / _index.millisecondsInMinute;
+
+  return (0, _index4.getRoundingMethod)(options === null || options === void 0 ? void 0 : options.roundingMethod)(diff);
 }
 
 module.exports = exports.default;
@@ -8884,7 +8921,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @summary Get the number of full months between the given dates.
  *
  * @description
- * Get the number of full months between the given dates.
+ * Get the number of full months between the given dates using trunc as a default rounding method.
  *
  * ### v2.0.0 breaking changes:
  *
@@ -8897,7 +8934,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // How many full months are between 31 January 2014 and 1 September 2014?
- * var result = differenceInMonths(new Date(2014, 8, 1), new Date(2014, 0, 31))
+ * const result = differenceInMonths(new Date(2014, 8, 1), new Date(2014, 0, 31))
  * //=> 7
  */
 function differenceInMonths(dirtyDateLeft, dirtyDateRight) {
@@ -8952,15 +8989,17 @@ var _index = _interopRequireDefault(__nccwpck_require__(2713));
 
 var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
+var _index3 = __nccwpck_require__(8016);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @name differenceInQuarters
  * @category Quarter Helpers
- * @summary Get the number of full quarters between the given dates.
+ * @summary Get the number of quarters between the given dates.
  *
  * @description
- * Get the number of full quarters between the given dates.
+ * Get the number of quarters between the given dates.
  *
  * ### v2.0.0 breaking changes:
  *
@@ -8968,18 +9007,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @param {Date|Number} dateLeft - the later date
  * @param {Date|Number} dateRight - the earlier date
+ * @param {Object} [options] - an object with options.
+ * @param {String} [options.roundingMethod='trunc'] - a rounding method (`ceil`, `floor`, `round` or `trunc`)
  * @returns {Number} the number of full quarters
  * @throws {TypeError} 2 arguments required
  *
  * @example
  * // How many full quarters are between 31 December 2013 and 2 July 2014?
- * var result = differenceInQuarters(new Date(2014, 6, 2), new Date(2013, 11, 31))
+ * const result = differenceInQuarters(new Date(2014, 6, 2), new Date(2013, 11, 31))
  * //=> 2
  */
-function differenceInQuarters(dirtyDateLeft, dirtyDateRight) {
+function differenceInQuarters(dateLeft, dateRight, options) {
   (0, _index2.default)(2, arguments);
-  var diff = (0, _index.default)(dirtyDateLeft, dirtyDateRight) / 3;
-  return diff > 0 ? Math.floor(diff) : Math.ceil(diff);
+  var diff = (0, _index.default)(dateLeft, dateRight) / 3;
+  return (0, _index3.getRoundingMethod)(options === null || options === void 0 ? void 0 : options.roundingMethod)(diff);
 }
 
 module.exports = exports.default;
@@ -9001,6 +9042,8 @@ var _index = _interopRequireDefault(__nccwpck_require__(2288));
 
 var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
+var _index3 = __nccwpck_require__(8016);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -9017,6 +9060,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @param {Date|Number} dateLeft - the later date
  * @param {Date|Number} dateRight - the earlier date
+ * @param {Object} [options] - an object with options.
+ * @param {String} [options.roundingMethod='trunc'] - a rounding method (`ceil`, `floor`, `round` or `trunc`)
  * @returns {Number} the number of seconds
  * @throws {TypeError} 2 arguments required
  *
@@ -9029,10 +9074,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * )
  * //=> 12
  */
-function differenceInSeconds(dirtyDateLeft, dirtyDateRight) {
+function differenceInSeconds(dateLeft, dateRight, options) {
   (0, _index2.default)(2, arguments);
-  var diff = (0, _index.default)(dirtyDateLeft, dirtyDateRight) / 1000;
-  return diff > 0 ? Math.floor(diff) : Math.ceil(diff);
+  var diff = (0, _index.default)(dateLeft, dateRight) / 1000;
+  return (0, _index3.getRoundingMethod)(options === null || options === void 0 ? void 0 : options.roundingMethod)(diff);
 }
 
 module.exports = exports.default;
@@ -9054,6 +9099,8 @@ var _index = _interopRequireDefault(__nccwpck_require__(6311));
 
 var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
+var _index3 = __nccwpck_require__(8016);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -9063,7 +9110,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @description
  * Get the number of full weeks between two dates. Fractional weeks are
- * truncated towards zero.
+ * truncated towards zero by default.
  *
  * One "full week" is the distance between a local time in one day to the same
  * local time 7 days earlier or later. A full week can sometimes be less than
@@ -9079,6 +9126,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @param {Date|Number} dateLeft - the later date
  * @param {Date|Number} dateRight - the earlier date
+ * @param {Object} [options] - an object with options.
+ * @param {String} [options.roundingMethod='trunc'] - a rounding method (`ceil`, `floor`, `round` or `trunc`)
  * @returns {Number} the number of full weeks
  * @throws {TypeError} 2 arguments required
  *
@@ -9099,10 +9148,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * )
  * //=> 8
  */
-function differenceInWeeks(dirtyDateLeft, dirtyDateRight) {
+function differenceInWeeks(dateLeft, dateRight, options) {
   (0, _index2.default)(2, arguments);
-  var diff = (0, _index.default)(dirtyDateLeft, dirtyDateRight) / 7;
-  return diff > 0 ? Math.floor(diff) : Math.ceil(diff);
+  var diff = (0, _index.default)(dateLeft, dateRight) / 7;
+  return (0, _index3.getRoundingMethod)(options === null || options === void 0 ? void 0 : options.roundingMethod)(diff);
 }
 
 module.exports = exports.default;
@@ -12274,7 +12323,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Format the given duration as ISO 8601 string
- * formatISODuration({
+ * const result = formatISODuration({
  *   years: 39,
  *   months: 2,
  *   days: 20,
@@ -12369,8 +12418,10 @@ function formatRFC3339(dirtyDate, dirtyOptions) {
     throw new RangeError('Invalid time value');
   }
 
-  var options = dirtyOptions || {};
-  var fractionDigits = options.fractionDigits == null ? 0 : (0, _index4.default)(options.fractionDigits); // Test if fractionDigits is between 0 and 3 _and_ is not NaN
+  var _ref = dirtyOptions || {},
+      _ref$fractionDigits = _ref.fractionDigits,
+      fractionDigits = _ref$fractionDigits === void 0 ? 0 : _ref$fractionDigits; // Test if fractionDigits is between 0 and 3 _and_ is not NaN
+
 
   if (!(fractionDigits >= 0 && fractionDigits <= 3)) {
     throw new RangeError('fractionDigits must be between 0 and 3 inclusively');
@@ -12633,19 +12684,19 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @summary Create a date from a Unix timestamp.
  *
  * @description
- * Create a date from a Unix timestamp.
+ * Create a date from a Unix timestamp (in seconds). Decimal values will be discarded.
  *
  * ### v2.0.0 breaking changes:
  *
  * - [Changes that are common for the whole library](https://github.com/date-fns/date-fns/blob/master/docs/upgradeGuide.md#Common-Changes).
  *
- * @param {Number} unixTime - the given Unix timestamp
+ * @param {Number} unixTime - the given Unix timestamp (in seconds)
  * @returns {Date} the date
  * @throws {TypeError} 1 argument required
  *
  * @example
  * // Create the date 29 February 2012 11:45:05:
- * var result = fromUnixTime(1330515905)
+ * const result = fromUnixTime(1330515905)
  * //=> Wed Feb 29 2012 11:45:05
  */
 function fromUnixTime(dirtyUnixTime) {
@@ -14416,6 +14467,14 @@ var _exportNames = {
   parse: true,
   parseISO: true,
   parseJSON: true,
+  previousDay: true,
+  previousFriday: true,
+  previousMonday: true,
+  previousSaturday: true,
+  previousSunday: true,
+  previousThursday: true,
+  previousTuesday: true,
+  previousWednesday: true,
   quartersToMonths: true,
   quartersToYears: true,
   roundToNearestMinutes: true,
@@ -15520,322 +15579,370 @@ Object.defineProperty(exports, "parseJSON", ({
     return _index175.default;
   }
 }));
-Object.defineProperty(exports, "quartersToMonths", ({
+Object.defineProperty(exports, "previousDay", ({
   enumerable: true,
   get: function () {
     return _index176.default;
   }
 }));
-Object.defineProperty(exports, "quartersToYears", ({
+Object.defineProperty(exports, "previousFriday", ({
   enumerable: true,
   get: function () {
     return _index177.default;
   }
 }));
-Object.defineProperty(exports, "roundToNearestMinutes", ({
+Object.defineProperty(exports, "previousMonday", ({
   enumerable: true,
   get: function () {
     return _index178.default;
   }
 }));
-Object.defineProperty(exports, "secondsToHours", ({
+Object.defineProperty(exports, "previousSaturday", ({
   enumerable: true,
   get: function () {
     return _index179.default;
   }
 }));
-Object.defineProperty(exports, "secondsToMilliseconds", ({
+Object.defineProperty(exports, "previousSunday", ({
   enumerable: true,
   get: function () {
     return _index180.default;
   }
 }));
-Object.defineProperty(exports, "secondsToMinutes", ({
+Object.defineProperty(exports, "previousThursday", ({
   enumerable: true,
   get: function () {
     return _index181.default;
   }
 }));
-Object.defineProperty(exports, "set", ({
+Object.defineProperty(exports, "previousTuesday", ({
   enumerable: true,
   get: function () {
     return _index182.default;
   }
 }));
-Object.defineProperty(exports, "setDate", ({
+Object.defineProperty(exports, "previousWednesday", ({
   enumerable: true,
   get: function () {
     return _index183.default;
   }
 }));
-Object.defineProperty(exports, "setDay", ({
+Object.defineProperty(exports, "quartersToMonths", ({
   enumerable: true,
   get: function () {
     return _index184.default;
   }
 }));
-Object.defineProperty(exports, "setDayOfYear", ({
+Object.defineProperty(exports, "quartersToYears", ({
   enumerable: true,
   get: function () {
     return _index185.default;
   }
 }));
-Object.defineProperty(exports, "setHours", ({
+Object.defineProperty(exports, "roundToNearestMinutes", ({
   enumerable: true,
   get: function () {
     return _index186.default;
   }
 }));
-Object.defineProperty(exports, "setISODay", ({
+Object.defineProperty(exports, "secondsToHours", ({
   enumerable: true,
   get: function () {
     return _index187.default;
   }
 }));
-Object.defineProperty(exports, "setISOWeek", ({
+Object.defineProperty(exports, "secondsToMilliseconds", ({
   enumerable: true,
   get: function () {
     return _index188.default;
   }
 }));
-Object.defineProperty(exports, "setISOWeekYear", ({
+Object.defineProperty(exports, "secondsToMinutes", ({
   enumerable: true,
   get: function () {
     return _index189.default;
   }
 }));
-Object.defineProperty(exports, "setMilliseconds", ({
+Object.defineProperty(exports, "set", ({
   enumerable: true,
   get: function () {
     return _index190.default;
   }
 }));
-Object.defineProperty(exports, "setMinutes", ({
+Object.defineProperty(exports, "setDate", ({
   enumerable: true,
   get: function () {
     return _index191.default;
   }
 }));
-Object.defineProperty(exports, "setMonth", ({
+Object.defineProperty(exports, "setDay", ({
   enumerable: true,
   get: function () {
     return _index192.default;
   }
 }));
-Object.defineProperty(exports, "setQuarter", ({
+Object.defineProperty(exports, "setDayOfYear", ({
   enumerable: true,
   get: function () {
     return _index193.default;
   }
 }));
-Object.defineProperty(exports, "setSeconds", ({
+Object.defineProperty(exports, "setHours", ({
   enumerable: true,
   get: function () {
     return _index194.default;
   }
 }));
-Object.defineProperty(exports, "setWeek", ({
+Object.defineProperty(exports, "setISODay", ({
   enumerable: true,
   get: function () {
     return _index195.default;
   }
 }));
-Object.defineProperty(exports, "setWeekYear", ({
+Object.defineProperty(exports, "setISOWeek", ({
   enumerable: true,
   get: function () {
     return _index196.default;
   }
 }));
-Object.defineProperty(exports, "setYear", ({
+Object.defineProperty(exports, "setISOWeekYear", ({
   enumerable: true,
   get: function () {
     return _index197.default;
   }
 }));
-Object.defineProperty(exports, "startOfDay", ({
+Object.defineProperty(exports, "setMilliseconds", ({
   enumerable: true,
   get: function () {
     return _index198.default;
   }
 }));
-Object.defineProperty(exports, "startOfDecade", ({
+Object.defineProperty(exports, "setMinutes", ({
   enumerable: true,
   get: function () {
     return _index199.default;
   }
 }));
-Object.defineProperty(exports, "startOfHour", ({
+Object.defineProperty(exports, "setMonth", ({
   enumerable: true,
   get: function () {
     return _index200.default;
   }
 }));
-Object.defineProperty(exports, "startOfISOWeek", ({
+Object.defineProperty(exports, "setQuarter", ({
   enumerable: true,
   get: function () {
     return _index201.default;
   }
 }));
-Object.defineProperty(exports, "startOfISOWeekYear", ({
+Object.defineProperty(exports, "setSeconds", ({
   enumerable: true,
   get: function () {
     return _index202.default;
   }
 }));
-Object.defineProperty(exports, "startOfMinute", ({
+Object.defineProperty(exports, "setWeek", ({
   enumerable: true,
   get: function () {
     return _index203.default;
   }
 }));
-Object.defineProperty(exports, "startOfMonth", ({
+Object.defineProperty(exports, "setWeekYear", ({
   enumerable: true,
   get: function () {
     return _index204.default;
   }
 }));
-Object.defineProperty(exports, "startOfQuarter", ({
+Object.defineProperty(exports, "setYear", ({
   enumerable: true,
   get: function () {
     return _index205.default;
   }
 }));
-Object.defineProperty(exports, "startOfSecond", ({
+Object.defineProperty(exports, "startOfDay", ({
   enumerable: true,
   get: function () {
     return _index206.default;
   }
 }));
-Object.defineProperty(exports, "startOfToday", ({
+Object.defineProperty(exports, "startOfDecade", ({
   enumerable: true,
   get: function () {
     return _index207.default;
   }
 }));
-Object.defineProperty(exports, "startOfTomorrow", ({
+Object.defineProperty(exports, "startOfHour", ({
   enumerable: true,
   get: function () {
     return _index208.default;
   }
 }));
-Object.defineProperty(exports, "startOfWeek", ({
+Object.defineProperty(exports, "startOfISOWeek", ({
   enumerable: true,
   get: function () {
     return _index209.default;
   }
 }));
-Object.defineProperty(exports, "startOfWeekYear", ({
+Object.defineProperty(exports, "startOfISOWeekYear", ({
   enumerable: true,
   get: function () {
     return _index210.default;
   }
 }));
-Object.defineProperty(exports, "startOfYear", ({
+Object.defineProperty(exports, "startOfMinute", ({
   enumerable: true,
   get: function () {
     return _index211.default;
   }
 }));
-Object.defineProperty(exports, "startOfYesterday", ({
+Object.defineProperty(exports, "startOfMonth", ({
   enumerable: true,
   get: function () {
     return _index212.default;
   }
 }));
-Object.defineProperty(exports, "sub", ({
+Object.defineProperty(exports, "startOfQuarter", ({
   enumerable: true,
   get: function () {
     return _index213.default;
   }
 }));
-Object.defineProperty(exports, "subBusinessDays", ({
+Object.defineProperty(exports, "startOfSecond", ({
   enumerable: true,
   get: function () {
     return _index214.default;
   }
 }));
-Object.defineProperty(exports, "subDays", ({
+Object.defineProperty(exports, "startOfToday", ({
   enumerable: true,
   get: function () {
     return _index215.default;
   }
 }));
-Object.defineProperty(exports, "subHours", ({
+Object.defineProperty(exports, "startOfTomorrow", ({
   enumerable: true,
   get: function () {
     return _index216.default;
   }
 }));
-Object.defineProperty(exports, "subISOWeekYears", ({
+Object.defineProperty(exports, "startOfWeek", ({
   enumerable: true,
   get: function () {
     return _index217.default;
   }
 }));
-Object.defineProperty(exports, "subMilliseconds", ({
+Object.defineProperty(exports, "startOfWeekYear", ({
   enumerable: true,
   get: function () {
     return _index218.default;
   }
 }));
-Object.defineProperty(exports, "subMinutes", ({
+Object.defineProperty(exports, "startOfYear", ({
   enumerable: true,
   get: function () {
     return _index219.default;
   }
 }));
-Object.defineProperty(exports, "subMonths", ({
+Object.defineProperty(exports, "startOfYesterday", ({
   enumerable: true,
   get: function () {
     return _index220.default;
   }
 }));
-Object.defineProperty(exports, "subQuarters", ({
+Object.defineProperty(exports, "sub", ({
   enumerable: true,
   get: function () {
     return _index221.default;
   }
 }));
-Object.defineProperty(exports, "subSeconds", ({
+Object.defineProperty(exports, "subBusinessDays", ({
   enumerable: true,
   get: function () {
     return _index222.default;
   }
 }));
-Object.defineProperty(exports, "subWeeks", ({
+Object.defineProperty(exports, "subDays", ({
   enumerable: true,
   get: function () {
     return _index223.default;
   }
 }));
-Object.defineProperty(exports, "subYears", ({
+Object.defineProperty(exports, "subHours", ({
   enumerable: true,
   get: function () {
     return _index224.default;
   }
 }));
-Object.defineProperty(exports, "toDate", ({
+Object.defineProperty(exports, "subISOWeekYears", ({
   enumerable: true,
   get: function () {
     return _index225.default;
   }
 }));
-Object.defineProperty(exports, "weeksToDays", ({
+Object.defineProperty(exports, "subMilliseconds", ({
   enumerable: true,
   get: function () {
     return _index226.default;
   }
 }));
-Object.defineProperty(exports, "yearsToMonths", ({
+Object.defineProperty(exports, "subMinutes", ({
   enumerable: true,
   get: function () {
     return _index227.default;
   }
 }));
-Object.defineProperty(exports, "yearsToQuarters", ({
+Object.defineProperty(exports, "subMonths", ({
   enumerable: true,
   get: function () {
     return _index228.default;
+  }
+}));
+Object.defineProperty(exports, "subQuarters", ({
+  enumerable: true,
+  get: function () {
+    return _index229.default;
+  }
+}));
+Object.defineProperty(exports, "subSeconds", ({
+  enumerable: true,
+  get: function () {
+    return _index230.default;
+  }
+}));
+Object.defineProperty(exports, "subWeeks", ({
+  enumerable: true,
+  get: function () {
+    return _index231.default;
+  }
+}));
+Object.defineProperty(exports, "subYears", ({
+  enumerable: true,
+  get: function () {
+    return _index232.default;
+  }
+}));
+Object.defineProperty(exports, "toDate", ({
+  enumerable: true,
+  get: function () {
+    return _index233.default;
+  }
+}));
+Object.defineProperty(exports, "weeksToDays", ({
+  enumerable: true,
+  get: function () {
+    return _index234.default;
+  }
+}));
+Object.defineProperty(exports, "yearsToMonths", ({
+  enumerable: true,
+  get: function () {
+    return _index235.default;
+  }
+}));
+Object.defineProperty(exports, "yearsToQuarters", ({
+  enumerable: true,
+  get: function () {
+    return _index236.default;
   }
 }));
 
@@ -16189,121 +16296,137 @@ var _index174 = _interopRequireDefault(__nccwpck_require__(3390));
 
 var _index175 = _interopRequireDefault(__nccwpck_require__(8159));
 
-var _index176 = _interopRequireDefault(__nccwpck_require__(8995));
+var _index176 = _interopRequireDefault(__nccwpck_require__(8756));
 
-var _index177 = _interopRequireDefault(__nccwpck_require__(883));
+var _index177 = _interopRequireDefault(__nccwpck_require__(9558));
 
-var _index178 = _interopRequireDefault(__nccwpck_require__(5515));
+var _index178 = _interopRequireDefault(__nccwpck_require__(8386));
 
-var _index179 = _interopRequireDefault(__nccwpck_require__(594));
+var _index179 = _interopRequireDefault(__nccwpck_require__(4834));
 
-var _index180 = _interopRequireDefault(__nccwpck_require__(6779));
+var _index180 = _interopRequireDefault(__nccwpck_require__(264));
 
-var _index181 = _interopRequireDefault(__nccwpck_require__(8438));
+var _index181 = _interopRequireDefault(__nccwpck_require__(19));
 
-var _index182 = _interopRequireDefault(__nccwpck_require__(2031));
+var _index182 = _interopRequireDefault(__nccwpck_require__(3294));
 
-var _index183 = _interopRequireDefault(__nccwpck_require__(8760));
+var _index183 = _interopRequireDefault(__nccwpck_require__(8630));
 
-var _index184 = _interopRequireDefault(__nccwpck_require__(9540));
+var _index184 = _interopRequireDefault(__nccwpck_require__(8995));
 
-var _index185 = _interopRequireDefault(__nccwpck_require__(4002));
+var _index185 = _interopRequireDefault(__nccwpck_require__(883));
 
-var _index186 = _interopRequireDefault(__nccwpck_require__(6355));
+var _index186 = _interopRequireDefault(__nccwpck_require__(5515));
 
-var _index187 = _interopRequireDefault(__nccwpck_require__(3705));
+var _index187 = _interopRequireDefault(__nccwpck_require__(594));
 
-var _index188 = _interopRequireDefault(__nccwpck_require__(3035));
+var _index188 = _interopRequireDefault(__nccwpck_require__(6779));
 
-var _index189 = _interopRequireDefault(__nccwpck_require__(822));
+var _index189 = _interopRequireDefault(__nccwpck_require__(8438));
 
-var _index190 = _interopRequireDefault(__nccwpck_require__(9105));
+var _index190 = _interopRequireDefault(__nccwpck_require__(2031));
 
-var _index191 = _interopRequireDefault(__nccwpck_require__(9207));
+var _index191 = _interopRequireDefault(__nccwpck_require__(8760));
 
-var _index192 = _interopRequireDefault(__nccwpck_require__(847));
+var _index192 = _interopRequireDefault(__nccwpck_require__(9540));
 
-var _index193 = _interopRequireDefault(__nccwpck_require__(621));
+var _index193 = _interopRequireDefault(__nccwpck_require__(4002));
 
-var _index194 = _interopRequireDefault(__nccwpck_require__(1346));
+var _index194 = _interopRequireDefault(__nccwpck_require__(6355));
 
-var _index195 = _interopRequireDefault(__nccwpck_require__(2664));
+var _index195 = _interopRequireDefault(__nccwpck_require__(3705));
 
-var _index196 = _interopRequireDefault(__nccwpck_require__(3438));
+var _index196 = _interopRequireDefault(__nccwpck_require__(3035));
 
-var _index197 = _interopRequireDefault(__nccwpck_require__(6212));
+var _index197 = _interopRequireDefault(__nccwpck_require__(822));
 
-var _index198 = _interopRequireDefault(__nccwpck_require__(1868));
+var _index198 = _interopRequireDefault(__nccwpck_require__(9105));
 
-var _index199 = _interopRequireDefault(__nccwpck_require__(2025));
+var _index199 = _interopRequireDefault(__nccwpck_require__(9207));
 
-var _index200 = _interopRequireDefault(__nccwpck_require__(6277));
+var _index200 = _interopRequireDefault(__nccwpck_require__(847));
 
-var _index201 = _interopRequireDefault(__nccwpck_require__(6307));
+var _index201 = _interopRequireDefault(__nccwpck_require__(621));
 
-var _index202 = _interopRequireDefault(__nccwpck_require__(776));
+var _index202 = _interopRequireDefault(__nccwpck_require__(1346));
 
-var _index203 = _interopRequireDefault(__nccwpck_require__(8567));
+var _index203 = _interopRequireDefault(__nccwpck_require__(2664));
 
-var _index204 = _interopRequireDefault(__nccwpck_require__(7182));
+var _index204 = _interopRequireDefault(__nccwpck_require__(3438));
 
-var _index205 = _interopRequireDefault(__nccwpck_require__(2932));
+var _index205 = _interopRequireDefault(__nccwpck_require__(6212));
 
-var _index206 = _interopRequireDefault(__nccwpck_require__(6738));
+var _index206 = _interopRequireDefault(__nccwpck_require__(1868));
 
-var _index207 = _interopRequireDefault(__nccwpck_require__(5516));
+var _index207 = _interopRequireDefault(__nccwpck_require__(2025));
 
-var _index208 = _interopRequireDefault(__nccwpck_require__(2442));
+var _index208 = _interopRequireDefault(__nccwpck_require__(6277));
 
-var _index209 = _interopRequireDefault(__nccwpck_require__(9813));
+var _index209 = _interopRequireDefault(__nccwpck_require__(6307));
 
-var _index210 = _interopRequireDefault(__nccwpck_require__(8014));
+var _index210 = _interopRequireDefault(__nccwpck_require__(776));
 
-var _index211 = _interopRequireDefault(__nccwpck_require__(8225));
+var _index211 = _interopRequireDefault(__nccwpck_require__(8567));
 
-var _index212 = _interopRequireDefault(__nccwpck_require__(1672));
+var _index212 = _interopRequireDefault(__nccwpck_require__(7182));
 
-var _index213 = _interopRequireDefault(__nccwpck_require__(3875));
+var _index213 = _interopRequireDefault(__nccwpck_require__(2932));
 
-var _index214 = _interopRequireDefault(__nccwpck_require__(1952));
+var _index214 = _interopRequireDefault(__nccwpck_require__(6738));
 
-var _index215 = _interopRequireDefault(__nccwpck_require__(970));
+var _index215 = _interopRequireDefault(__nccwpck_require__(5516));
 
-var _index216 = _interopRequireDefault(__nccwpck_require__(2481));
+var _index216 = _interopRequireDefault(__nccwpck_require__(2442));
 
-var _index217 = _interopRequireDefault(__nccwpck_require__(3925));
+var _index217 = _interopRequireDefault(__nccwpck_require__(9813));
 
-var _index218 = _interopRequireDefault(__nccwpck_require__(7923));
+var _index218 = _interopRequireDefault(__nccwpck_require__(8014));
 
-var _index219 = _interopRequireDefault(__nccwpck_require__(7535));
+var _index219 = _interopRequireDefault(__nccwpck_require__(8225));
 
-var _index220 = _interopRequireDefault(__nccwpck_require__(6752));
+var _index220 = _interopRequireDefault(__nccwpck_require__(1672));
 
-var _index221 = _interopRequireDefault(__nccwpck_require__(3139));
+var _index221 = _interopRequireDefault(__nccwpck_require__(3875));
 
-var _index222 = _interopRequireDefault(__nccwpck_require__(138));
+var _index222 = _interopRequireDefault(__nccwpck_require__(1952));
 
-var _index223 = _interopRequireDefault(__nccwpck_require__(5504));
+var _index223 = _interopRequireDefault(__nccwpck_require__(970));
 
-var _index224 = _interopRequireDefault(__nccwpck_require__(843));
+var _index224 = _interopRequireDefault(__nccwpck_require__(2481));
 
-var _index225 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index225 = _interopRequireDefault(__nccwpck_require__(3925));
 
-var _index226 = _interopRequireDefault(__nccwpck_require__(6812));
+var _index226 = _interopRequireDefault(__nccwpck_require__(7923));
 
-var _index227 = _interopRequireDefault(__nccwpck_require__(4616));
+var _index227 = _interopRequireDefault(__nccwpck_require__(7535));
 
-var _index228 = _interopRequireDefault(__nccwpck_require__(7384));
+var _index228 = _interopRequireDefault(__nccwpck_require__(6752));
 
-var _index229 = __nccwpck_require__(5756);
+var _index229 = _interopRequireDefault(__nccwpck_require__(3139));
 
-Object.keys(_index229).forEach(function (key) {
+var _index230 = _interopRequireDefault(__nccwpck_require__(138));
+
+var _index231 = _interopRequireDefault(__nccwpck_require__(5504));
+
+var _index232 = _interopRequireDefault(__nccwpck_require__(843));
+
+var _index233 = _interopRequireDefault(__nccwpck_require__(6477));
+
+var _index234 = _interopRequireDefault(__nccwpck_require__(6812));
+
+var _index235 = _interopRequireDefault(__nccwpck_require__(4616));
+
+var _index236 = _interopRequireDefault(__nccwpck_require__(7384));
+
+var _index237 = __nccwpck_require__(5756);
+
+Object.keys(_index237).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
   if (Object.prototype.hasOwnProperty.call(_exportNames, key)) return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     get: function () {
-      return _index229[key];
+      return _index237[key];
     }
   });
 });
@@ -18710,9 +18833,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = isValid;
 
-var _index = _interopRequireDefault(__nccwpck_require__(6477));
+var _index = _interopRequireDefault(__nccwpck_require__(6801));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18760,23 +18885,28 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // For the valid date:
- * var result = isValid(new Date(2014, 1, 31))
+ * const result = isValid(new Date(2014, 1, 31))
  * //=> true
  *
  * @example
  * // For the value, convertable into a date:
- * var result = isValid(1393804800000)
+ * const result = isValid(1393804800000)
  * //=> true
  *
  * @example
  * // For the invalid date:
- * var result = isValid(new Date(''))
+ * const result = isValid(new Date(''))
  * //=> false
  */
 function isValid(dirtyDate) {
-  (0, _index2.default)(1, arguments);
-  var date = (0, _index.default)(dirtyDate);
-  return !isNaN(date);
+  (0, _index3.default)(1, arguments);
+
+  if (!(0, _index.default)(dirtyDate) && typeof dirtyDate !== 'number') {
+    return false;
+  }
+
+  var date = (0, _index2.default)(dirtyDate);
+  return !isNaN(Number(date));
 }
 
 module.exports = exports.default;
@@ -19762,7 +19892,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = formatDistance;
+exports.default = void 0;
 var formatDistanceLocale = {
   lessThanXSeconds: {
     one: 'less than a second',
@@ -19827,20 +19957,20 @@ var formatDistanceLocale = {
   }
 };
 
-function formatDistance(token, count, options) {
-  options = options || {};
+var formatDistance = function (token, count, options) {
   var result;
+  var tokenValue = formatDistanceLocale[token];
 
-  if (typeof formatDistanceLocale[token] === 'string') {
-    result = formatDistanceLocale[token];
+  if (typeof tokenValue === 'string') {
+    result = tokenValue;
   } else if (count === 1) {
-    result = formatDistanceLocale[token].one;
+    result = tokenValue.one;
   } else {
-    result = formatDistanceLocale[token].other.replace('{{count}}', count);
+    result = tokenValue.other.replace('{{count}}', count.toString());
   }
 
-  if (options.addSuffix) {
-    if (options.comparison > 0) {
+  if (options !== null && options !== void 0 && options.addSuffix) {
+    if (options.comparison && options.comparison > 0) {
       return 'in ' + result;
     } else {
       return result + ' ago';
@@ -19848,8 +19978,10 @@ function formatDistance(token, count, options) {
   }
 
   return result;
-}
+};
 
+var _default = formatDistance;
+exports.default = _default;
 module.exports = exports.default;
 
 /***/ }),
@@ -19916,7 +20048,7 @@ module.exports = exports.default;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports.default = formatRelative;
+exports.default = void 0;
 var formatRelativeLocale = {
   lastWeek: "'last' eeee 'at' p",
   yesterday: "'yesterday at' p",
@@ -19926,10 +20058,12 @@ var formatRelativeLocale = {
   other: 'P'
 };
 
-function formatRelative(token, _date, _baseDate, _options) {
+var formatRelative = function (token, _date, _baseDate, _options) {
   return formatRelativeLocale[token];
-}
+};
 
+var _default = formatRelative;
+exports.default = _default;
 module.exports = exports.default;
 
 /***/ }),
@@ -20039,16 +20173,13 @@ var formattingDayPeriodValues = {
   }
 };
 
-function ordinalNumber(dirtyNumber, _dirtyOptions) {
+var ordinalNumber = function (dirtyNumber, _options) {
   var number = Number(dirtyNumber); // If ordinal numbers depend on context, for example,
   // if they are different for different grammatical genders,
-  // use `options.unit`:
+  // use `options.unit`.
   //
-  //   var options = dirtyOptions || {}
-  //   var unit = String(options.unit)
-  //
-  // where `unit` can be 'year', 'quarter', 'month', 'week', 'date', 'dayOfYear',
-  // 'day', 'hour', 'minute', 'second'
+  // `unit` can be 'year', 'quarter', 'month', 'week', 'date', 'dayOfYear',
+  // 'day', 'hour', 'minute', 'second'.
 
   var rem100 = number % 100;
 
@@ -20066,7 +20197,7 @@ function ordinalNumber(dirtyNumber, _dirtyOptions) {
   }
 
   return number + 'th';
-}
+};
 
 var localize = {
   ordinalNumber: ordinalNumber,
@@ -20078,7 +20209,7 @@ var localize = {
     values: quarterValues,
     defaultWidth: 'wide',
     argumentCallback: function (quarter) {
-      return Number(quarter) - 1;
+      return quarter - 1;
     }
   }),
   month: (0, _index.default)({
@@ -20113,9 +20244,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = void 0;
 
-var _index = _interopRequireDefault(__nccwpck_require__(3364));
+var _index = _interopRequireDefault(__nccwpck_require__(4029));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(4029));
+var _index2 = _interopRequireDefault(__nccwpck_require__(3364));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20173,20 +20304,20 @@ var parseDayPeriodPatterns = {
   }
 };
 var match = {
-  ordinalNumber: (0, _index.default)({
+  ordinalNumber: (0, _index2.default)({
     matchPattern: matchOrdinalNumberPattern,
     parsePattern: parseOrdinalNumberPattern,
     valueCallback: function (value) {
       return parseInt(value, 10);
     }
   }),
-  era: (0, _index2.default)({
+  era: (0, _index.default)({
     matchPatterns: matchEraPatterns,
     defaultMatchWidth: 'wide',
     parsePatterns: parseEraPatterns,
     defaultParseWidth: 'any'
   }),
-  quarter: (0, _index2.default)({
+  quarter: (0, _index.default)({
     matchPatterns: matchQuarterPatterns,
     defaultMatchWidth: 'wide',
     parsePatterns: parseQuarterPatterns,
@@ -20195,19 +20326,19 @@ var match = {
       return index + 1;
     }
   }),
-  month: (0, _index2.default)({
+  month: (0, _index.default)({
     matchPatterns: matchMonthPatterns,
     defaultMatchWidth: 'wide',
     parsePatterns: parseMonthPatterns,
     defaultParseWidth: 'any'
   }),
-  day: (0, _index2.default)({
+  day: (0, _index.default)({
     matchPatterns: matchDayPatterns,
     defaultMatchWidth: 'wide',
     parsePatterns: parseDayPatterns,
     defaultParseWidth: 'any'
   }),
-  dayPeriod: (0, _index2.default)({
+  dayPeriod: (0, _index.default)({
     matchPatterns: matchDayPeriodPatterns,
     defaultMatchWidth: 'any',
     parsePatterns: parseDayPeriodPatterns,
@@ -23758,6 +23889,360 @@ module.exports = exports.default;
 
 /***/ }),
 
+/***/ 8756:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = previousDay;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(9361));
+
+var _index3 = _interopRequireDefault(__nccwpck_require__(970));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name previousDay
+ * @category Weekday Helpers
+ * @summary When is the previous day of the week?
+ *
+ * @description
+ * When is the previous day of the week? 0-6 the day of the week, 0 represents Sunday.
+ *
+ * @param {Date | number} date - the date to check
+ * @param {number} day - day of the week
+ * @returns {Date} - the date is the previous day of week
+ * @throws {TypeError} - 2 arguments required
+ *
+ * @example
+ * // When is the previous Monday before Mar, 20, 2020?
+ * const result = previousDay(new Date(2020, 2, 20), 1)
+ * //=> Mon Mar 16 2020 00:00:00
+ *
+ * @example
+ * // When is the previous Tuesday before Mar, 21, 2020?
+ * const result = previousDay(new Date(2020, 2, 21), 2)
+ * //=> Tue Mar 17 2020 00:00:00
+ */
+function previousDay(date, day) {
+  (0, _index.default)(2, arguments);
+  var delta = (0, _index2.default)(date) - day;
+  if (delta <= 0) delta += 7;
+  return (0, _index3.default)(date, delta);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 9558:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = previousFriday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(8756));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name previousFriday
+ * @category Weekday Helpers
+ * @summary When is the previous Friday?
+ *
+ * @description
+ * When is the previous Friday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the previous Friday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the previous Friday before Jun, 19, 2021?
+ * const result = previousFriday(new Date(2021, 5, 19))
+ * //=> Fri June 18 2021 00:00:00
+ */
+function previousFriday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)(date, 5);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 8386:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = previousMonday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(8756));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name previousMonday
+ * @category Weekday Helpers
+ * @summary When is the previous Monday?
+ *
+ * @description
+ * When is the previous Monday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the previous Monday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the previous Monday before Jun, 18, 2021?
+ * const result = previousMonday(new Date(2021, 5, 18))
+ * //=> Mon June 14 2021 00:00:00
+ */
+function previousMonday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)(date, 1);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 4834:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = previousSaturday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(8756));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name previousSaturday
+ * @category Weekday Helpers
+ * @summary When is the previous Saturday?
+ *
+ * @description
+ * When is the previous Saturday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the previous Saturday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the previous Saturday before Jun, 20, 2021?
+ * const result = previousSaturday(new Date(2021, 5, 20))
+ * //=> Sat June 19 2021 00:00:00
+ */
+function previousSaturday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)(date, 6);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 264:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = previousSunday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(8756));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name previousSunday
+ * @category Weekday Helpers
+ * @summary When is the previous Sunday?
+ *
+ * @description
+ * When is the previous Sunday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the previous Sunday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the previous Sunday before Jun, 21, 2021?
+ * const result = previousSunday(new Date(2021, 5, 21))
+ * //=> Sun June 20 2021 00:00:00
+ */
+function previousSunday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)(date, 0);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 19:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = previousThursday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(8756));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name previousThursday
+ * @category Weekday Helpers
+ * @summary When is the previous Thursday?
+ *
+ * @description
+ * When is the previous Thursday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the previous Thursday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the previous Thursday before Jun, 18, 2021?
+ * const result = previousThursday(new Date(2021, 5, 18))
+ * //=> Thu June 17 2021 00:00:00
+ */
+function previousThursday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)(date, 4);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 3294:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = previousTuesday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(8756));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name previousTuesday
+ * @category Weekday Helpers
+ * @summary When is the previous Tuesday?
+ *
+ * @description
+ * When is the previous Tuesday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the previous Tuesday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the previous Tuesday before Jun, 18, 2021?
+ * const result = previousTuesday(new Date(2021, 5, 18))
+ * //=> Tue June 15 2021 00:00:00
+ */
+function previousTuesday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)(date, 2);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
+/***/ 8630:
+/***/ ((module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.default = previousWednesday;
+
+var _index = _interopRequireDefault(__nccwpck_require__(2063));
+
+var _index2 = _interopRequireDefault(__nccwpck_require__(8756));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * @name previousWednesday
+ * @category Weekday Helpers
+ * @summary When is the previous Wednesday?
+ *
+ * @description
+ * When is the previous Wednesday?
+ *
+ * @param {Date | number} date - the date to start counting from
+ * @returns {Date} the previous Wednesday
+ * @throws {TypeError} 1 argument required
+ *
+ * @example
+ * // When is the previous Wednesday before Jun, 18, 2021?
+ * const result = previousWednesday(new Date(2021, 5, 18))
+ * //=> Wed June 16 2021 00:00:00
+ */
+function previousWednesday(date) {
+  (0, _index.default)(1, arguments);
+  return (0, _index2.default)(date, 3);
+}
+
+module.exports = exports.default;
+
+/***/ }),
+
 /***/ 8995:
 /***/ ((module, exports, __nccwpck_require__) => {
 
@@ -25792,14 +26277,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // The start of an a week-numbering year for 2 July 2005 with default settings:
- * var result = startOfWeekYear(new Date(2005, 6, 2))
+ * const result = startOfWeekYear(new Date(2005, 6, 2))
  * //=> Sun Dec 26 2004 00:00:00
  *
  * @example
  * // The start of a week-numbering year for 2 July 2005
  * // if Monday is the first day of week
  * // and 4 January is always in the first week of the year:
- * var result = startOfWeekYear(new Date(2005, 6, 2), {
+ * const result = startOfWeekYear(new Date(2005, 6, 2), {
  *   weekStartsOn: 1,
  *   firstWeekContainsDate: 4
  * })
@@ -25940,11 +26425,9 @@ var _index = _interopRequireDefault(__nccwpck_require__(970));
 
 var _index2 = _interopRequireDefault(__nccwpck_require__(6752));
 
-var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
-
-var _index5 = _interopRequireDefault(__nccwpck_require__(1985));
+var _index4 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25987,18 +26470,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * })
  * //=> Mon Sep 1 2014 10:19:50
  */
-function sub(dirtyDate, duration) {
-  (0, _index4.default)(2, arguments);
+function sub(date, duration) {
+  (0, _index3.default)(2, arguments);
   if (!duration || typeof duration !== 'object') return new Date(NaN);
-  var years = duration.years ? (0, _index5.default)(duration.years) : 0;
-  var months = duration.months ? (0, _index5.default)(duration.months) : 0;
-  var weeks = duration.weeks ? (0, _index5.default)(duration.weeks) : 0;
-  var days = duration.days ? (0, _index5.default)(duration.days) : 0;
-  var hours = duration.hours ? (0, _index5.default)(duration.hours) : 0;
-  var minutes = duration.minutes ? (0, _index5.default)(duration.minutes) : 0;
-  var seconds = duration.seconds ? (0, _index5.default)(duration.seconds) : 0; // Subtract years and months
+  var years = duration.years ? (0, _index4.default)(duration.years) : 0;
+  var months = duration.months ? (0, _index4.default)(duration.months) : 0;
+  var weeks = duration.weeks ? (0, _index4.default)(duration.weeks) : 0;
+  var days = duration.days ? (0, _index4.default)(duration.days) : 0;
+  var hours = duration.hours ? (0, _index4.default)(duration.hours) : 0;
+  var minutes = duration.minutes ? (0, _index4.default)(duration.minutes) : 0;
+  var seconds = duration.seconds ? (0, _index4.default)(duration.seconds) : 0; // Subtract years and months
 
-  var dateWithoutMonths = (0, _index2.default)((0, _index3.default)(dirtyDate), months + years * 12); // Subtract weeks and days
+  var dateWithoutMonths = (0, _index2.default)(date, months + years * 12); // Subtract weeks and days
 
   var dateWithoutDays = (0, _index.default)(dateWithoutMonths, days + weeks * 7); // Subtract hours, minutes and seconds
 
