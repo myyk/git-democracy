@@ -1,6 +1,5 @@
 # List the start up tasks. Learn more https://www.gitpod.io/docs/config-start-tasks/
 tasks:
   - init: |
-      npm install
-      npm run all
-
+      yarn install
+      yarn run all
