@@ -15,9 +15,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: |
-          npm install
+          yarn install
       - run: |
-          GITHUB_TOKEN=${{ github.token }} npm run all
+          GITHUB_TOKEN=${{ github.token }} yarn run all
 
       - name: Generate Commit Message
         id: generate_commit_message
