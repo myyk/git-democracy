@@ -30,7 +30,7 @@
     "date-fns": "^2.24.0"
   },
   "devDependencies": {
-    "@types/jest": "^27.0.2",
+    "@types/jest": "^27.0.3",
     "@types/js-yaml": "^4.0.4",
     "@types/node": "^16.11.7",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
