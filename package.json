@@ -27,7 +27,7 @@
   "dependencies": {
     "@actions/core": "^1.5.0",
     "@actions/github": "^5.0.0",
-    "date-fns": "^2.24.0"
+    "date-fns": "^2.26.0"
   },
   "devDependencies": {
     "@types/jest": "^27.0.3",
