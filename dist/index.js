@@ -4684,19 +4684,19 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = void 0;
 
-var _index = _interopRequireDefault(__nccwpck_require__(289));
+var _index = _interopRequireDefault(__nccwpck_require__(2966));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(2966));
+var _index2 = _interopRequireDefault(__nccwpck_require__(8493));
 
-var _index3 = _interopRequireDefault(__nccwpck_require__(8493));
+var _index3 = _interopRequireDefault(__nccwpck_require__(7170));
 
-var _index4 = _interopRequireDefault(__nccwpck_require__(7170));
+var _index4 = _interopRequireDefault(__nccwpck_require__(5993));
 
-var _index5 = _interopRequireDefault(__nccwpck_require__(5993));
+var _index5 = _interopRequireDefault(__nccwpck_require__(8050));
 
-var _index6 = _interopRequireDefault(__nccwpck_require__(8050));
+var _index6 = _interopRequireDefault(__nccwpck_require__(8794));
 
-var _index7 = _interopRequireDefault(__nccwpck_require__(8794));
+var _index7 = _interopRequireDefault(__nccwpck_require__(289));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -4796,17 +4796,17 @@ var formatters = {
       });
     }
 
-    return _index.default.y(date, token);
+    return _index7.default.y(date, token);
   },
   // Local week-numbering year
   Y: function (date, token, localize, options) {
-    var signedWeekYear = (0, _index6.default)(date, options); // Returns 1 for 1 BC (which is year 0 in JavaScript)
+    var signedWeekYear = (0, _index5.default)(date, options); // Returns 1 for 1 BC (which is year 0 in JavaScript)
 
     var weekYear = signedWeekYear > 0 ? signedWeekYear : 1 - signedWeekYear; // Two digit year
 
     if (token === 'YY') {
       var twoDigitYear = weekYear % 100;
-      return (0, _index7.default)(twoDigitYear, 2);
+      return (0, _index6.default)(twoDigitYear, 2);
     } // Ordinal number
 
 
@@ -4817,13 +4817,13 @@ var formatters = {
     } // Padding
 
 
-    return (0, _index7.default)(weekYear, token.length);
+    return (0, _index6.default)(weekYear, token.length);
   },
   // ISO week-numbering year
   R: function (date, token) {
-    var isoWeekYear = (0, _index4.default)(date); // Padding
+    var isoWeekYear = (0, _index3.default)(date); // Padding
 
-    return (0, _index7.default)(isoWeekYear, token.length);
+    return (0, _index6.default)(isoWeekYear, token.length);
   },
   // Extended year. This is a single number designating the year of this calendar system.
   // The main difference between `y` and `u` localizers are B.C. years:
@@ -4836,7 +4836,7 @@ var formatters = {
   // while `uu` pads single digit years to 2 characters and returns other years unchanged.
   u: function (date, token) {
     var year = date.getUTCFullYear();
-    return (0, _index7.default)(year, token.length);
+    return (0, _index6.default)(year, token.length);
   },
   // Quarter
   Q: function (date, token, localize) {
@@ -4849,7 +4849,7 @@ var formatters = {
       // 01, 02, 03, 04
 
       case 'QQ':
-        return (0, _index7.default)(quarter, 2);
+        return (0, _index6.default)(quarter, 2);
       // 1st, 2nd, 3rd, 4th
 
       case 'Qo':
@@ -4891,7 +4891,7 @@ var formatters = {
       // 01, 02, 03, 04
 
       case 'qq':
-        return (0, _index7.default)(quarter, 2);
+        return (0, _index6.default)(quarter, 2);
       // 1st, 2nd, 3rd, 4th
 
       case 'qo':
@@ -4929,7 +4929,7 @@ var formatters = {
     switch (token) {
       case 'M':
       case 'MM':
-        return _index.default.M(date, token);
+        return _index7.default.M(date, token);
       // 1st, 2nd, ..., 12th
 
       case 'Mo':
@@ -4971,7 +4971,7 @@ var formatters = {
       // 01, 02, ..., 12
 
       case 'LL':
-        return (0, _index7.default)(month + 1, 2);
+        return (0, _index6.default)(month + 1, 2);
       // 1st, 2nd, ..., 12th
 
       case 'Lo':
@@ -5004,7 +5004,7 @@ var formatters = {
   },
   // Local week of year
   w: function (date, token, localize, options) {
-    var week = (0, _index5.default)(date, options);
+    var week = (0, _index4.default)(date, options);
 
     if (token === 'wo') {
       return localize.ordinalNumber(week, {
@@ -5012,11 +5012,11 @@ var formatters = {
       });
     }
 
-    return (0, _index7.default)(week, token.length);
+    return (0, _index6.default)(week, token.length);
   },
   // ISO week of year
   I: function (date, token, localize) {
-    var isoWeek = (0, _index3.default)(date);
+    var isoWeek = (0, _index2.default)(date);
 
     if (token === 'Io') {
       return localize.ordinalNumber(isoWeek, {
@@ -5024,7 +5024,7 @@ var formatters = {
       });
     }
 
-    return (0, _index7.default)(isoWeek, token.length);
+    return (0, _index6.default)(isoWeek, token.length);
   },
   // Day of the month
   d: function (date, token, localize) {
@@ -5034,11 +5034,11 @@ var formatters = {
       });
     }
 
-    return _index.default.d(date, token);
+    return _index7.default.d(date, token);
   },
   // Day of year
   D: function (date, token, localize) {
-    var dayOfYear = (0, _index2.default)(date);
+    var dayOfYear = (0, _index.default)(date);
 
     if (token === 'Do') {
       return localize.ordinalNumber(dayOfYear, {
@@ -5046,7 +5046,7 @@ var formatters = {
       });
     }
 
-    return (0, _index7.default)(dayOfYear, token.length);
+    return (0, _index6.default)(dayOfYear, token.length);
   },
   // Day of week
   E: function (date, token, localize) {
@@ -5097,7 +5097,7 @@ var formatters = {
       // Padded numerical value
 
       case 'ee':
-        return (0, _index7.default)(localDayOfWeek, 2);
+        return (0, _index6.default)(localDayOfWeek, 2);
       // 1st, 2nd, ..., 7th
 
       case 'eo':
@@ -5146,7 +5146,7 @@ var formatters = {
       // Padded numerical value
 
       case 'cc':
-        return (0, _index7.default)(localDayOfWeek, token.length);
+        return (0, _index6.default)(localDayOfWeek, token.length);
       // 1st, 2nd, ..., 7th
 
       case 'co':
@@ -5195,7 +5195,7 @@ var formatters = {
       // 02
 
       case 'ii':
-        return (0, _index7.default)(isoDayOfWeek, token.length);
+        return (0, _index6.default)(isoDayOfWeek, token.length);
       // 2nd
 
       case 'io':
@@ -5355,7 +5355,7 @@ var formatters = {
       });
     }
 
-    return _index.default.h(date, token);
+    return _index7.default.h(date, token);
   },
   // Hour [0-23]
   H: function (date, token, localize) {
@@ -5365,7 +5365,7 @@ var formatters = {
       });
     }
 
-    return _index.default.H(date, token);
+    return _index7.default.H(date, token);
   },
   // Hour [0-11]
   K: function (date, token, localize) {
@@ -5377,7 +5377,7 @@ var formatters = {
       });
     }
 
-    return (0, _index7.default)(hours, token.length);
+    return (0, _index6.default)(hours, token.length);
   },
   // Hour [1-24]
   k: function (date, token, localize) {
@@ -5390,7 +5390,7 @@ var formatters = {
       });
     }
 
-    return (0, _index7.default)(hours, token.length);
+    return (0, _index6.default)(hours, token.length);
   },
   // Minute
   m: function (date, token, localize) {
@@ -5400,7 +5400,7 @@ var formatters = {
       });
     }
 
-    return _index.default.m(date, token);
+    return _index7.default.m(date, token);
   },
   // Second
   s: function (date, token, localize) {
@@ -5410,11 +5410,11 @@ var formatters = {
       });
     }
 
-    return _index.default.s(date, token);
+    return _index7.default.s(date, token);
   },
   // Fraction of second
   S: function (date, token) {
-    return _index.default.S(date, token);
+    return _index7.default.S(date, token);
   },
   // Timezone (ISO-8601. If offset is 0, output is always `'Z'`)
   X: function (date, token, _localize, options) {
@@ -5516,13 +5516,13 @@ var formatters = {
   t: function (date, token, _localize, options) {
     var originalDate = options._originalDate || date;
     var timestamp = Math.floor(originalDate.getTime() / 1000);
-    return (0, _index7.default)(timestamp, token.length);
+    return (0, _index6.default)(timestamp, token.length);
   },
   // Milliseconds timestamp
   T: function (date, token, _localize, options) {
     var originalDate = options._originalDate || date;
     var timestamp = originalDate.getTime();
-    return (0, _index7.default)(timestamp, token.length);
+    return (0, _index6.default)(timestamp, token.length);
   }
 };
 
@@ -5537,13 +5537,13 @@ function formatTimezoneShort(offset, dirtyDelimiter) {
   }
 
   var delimiter = dirtyDelimiter || '';
-  return sign + String(hours) + delimiter + (0, _index7.default)(minutes, 2);
+  return sign + String(hours) + delimiter + (0, _index6.default)(minutes, 2);
 }
 
 function formatTimezoneWithOptionalMinutes(offset, dirtyDelimiter) {
   if (offset % 60 === 0) {
     var sign = offset > 0 ? '-' : '+';
-    return sign + (0, _index7.default)(Math.abs(offset) / 60, 2);
+    return sign + (0, _index6.default)(Math.abs(offset) / 60, 2);
   }
 
   return formatTimezone(offset, dirtyDelimiter);
@@ -5553,8 +5553,8 @@ function formatTimezone(offset, dirtyDelimiter) {
   var delimiter = dirtyDelimiter || '';
   var sign = offset > 0 ? '-' : '+';
   var absOffset = Math.abs(offset);
-  var hours = (0, _index7.default)(Math.floor(absOffset / 60), 2);
-  var minutes = (0, _index7.default)(absOffset % 60, 2);
+  var hours = (0, _index6.default)(Math.floor(absOffset / 60), 2);
+  var minutes = (0, _index6.default)(absOffset % 60, 2);
   return sign + hours + delimiter + minutes;
 }
 
@@ -5728,7 +5728,7 @@ function timeLongFormatter(pattern, formatLong) {
 }
 
 function dateTimeLongFormatter(pattern, formatLong) {
-  var matchResult = pattern.match(/(P+)(p+)?/);
+  var matchResult = pattern.match(/(P+)(p+)?/) || [];
   var datePattern = matchResult[1];
   var timePattern = matchResult[2];
 
@@ -5896,26 +5896,26 @@ exports.default = getUTCISOWeekYear;
 
 var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(3061));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(3061));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // This function will be a part of public API when UTC function will be implemented.
 // See issue: https://github.com/date-fns/date-fns/issues/376
 function getUTCISOWeekYear(dirtyDate) {
-  (0, _index3.default)(1, arguments);
+  (0, _index2.default)(1, arguments);
   var date = (0, _index.default)(dirtyDate);
   var year = date.getUTCFullYear();
   var fourthOfJanuaryOfNextYear = new Date(0);
   fourthOfJanuaryOfNextYear.setUTCFullYear(year + 1, 0, 4);
   fourthOfJanuaryOfNextYear.setUTCHours(0, 0, 0, 0);
-  var startOfNextYear = (0, _index2.default)(fourthOfJanuaryOfNextYear);
+  var startOfNextYear = (0, _index3.default)(fourthOfJanuaryOfNextYear);
   var fourthOfJanuaryOfThisYear = new Date(0);
   fourthOfJanuaryOfThisYear.setUTCFullYear(year, 0, 4);
   fourthOfJanuaryOfThisYear.setUTCHours(0, 0, 0, 0);
-  var startOfThisYear = (0, _index2.default)(fourthOfJanuaryOfThisYear);
+  var startOfThisYear = (0, _index3.default)(fourthOfJanuaryOfThisYear);
 
   if (date.getTime() >= startOfNextYear.getTime()) {
     return year + 1;
@@ -5979,27 +5979,27 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = getUTCWeekYear;
 
-var _index = _interopRequireDefault(__nccwpck_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 var _index3 = _interopRequireDefault(__nccwpck_require__(2258));
 
-var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // This function will be a part of public API when UTC function will be implemented.
 // See issue: https://github.com/date-fns/date-fns/issues/376
 function getUTCWeekYear(dirtyDate, dirtyOptions) {
-  (0, _index4.default)(1, arguments);
-  var date = (0, _index2.default)(dirtyDate, dirtyOptions);
+  (0, _index2.default)(1, arguments);
+  var date = (0, _index.default)(dirtyDate);
   var year = date.getUTCFullYear();
   var options = dirtyOptions || {};
   var locale = options.locale;
   var localeFirstWeekContainsDate = locale && locale.options && locale.options.firstWeekContainsDate;
-  var defaultFirstWeekContainsDate = localeFirstWeekContainsDate == null ? 1 : (0, _index.default)(localeFirstWeekContainsDate);
-  var firstWeekContainsDate = options.firstWeekContainsDate == null ? defaultFirstWeekContainsDate : (0, _index.default)(options.firstWeekContainsDate); // Test if weekStartsOn is between 1 and 7 _and_ is not NaN
+  var defaultFirstWeekContainsDate = localeFirstWeekContainsDate == null ? 1 : (0, _index4.default)(localeFirstWeekContainsDate);
+  var firstWeekContainsDate = options.firstWeekContainsDate == null ? defaultFirstWeekContainsDate : (0, _index4.default)(options.firstWeekContainsDate); // Test if weekStartsOn is between 1 and 7 _and_ is not NaN
 
   if (!(firstWeekContainsDate >= 1 && firstWeekContainsDate <= 7)) {
     throw new RangeError('firstWeekContainsDate must be between 1 and 7 inclusively');
@@ -6123,30 +6123,30 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setUTCDay;
 
-var _index = _interopRequireDefault(__nccwpck_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // This function will be a part of public API when UTC function will be implemented.
 // See issue: https://github.com/date-fns/date-fns/issues/376
 function setUTCDay(dirtyDate, dirtyDay, dirtyOptions) {
-  (0, _index3.default)(2, arguments);
+  (0, _index2.default)(2, arguments);
   var options = dirtyOptions || {};
   var locale = options.locale;
   var localeWeekStartsOn = locale && locale.options && locale.options.weekStartsOn;
-  var defaultWeekStartsOn = localeWeekStartsOn == null ? 0 : (0, _index.default)(localeWeekStartsOn);
-  var weekStartsOn = options.weekStartsOn == null ? defaultWeekStartsOn : (0, _index.default)(options.weekStartsOn); // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
+  var defaultWeekStartsOn = localeWeekStartsOn == null ? 0 : (0, _index3.default)(localeWeekStartsOn);
+  var weekStartsOn = options.weekStartsOn == null ? defaultWeekStartsOn : (0, _index3.default)(options.weekStartsOn); // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
 
   if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
     throw new RangeError('weekStartsOn must be between 0 and 6 inclusively');
   }
 
-  var date = (0, _index2.default)(dirtyDate);
-  var day = (0, _index.default)(dirtyDay);
+  var date = (0, _index.default)(dirtyDate);
+  var day = (0, _index3.default)(dirtyDay);
   var currentDay = date.getUTCDay();
   var remainder = day % 7;
   var dayIndex = (remainder + 7) % 7;
@@ -6170,26 +6170,26 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = setUTCISODay;
 
-var _index = _interopRequireDefault(__nccwpck_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // This function will be a part of public API when UTC function will be implemented.
 // See issue: https://github.com/date-fns/date-fns/issues/376
 function setUTCISODay(dirtyDate, dirtyDay) {
-  (0, _index3.default)(2, arguments);
-  var day = (0, _index.default)(dirtyDay);
+  (0, _index2.default)(2, arguments);
+  var day = (0, _index3.default)(dirtyDay);
 
   if (day % 7 === 0) {
     day = day - 7;
   }
 
   var weekStartsOn = 1;
-  var date = (0, _index2.default)(dirtyDate);
+  var date = (0, _index.default)(dirtyDate);
   var currentDay = date.getUTCDay();
   var remainder = day % 7;
   var dayIndex = (remainder + 7) % 7;
@@ -6354,29 +6354,29 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfUTCWeek;
 
-var _index = _interopRequireDefault(__nccwpck_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // This function will be a part of public API when UTC function will be implemented.
 // See issue: https://github.com/date-fns/date-fns/issues/376
 function startOfUTCWeek(dirtyDate, dirtyOptions) {
-  (0, _index3.default)(1, arguments);
+  (0, _index2.default)(1, arguments);
   var options = dirtyOptions || {};
   var locale = options.locale;
   var localeWeekStartsOn = locale && locale.options && locale.options.weekStartsOn;
-  var defaultWeekStartsOn = localeWeekStartsOn == null ? 0 : (0, _index.default)(localeWeekStartsOn);
-  var weekStartsOn = options.weekStartsOn == null ? defaultWeekStartsOn : (0, _index.default)(options.weekStartsOn); // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
+  var defaultWeekStartsOn = localeWeekStartsOn == null ? 0 : (0, _index3.default)(localeWeekStartsOn);
+  var weekStartsOn = options.weekStartsOn == null ? defaultWeekStartsOn : (0, _index3.default)(options.weekStartsOn); // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
 
   if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
     throw new RangeError('weekStartsOn must be between 0 and 6 inclusively');
   }
 
-  var date = (0, _index2.default)(dirtyDate);
+  var date = (0, _index.default)(dirtyDate);
   var day = date.getUTCDay();
   var diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
   date.setUTCDate(date.getUTCDate() - diff);
@@ -6399,26 +6399,26 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = startOfUTCWeekYear;
 
-var _index = _interopRequireDefault(__nccwpck_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(8050));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(8050));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 var _index3 = _interopRequireDefault(__nccwpck_require__(2258));
 
-var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index4 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // This function will be a part of public API when UTC function will be implemented.
 // See issue: https://github.com/date-fns/date-fns/issues/376
 function startOfUTCWeekYear(dirtyDate, dirtyOptions) {
-  (0, _index4.default)(1, arguments);
+  (0, _index2.default)(1, arguments);
   var options = dirtyOptions || {};
   var locale = options.locale;
   var localeFirstWeekContainsDate = locale && locale.options && locale.options.firstWeekContainsDate;
-  var defaultFirstWeekContainsDate = localeFirstWeekContainsDate == null ? 1 : (0, _index.default)(localeFirstWeekContainsDate);
-  var firstWeekContainsDate = options.firstWeekContainsDate == null ? defaultFirstWeekContainsDate : (0, _index.default)(options.firstWeekContainsDate);
-  var year = (0, _index2.default)(dirtyDate, dirtyOptions);
+  var defaultFirstWeekContainsDate = localeFirstWeekContainsDate == null ? 1 : (0, _index4.default)(localeFirstWeekContainsDate);
+  var firstWeekContainsDate = options.firstWeekContainsDate == null ? defaultFirstWeekContainsDate : (0, _index4.default)(options.firstWeekContainsDate);
+  var year = (0, _index.default)(dirtyDate, dirtyOptions);
   var firstWeek = new Date(0);
   firstWeek.setUTCFullYear(year, 0, firstWeekContainsDate);
   firstWeek.setUTCHours(0, 0, 0, 0);
@@ -7425,30 +7425,26 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * - Now, `closestIndexTo` doesn't throw an exception
  *   when the second argument is not an array, and returns Invalid Date instead.
  *
- * @param {Date|Number} dateToCompare - the date to compare with
- * @param {Date[]|Number[]} datesArray - the array to search
- * @returns {Number} an index of the date closest to the given date
+ * @param {Date | Number} dateToCompare - the date to compare with
+ * @param {Array<Date> | Array<number>} datesArray - the array to search
+ * @returns {Number | undefined} an index of the date closest to the given date or undefined if no valid value is given
  * @throws {TypeError} 2 arguments required
  *
  * @example
  * // Which date is closer to 6 September 2015?
- * var dateToCompare = new Date(2015, 8, 6)
- * var datesArray = [
+ * const dateToCompare = new Date(2015, 8, 6)
+ * const datesArray = [
  *   new Date(2015, 0, 1),
  *   new Date(2016, 0, 1),
  *   new Date(2017, 0, 1)
  * ]
- * var result = closestIndexTo(dateToCompare, datesArray)
+ * const result = closestIndexTo(dateToCompare, datesArray)
  * //=> 1
  */
 function closestIndexTo(dirtyDateToCompare, dirtyDatesArray) {
   (0, _index2.default)(2, arguments);
   var dateToCompare = (0, _index.default)(dirtyDateToCompare);
-
-  if (isNaN(dateToCompare)) {
-    return NaN;
-  }
-
+  if (isNaN(Number(dateToCompare))) return NaN;
   var timeToCompare = dateToCompare.getTime();
   var datesArray; // `dirtyDatesArray` is undefined or null
 
@@ -7465,7 +7461,7 @@ function closestIndexTo(dirtyDateToCompare, dirtyDatesArray) {
   datesArray.forEach(function (dirtyDate, index) {
     var currentDate = (0, _index.default)(dirtyDate);
 
-    if (isNaN(currentDate)) {
+    if (isNaN(Number(currentDate))) {
       result = NaN;
       minDistance = NaN;
       return;
@@ -7473,7 +7469,7 @@ function closestIndexTo(dirtyDateToCompare, dirtyDatesArray) {
 
     var distance = Math.abs(timeToCompare - currentDate.getTime());
 
-    if (result == null || distance < minDistance) {
+    if (result == null || distance < Number(minDistance)) {
       result = index;
       minDistance = distance;
     }
@@ -7517,15 +7513,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * - Now, `closestTo` doesn't throw an exception
  *   when the second argument is not an array, and returns Invalid Date instead.
  *
- * @param {Date|Number} dateToCompare - the date to compare with
- * @param {Date[]|Number[]} datesArray - the array to search
- * @returns {Date} the date from the array closest to the given date
+ * @param {Date | Number} dateToCompare - the date to compare with
+ * @param {Array<Date> | Array<number>} datesArray - the array to search
+ * @returns {Date | undefined} the date from the array closest to the given date or undefined if no valid value is given
  * @throws {TypeError} 2 arguments required
  *
  * @example
  * // Which date is closer to 6 September 2015: 1 January 2000 or 1 January 2030?
- * var dateToCompare = new Date(2015, 8, 6)
- * var result = closestTo(dateToCompare, [
+ * const dateToCompare = new Date(2015, 8, 6)
+ * const result = closestTo(dateToCompare, [
  *   new Date(2000, 0, 1),
  *   new Date(2030, 0, 1)
  * ])
@@ -7534,11 +7530,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function closestTo(dirtyDateToCompare, dirtyDatesArray) {
   (0, _index2.default)(2, arguments);
   var dateToCompare = (0, _index.default)(dirtyDateToCompare);
-
-  if (isNaN(dateToCompare)) {
-    return new Date(NaN);
-  }
-
+  if (isNaN(Number(dateToCompare))) return new Date(NaN);
   var timeToCompare = dateToCompare.getTime();
   var datesArray; // `dirtyDatesArray` is undefined or null
 
@@ -7555,7 +7547,7 @@ function closestTo(dirtyDateToCompare, dirtyDatesArray) {
   datesArray.forEach(function (dirtyDate) {
     var currentDate = (0, _index.default)(dirtyDate);
 
-    if (isNaN(currentDate)) {
+    if (isNaN(Number(currentDate))) {
       result = new Date(NaN);
       minDistance = NaN;
       return;
@@ -7563,7 +7555,7 @@ function closestTo(dirtyDateToCompare, dirtyDatesArray) {
 
     var distance = Math.abs(timeToCompare - currentDate.getTime());
 
-    if (result == null || distance < minDistance) {
+    if (result == null || distance < Number(minDistance)) {
       result = currentDate;
       minDistance = distance;
     }
@@ -7925,21 +7917,21 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = differenceInBusinessDays;
 
-var _index = _interopRequireDefault(__nccwpck_require__(9920));
+var _index = _interopRequireDefault(__nccwpck_require__(6227));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(403));
+var _index2 = _interopRequireDefault(__nccwpck_require__(3086));
 
-var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2154));
 
-var _index4 = _interopRequireDefault(__nccwpck_require__(3086));
+var _index4 = _interopRequireDefault(__nccwpck_require__(9920));
 
-var _index5 = _interopRequireDefault(__nccwpck_require__(6227));
+var _index5 = _interopRequireDefault(__nccwpck_require__(403));
 
-var _index6 = _interopRequireDefault(__nccwpck_require__(2154));
+var _index6 = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index7 = _interopRequireDefault(__nccwpck_require__(1985));
+var _index7 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index8 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index8 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -7962,27 +7954,51 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @example
  * // How many business days are between
  * // 10 January 2014 and 20 July 2014?
- * var result = differenceInBusinessDays(
+ * const result = differenceInBusinessDays(
  *   new Date(2014, 6, 20),
  *   new Date(2014, 0, 10)
  * )
  * //=> 136
+ *
+ * // How many business days are between
+ * // 1 November 2021 and 30 November 2021?
+ * const result = differenceInBusinessDays(
+ *   new Date(2021, 10, 1),
+ *   new Date(2021, 10, 30)
+ * )
+ * //=> 21
+ *
+ * // How many business days are between
+ * // 1 November 2021 and 1 December 2021?
+ * const result = differenceInBusinessDays(
+ *   new Date(2021, 10, 1),
+ *   new Date(2021, 11, 1)
+ * )
+ * //=> 22
+ *
+ * // How many business days are between
+ * // 1 November 2021 and 1 November 2021 ?
+ * const result = differenceInBusinessDays(
+ *   new Date(2021, 10, 1),
+ *   new Date(2021, 10, 1)
+ * )
+ * //=> 0
  */
 function differenceInBusinessDays(dirtyDateLeft, dirtyDateRight) {
-  (0, _index8.default)(2, arguments);
-  var dateLeft = (0, _index3.default)(dirtyDateLeft);
-  var dateRight = (0, _index3.default)(dirtyDateRight);
-  if (!(0, _index.default)(dateLeft) || !(0, _index.default)(dateRight)) return NaN;
-  var calendarDifference = (0, _index4.default)(dateLeft, dateRight);
+  (0, _index7.default)(2, arguments);
+  var dateLeft = (0, _index6.default)(dirtyDateLeft);
+  var dateRight = (0, _index6.default)(dirtyDateRight);
+  if (!(0, _index4.default)(dateLeft) || !(0, _index4.default)(dateRight)) return NaN;
+  var calendarDifference = (0, _index2.default)(dateLeft, dateRight);
   var sign = calendarDifference < 0 ? -1 : 1;
-  var weeks = (0, _index7.default)(calendarDifference / 7);
+  var weeks = (0, _index8.default)(calendarDifference / 7);
   var result = weeks * 5;
-  dateRight = (0, _index5.default)(dateRight, weeks * 7); // the loop below will run at most 6 times to account for the remaining days that don't makeup a full week
+  dateRight = (0, _index.default)(dateRight, weeks * 7); // the loop below will run at most 6 times to account for the remaining days that don't makeup a full week
 
-  while (!(0, _index6.default)(dateLeft, dateRight)) {
+  while (!(0, _index3.default)(dateLeft, dateRight)) {
     // sign is used to account for both negative and positive differences
-    result += (0, _index2.default)(dateRight) ? 0 : sign;
-    dateRight = (0, _index5.default)(dateRight, sign);
+    result += (0, _index5.default)(dateRight) ? 0 : sign;
+    dateRight = (0, _index.default)(dateRight, sign);
   }
 
   return result === 0 ? 0 : result;
@@ -9361,7 +9377,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function eachMinuteOfInterval(interval, options) {
   (0, _index4.default)(1, arguments);
   var startDate = (0, _index3.default)((0, _index2.default)(interval.start));
-  var endDate = (0, _index3.default)((0, _index2.default)(interval.end));
+  var endDate = (0, _index2.default)(interval.end);
   var startTime = startDate.getTime();
   var endTime = endDate.getTime();
 
@@ -10940,7 +10956,7 @@ var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
  * 8. `YY` and `YYYY` tokens represent week-numbering years but they are often confused with years.
  *    You should enable `options.useAdditionalWeekYearTokens` to use them. See: https://git.io/fxCyr
  *
- * 9. `D` and `DD` tokens represent days of the year but they are ofthen confused with days of the month.
+ * 9. `D` and `DD` tokens represent days of the year but they are often confused with days of the month.
  *    You should enable `options.useAdditionalDayOfYearTokens` to use them. See: https://git.io/fxCyr
  *
  * ### v2.0.0 breaking changes:
@@ -11865,6 +11881,7 @@ var _index = _interopRequireDefault(__nccwpck_require__(1773));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var defaultFormat = ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds'];
+
 /**
  * @name formatDuration
  * @category Common Helpers
@@ -11875,9 +11892,8 @@ var defaultFormat = ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'se
  *
  * @param {Duration} duration - the duration to format
  * @param {Object} [options] - an object with options.
-
  * @param {string[]} [options.format=['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'seconds']] - the array of units to format
- * @param {boolean} [options.zero=false] - should be zeros be included in the output?
+ * @param {boolean} [options.zero=false] - should zeros be included in the output?
  * @param {string} [options.delimiter=' '] - delimiter string
  * @param {Locale} [options.locale=defaultLocale] - the locale object. See [Locale]{@link https://date-fns.org/docs/Locale}
  * @returns {string} the formatted date string
@@ -11894,7 +11910,7 @@ var defaultFormat = ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'se
  *   minutes: 9,
  *   seconds: 30
  * })
- * //=> '2 years 9 months 1 week 7 days 5 hours 9 minutes 30 seconds
+ * //=> '2 years 9 months 1 week 7 days 5 hours 9 minutes 30 seconds'
  *
  * @example
  * // Format partial duration
@@ -11928,8 +11944,9 @@ var defaultFormat = ['years', 'months', 'weeks', 'days', 'hours', 'minutes', 'se
  * formatDuration({ years: 2, months: 9, weeks: 3 }, { delimiter: ', ' })
  * //=> '2 years, 9 months, 3 weeks'
  */
+function formatDuration(duration) {
+  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-function formatDuration(duration, options) {
   if (arguments.length < 1) {
     throw new TypeError("1 argument required, but only ".concat(arguments.length, " present"));
   }
@@ -11943,7 +11960,7 @@ function formatDuration(duration, options) {
       return m.toUpperCase();
     }));
     var addChunk = typeof duration[unit] === 'number' && (zero || duration[unit]);
-    return addChunk ? acc.concat(locale.formatDistance(token, duration[unit])) : acc;
+    return addChunk && locale.formatDistance ? acc.concat(locale.formatDistance(token, duration[unit])) : acc;
   }, []).join(delimiter);
   return result;
 }
@@ -11965,16 +11982,16 @@ exports.default = formatISO;
 
 var _index = _interopRequireDefault(__nccwpck_require__(6477));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(9920));
+var _index2 = _interopRequireDefault(__nccwpck_require__(8794));
 
-var _index3 = _interopRequireDefault(__nccwpck_require__(8794));
+var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * @name formatISO
  * @category Common Helpers
- * @summary Format the date according to the ISO 8601 standard (http://support.sas.com/documentation/cdl/en/lrdict/64316/HTML/default/viewer.htm#a003169814.htm).
+ * @summary Format the date according to the ISO 8601 standard (https://support.sas.com/documentation/cdl/en/lrdict/64316/HTML/default/viewer.htm#a003169814.htm).
  *
  * @description
  * Return the formatted date string in ISO 8601 format. Options may be passed to control the parts and notations of the date.
@@ -11982,20 +11999,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @param {Date|Number} date - the original date
  * @param {Object} [options] - an object with options.
  * @param {'extended'|'basic'} [options.format='extended'] - if 'basic', hide delimiters between date and time values.
- * @param {'complete'|'date'|'time'} [options.representation='complete'] - format date, time with time zone, or both.
- * @returns {String} the formatted date string
+ * @param {'complete'|'date'|'time'} [options.representation='complete'] - format date, time with local time zone, or both.
+ * @returns {String} the formatted date string (in local time zone)
  * @throws {TypeError} 1 argument required
  * @throws {RangeError} `date` must not be Invalid Date
  * @throws {RangeError} `options.format` must be 'extended' or 'basic'
  * @throws {RangeError} `options.represenation` must be 'date', 'time' or 'complete'
  *
  * @example
- * // Represent 18 September 2019 in ISO 8601 format (UTC):
+ * // Represent 18 September 2019 in ISO 8601 format (local time zone is UTC):
  * const result = formatISO(new Date(2019, 8, 18, 19, 0, 52))
  * //=> '2019-09-18T19:00:52Z'
  *
  * @example
- * // Represent 18 September 2019 in ISO 8601, short format (UTC):
+ * // Represent 18 September 2019 in ISO 8601, short format (local time zone is UTC):
  * const result = formatISO(new Date(2019, 8, 18, 19, 0, 52), { format: 'basic' })
  * //=> '20190918T190052'
  *
@@ -12005,24 +12022,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * //=> '2019-09-18'
  *
  * @example
- * // Represent 18 September 2019 in ISO 8601 format, time only (UTC):
+ * // Represent 18 September 2019 in ISO 8601 format, time only (local time zone is UTC):
  * const result = formatISO(new Date(2019, 8, 18, 19, 0, 52), { representation: 'time' })
  * //=> '19:00:52Z'
  */
-function formatISO(dirtyDate, dirtyOptions) {
-  if (arguments.length < 1) {
-    throw new TypeError("1 argument required, but only ".concat(arguments.length, " present"));
-  }
+function formatISO(date, options) {
+  (0, _index3.default)(1, arguments);
+  var originalDate = (0, _index.default)(date);
 
-  var originalDate = (0, _index.default)(dirtyDate);
-
-  if (!(0, _index2.default)(originalDate)) {
+  if (isNaN(originalDate.getTime())) {
     throw new RangeError('Invalid time value');
   }
 
-  var options = dirtyOptions || {};
-  var format = options.format == null ? 'extended' : String(options.format);
-  var representation = options.representation == null ? 'complete' : String(options.representation);
+  var format = !(options !== null && options !== void 0 && options.format) ? 'extended' : String(options.format);
+  var representation = !(options !== null && options !== void 0 && options.representation) ? 'complete' : String(options.representation);
 
   if (format !== 'extended' && format !== 'basic') {
     throw new RangeError("format must be 'extended' or 'basic'");
@@ -12038,9 +12051,9 @@ function formatISO(dirtyDate, dirtyOptions) {
   var timeDelimiter = format === 'extended' ? ':' : ''; // Representation is either 'date' or 'complete'
 
   if (representation !== 'time') {
-    var day = (0, _index3.default)(originalDate.getDate(), 2);
-    var month = (0, _index3.default)(originalDate.getMonth() + 1, 2);
-    var year = (0, _index3.default)(originalDate.getFullYear(), 4); // yyyyMMdd or yyyy-MM-dd.
+    var day = (0, _index2.default)(originalDate.getDate(), 2);
+    var month = (0, _index2.default)(originalDate.getMonth() + 1, 2);
+    var year = (0, _index2.default)(originalDate.getFullYear(), 4); // yyyyMMdd or yyyy-MM-dd.
 
     result = "".concat(year).concat(dateDelimiter).concat(month).concat(dateDelimiter).concat(day);
   } // Representation is either 'time' or 'complete'
@@ -12052,8 +12065,8 @@ function formatISO(dirtyDate, dirtyOptions) {
 
     if (offset !== 0) {
       var absoluteOffset = Math.abs(offset);
-      var hourOffset = (0, _index3.default)(Math.floor(absoluteOffset / 60), 2);
-      var minuteOffset = (0, _index3.default)(absoluteOffset % 60, 2); // If less than 0, the sign is +, because it is ahead of time.
+      var hourOffset = (0, _index2.default)(Math.floor(absoluteOffset / 60), 2);
+      var minuteOffset = (0, _index2.default)(absoluteOffset % 60, 2); // If less than 0, the sign is +, because it is ahead of time.
 
       var sign = offset < 0 ? '+' : '-';
       tzOffset = "".concat(sign).concat(hourOffset, ":").concat(minuteOffset);
@@ -12061,9 +12074,9 @@ function formatISO(dirtyDate, dirtyOptions) {
       tzOffset = 'Z';
     }
 
-    var hour = (0, _index3.default)(originalDate.getHours(), 2);
-    var minute = (0, _index3.default)(originalDate.getMinutes(), 2);
-    var second = (0, _index3.default)(originalDate.getSeconds(), 2); // If there's also date, separate it with time with 'T'
+    var hour = (0, _index2.default)(originalDate.getHours(), 2);
+    var minute = (0, _index2.default)(originalDate.getMinutes(), 2);
+    var second = (0, _index2.default)(originalDate.getSeconds(), 2); // If there's also date, separate it with time with 'T'
 
     var separator = result === '' ? '' : 'T'; // Creates a time string consisting of hour, minute, and second, separated by delimiters, if defined.
 
@@ -13721,13 +13734,13 @@ var MILLISECONDS_IN_WEEK = 604800000;
  *
  * @example
  * // Which week of the local week numbering year is 2 January 2005 with default options?
- * const result = getISOWeek(new Date(2005, 0, 2))
+ * const result = getWeek(new Date(2005, 0, 2))
  * //=> 2
  *
  * // Which week of the local week numbering year is 2 January 2005,
  * // if Monday is the first day of the week,
  * // and the first week of the year always contains 4 January?
- * const result = getISOWeek(new Date(2005, 0, 2), {
+ * const result = getWeek(new Date(2005, 0, 2), {
  *   weekStartsOn: 1,
  *   firstWeekContainsDate: 4
  * })
@@ -13765,9 +13778,9 @@ var _index2 = _interopRequireDefault(__nccwpck_require__(9361));
 
 var _index3 = _interopRequireDefault(__nccwpck_require__(7182));
 
-var _index4 = _interopRequireDefault(__nccwpck_require__(1985));
+var _index4 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index5 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index5 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -13789,48 +13802,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @param {0|1|2|3|4|5|6} [options.weekStartsOn=0] - the index of the first day of the week (0 - Sunday)
  * @returns {Number} the week of month
  * @throws {TypeError} 1 argument required
- * @throws {RangeError} `options.weekStartsOn` must be between 0 and 6
+ * @throws {RangeError} `options.weekStartsOn` must be between 0 and 6 inclusively
  *
  * @example
  * // Which week of the month is 9 November 2017?
- * var result = getWeekOfMonth(new Date(2017, 10, 9))
+ * const result = getWeekOfMonth(new Date(2017, 10, 9))
  * //=> 2
  */
-function getWeekOfMonth(date, dirtyOptions) {
-  (0, _index5.default)(1, arguments);
-  var options = dirtyOptions || {};
-  var locale = options.locale;
-  var localeWeekStartsOn = locale && locale.options && locale.options.weekStartsOn;
-  var defaultWeekStartsOn = localeWeekStartsOn == null ? 0 : (0, _index4.default)(localeWeekStartsOn);
-  var weekStartsOn = options.weekStartsOn == null ? defaultWeekStartsOn : (0, _index4.default)(options.weekStartsOn); // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
+function getWeekOfMonth(date, options) {
+  var _options$locale, _options$locale$optio;
+
+  (0, _index4.default)(1, arguments);
+  var defaultWeekStartsOn = (options === null || options === void 0 ? void 0 : (_options$locale = options.locale) === null || _options$locale === void 0 ? void 0 : (_options$locale$optio = _options$locale.options) === null || _options$locale$optio === void 0 ? void 0 : _options$locale$optio.weekStartsOn) || 0;
+  var weekStartsOn = (options === null || options === void 0 ? void 0 : options.weekStartsOn) == null ? (0, _index5.default)(defaultWeekStartsOn) : (0, _index5.default)(options.weekStartsOn);
 
   if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
     throw new RangeError('weekStartsOn must be between 0 and 6 inclusively');
   }
 
   var currentDayOfMonth = (0, _index.default)(date);
-
-  if (isNaN(currentDayOfMonth)) {
-    return currentDayOfMonth;
-  }
-
+  if (isNaN(currentDayOfMonth)) return NaN;
   var startWeekDay = (0, _index2.default)((0, _index3.default)(date));
-  var lastDayOfFirstWeek = 0;
-
-  if (startWeekDay >= weekStartsOn) {
-    lastDayOfFirstWeek = weekStartsOn + 7 - startWeekDay;
-  } else {
-    lastDayOfFirstWeek = weekStartsOn - startWeekDay;
-  }
-
-  var weekNumber = 1;
-
-  if (currentDayOfMonth > lastDayOfFirstWeek) {
-    var remainingDaysAfterFirstWeek = currentDayOfMonth - lastDayOfFirstWeek;
-    weekNumber = weekNumber + Math.ceil(remainingDaysAfterFirstWeek / 7);
-  }
-
-  return weekNumber;
+  var lastDayOfFirstWeek = weekStartsOn - startWeekDay;
+  if (lastDayOfFirstWeek <= 0) lastDayOfFirstWeek += 7;
+  var remainingDaysAfterFirstWeek = currentDayOfMonth - lastDayOfFirstWeek;
+  return Math.ceil(remainingDaysAfterFirstWeek / 7) + 1;
 }
 
 module.exports = exports.default;
@@ -14038,9 +14034,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 function getYear(dirtyDate) {
   (0, _index2.default)(1, arguments);
-  var date = (0, _index.default)(dirtyDate);
-  var year = date.getFullYear();
-  return year;
+  return (0, _index.default)(dirtyDate).getFullYear();
 }
 
 module.exports = exports.default;
@@ -17227,7 +17221,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * |                                 |     | tt      | ...                               | 2     |
  * | Fraction of second              |  30 | S       | 0, 1, ..., 9                      |       |
  * |                                 |     | SS      | 00, 01, ..., 99                   |       |
- * |                                 |     | SSS     | 000, 0001, ..., 999               |       |
+ * |                                 |     | SSS     | 000, 001, ..., 999                |       |
  * |                                 |     | SSSS    | ...                               | 2     |
  * | Milliseconds timestamp          |  20 | T       | 512969520900                      |       |
  * |                                 |     | TT      | ...                               | 2     |
@@ -17495,10 +17489,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * @name isSameDay
  * @category Day Helpers
- * @summary Are the given dates in the same day?
+ * @summary Are the given dates in the same day (and year and month)?
  *
  * @description
- * Are the given dates in the same day?
+ * Are the given dates in the same day (and year and month)?
  *
  * ### v2.0.0 breaking changes:
  *
@@ -17506,13 +17500,23 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @param {Date|Number} dateLeft - the first date to check
  * @param {Date|Number} dateRight - the second date to check
- * @returns {Boolean} the dates are in the same day
+ * @returns {Boolean} the dates are in the same day (and year and month)
  * @throws {TypeError} 2 arguments required
  *
  * @example
  * // Are 4 September 06:00:00 and 4 September 18:00:00 in the same day?
  * var result = isSameDay(new Date(2014, 8, 4, 6, 0), new Date(2014, 8, 4, 18, 0))
  * //=> true
+ * 
+ * @example
+ * // Are 4 September and 4 October in the same day?
+ * var result = isSameDay(new Date(2014, 8, 4), new Date(2014, 9, 4))
+ * //=> false
+ * 
+ * @example
+ * // Are 4 September, 2014 and 4 September, 2015 in the same day?
+ * var result = isSameDay(new Date(2014, 8, 4), new Date(2015, 8, 4))
+ * //=> false
  */
 function isSameDay(dirtyDateLeft, dirtyDateRight) {
   (0, _index2.default)(2, arguments);
@@ -17545,10 +17549,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * @name isSameHour
  * @category Hour Helpers
- * @summary Are the given dates in the same hour?
+ * @summary Are the given dates in the same hour (and same day)?
  *
  * @description
- * Are the given dates in the same hour?
+ * Are the given dates in the same hour (and same day)?
  *
  * ### v2.0.0 breaking changes:
  *
@@ -17556,13 +17560,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @param {Date|Number} dateLeft - the first date to check
  * @param {Date|Number} dateRight - the second date to check
- * @returns {Boolean} the dates are in the same hour
+ * @returns {Boolean} the dates are in the same hour (and same day)
  * @throws {TypeError} 2 arguments required
  *
  * @example
  * // Are 4 September 2014 06:00:00 and 4 September 06:30:00 in the same hour?
  * var result = isSameHour(new Date(2014, 8, 4, 6, 0), new Date(2014, 8, 4, 6, 30))
  * //=> true
+ * 
+ * @example
+ * // Are 4 September 2014 06:00:00 and 5 September 06:00:00 in the same hour?
+ * var result = isSameHour(new Date(2014, 8, 4, 6, 0), new Date(2014, 8, 5, 6, 0))
+ * //=> false
  */
 function isSameHour(dirtyDateLeft, dirtyDateRight) {
   (0, _index2.default)(2, arguments);
@@ -17595,10 +17604,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * @name isSameISOWeek
  * @category ISO Week Helpers
- * @summary Are the given dates in the same ISO week?
+ * @summary Are the given dates in the same ISO week (and year)?
  *
  * @description
- * Are the given dates in the same ISO week?
+ * Are the given dates in the same ISO week (and year)?
  *
  * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
  *
@@ -17608,13 +17617,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @param {Date|Number} dateLeft - the first date to check
  * @param {Date|Number} dateRight - the second date to check
- * @returns {Boolean} the dates are in the same ISO week
+ * @returns {Boolean} the dates are in the same ISO week (and year)
  * @throws {TypeError} 2 arguments required
  *
  * @example
  * // Are 1 September 2014 and 7 September 2014 in the same ISO week?
  * var result = isSameISOWeek(new Date(2014, 8, 1), new Date(2014, 8, 7))
  * //=> true
+ *
+ * @example
+ * // Are 1 September 2014 and 1 September 2015 in the same ISO week?
+ * var result = isSameISOWeek(new Date(2014, 8, 1), new Date(2015, 8, 1))
+ * //=> false
  */
 function isSameISOWeek(dirtyDateLeft, dirtyDateRight) {
   (0, _index2.default)(2, arguments);
@@ -17704,10 +17718,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * @name isSameMinute
  * @category Minute Helpers
- * @summary Are the given dates in the same minute?
+ * @summary Are the given dates in the same minute (and hour and day)?
  *
  * @description
- * Are the given dates in the same minute?
+ * Are the given dates in the same minute (and hour and day)?
  *
  * ### v2.0.0 breaking changes:
  *
@@ -17715,17 +17729,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @param {Date|Number} dateLeft - the first date to check
  * @param {Date|Number} dateRight - the second date to check
- * @returns {Boolean} the dates are in the same minute
+ * @returns {Boolean} the dates are in the same minute (and hour and day)
  * @throws {TypeError} 2 arguments required
  *
  * @example
- * // Are 4 September 2014 06:30:00 and 4 September 2014 06:30:15
- * // in the same minute?
+ * // Are 4 September 2014 06:30:00 and 4 September 2014 06:30:15 in the same minute?
  * var result = isSameMinute(
  *   new Date(2014, 8, 4, 6, 30),
  *   new Date(2014, 8, 4, 6, 30, 15)
  * )
  * //=> true
+ * 
+ * @example
+ * // Are 4 September 2014 06:30:00 and 5 September 2014 06:30:00 in the same minute?
+ * var result = isSameMinute(
+ *   new Date(2014, 8, 4, 6, 30),
+ *   new Date(2014, 8, 5, 6, 30)
+ * )
+ * //=> false
  */
 function isSameMinute(dirtyDateLeft, dirtyDateRight) {
   (0, _index2.default)(2, arguments);
@@ -17758,10 +17779,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * @name isSameMonth
  * @category Month Helpers
- * @summary Are the given dates in the same month?
+ * @summary Are the given dates in the same month (and year)?
  *
  * @description
- * Are the given dates in the same month?
+ * Are the given dates in the same month (and year)?
  *
  * ### v2.0.0 breaking changes:
  *
@@ -17769,13 +17790,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @param {Date|Number} dateLeft - the first date to check
  * @param {Date|Number} dateRight - the second date to check
- * @returns {Boolean} the dates are in the same month
+ * @returns {Boolean} the dates are in the same month (and year)
  * @throws {TypeError} 2 arguments required
  *
  * @example
  * // Are 2 September 2014 and 25 September 2014 in the same month?
  * var result = isSameMonth(new Date(2014, 8, 2), new Date(2014, 8, 25))
  * //=> true
+ *
+ * @example
+ * // Are 2 September 2014 and 25 September 2015 in the same month?
+ * var result = isSameMonth(new Date(2014, 8, 2), new Date(2015, 8, 25))
+ * //=> false
  */
 function isSameMonth(dirtyDateLeft, dirtyDateRight) {
   (0, _index2.default)(2, arguments);
@@ -17808,10 +17834,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * @name isSameQuarter
  * @category Quarter Helpers
- * @summary Are the given dates in the same year quarter?
+ * @summary Are the given dates in the same quarter (and year)?
  *
  * @description
- * Are the given dates in the same year quarter?
+ * Are the given dates in the same quarter (and year)?
  *
  * ### v2.0.0 breaking changes:
  *
@@ -17819,13 +17845,18 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @param {Date|Number} dateLeft - the first date to check
  * @param {Date|Number} dateRight - the second date to check
- * @returns {Boolean} the dates are in the same quarter
+ * @returns {Boolean} the dates are in the same quarter (and year)
  * @throws {TypeError} 2 arguments required
  *
  * @example
  * // Are 1 January 2014 and 8 March 2014 in the same quarter?
  * var result = isSameQuarter(new Date(2014, 0, 1), new Date(2014, 2, 8))
  * //=> true
+ * 
+ * @example
+ * // Are 1 January 2014 and 1 January 2015 in the same quarter?
+ * var result = isSameQuarter(new Date(2014, 0, 1), new Date(2015, 0, 1))
+ * //=> false
  */
 function isSameQuarter(dirtyDateLeft, dirtyDateRight) {
   (0, _index2.default)(2, arguments);
@@ -17858,10 +17889,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * @name isSameSecond
  * @category Second Helpers
- * @summary Are the given dates in the same second?
+ * @summary Are the given dates in the same second (and hour and day)?
  *
  * @description
- * Are the given dates in the same second?
+ * Are the given dates in the same second (and hour and day)?
  *
  * ### v2.0.0 breaking changes:
  *
@@ -17869,17 +17900,32 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @param {Date|Number} dateLeft - the first date to check
  * @param {Date|Number} dateRight - the second date to check
- * @returns {Boolean} the dates are in the same second
+ * @returns {Boolean} the dates are in the same second (and hour and day)
  * @throws {TypeError} 2 arguments required
  *
  * @example
- * // Are 4 September 2014 06:30:15.000 and 4 September 2014 06:30.15.500
- * // in the same second?
+ * // Are 4 September 2014 06:30:15.000 and 4 September 2014 06:30.15.500 in the same second?
  * var result = isSameSecond(
  *   new Date(2014, 8, 4, 6, 30, 15),
  *   new Date(2014, 8, 4, 6, 30, 15, 500)
  * )
  * //=> true
+ * 
+ * @example
+ * // Are 4 September 2014 06:00:15.000 and 4 September 2014 06:01.15.000 in the same second?
+ * var result = isSameSecond(
+ *   new Date(2014, 8, 4, 6, 0, 15),
+ *   new Date(2014, 8, 4, 6, 1, 15)
+ * )
+ * //=> false
+ * 
+ * @example
+ * // Are 4 September 2014 06:00:15.000 and 5 September 2014 06:00.15.000 in the same second?
+ * var result = isSameSecond(
+ *   new Date(2014, 8, 4, 6, 0, 15),
+ *   new Date(2014, 8, 5, 6, 0, 15)
+ * )
+ * //=> false
  */
 function isSameSecond(dirtyDateLeft, dirtyDateRight) {
   (0, _index2.default)(2, arguments);
@@ -17912,10 +17958,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /**
  * @name isSameWeek
  * @category Week Helpers
- * @summary Are the given dates in the same week?
+ * @summary Are the given dates in the same week (and month and year)?
  *
  * @description
- * Are the given dates in the same week?
+ * Are the given dates in the same week (and month and year)?
  *
  * ### v2.0.0 breaking changes:
  *
@@ -17926,7 +17972,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * @param {Object} [options] - an object with options.
  * @param {Locale} [options.locale=defaultLocale] - the locale object. See [Locale]{@link https://date-fns.org/docs/Locale}
  * @param {0|1|2|3|4|5|6} [options.weekStartsOn=0] - the index of the first day of the week (0 - Sunday)
- * @returns {Boolean} the dates are in the same week
+ * @returns {Boolean} the dates are in the same week (and month and year)
  * @throws {TypeError} 2 arguments required
  * @throws {RangeError} `options.weekStartsOn` must be between 0 and 6
  *
@@ -17941,6 +17987,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * var result = isSameWeek(new Date(2014, 7, 31), new Date(2014, 8, 4), {
  *   weekStartsOn: 1
  * })
+ * //=> false
+ * 
+ * @example
+ * // Are 1 January 2014 and 1 January 2015 in the same week?
+ * var result = isSameWeek(new Date(2014, 0, 1), new Date(2015, 0, 1))
  * //=> false
  */
 function isSameWeek(dirtyDateLeft, dirtyDateRight, dirtyOptions) {
@@ -19548,7 +19599,7 @@ var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
  * |                                 | ss      | 00, 01, ..., 59                   |
  * | Fraction of second              | S       | 0, 1, ..., 9                      |
  * |                                 | SS      | 00, 01, ..., 99                   |
- * |                                 | SSS     | 000, 0001, ..., 999               |
+ * |                                 | SSS     | 000, 001, ..., 999                |
  * |                                 | SSSS    | ...                               |
  *
  * @param {Date|Number} date - the original date
@@ -19673,7 +19724,7 @@ function buildLocalizeFn(args) {
       valuesArray = args.values[_width] || args.values[_defaultWidth];
     }
 
-    var index = args.argumentCallback ? args.argumentCallback(dirtyIndex) : dirtyIndex; // @ts-ignore: For some reason TypeScript just don't want to match it, no matter how hard we try. I challange you to try to remove it!
+    var index = args.argumentCallback ? args.argumentCallback(dirtyIndex) : dirtyIndex; // @ts-ignore: For some reason TypeScript just don't want to match it, no matter how hard we try. I challenge you to try to remove it!
 
     return valuesArray[index];
   };
@@ -20992,11 +21043,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = nextFriday;
 
-var _index = _interopRequireDefault(__nccwpck_require__(2063));
+var _index = _interopRequireDefault(__nccwpck_require__(6771));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
-
-var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21018,8 +21067,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * //=> Fri Mar 27 2020 00:00:00
  */
 function nextFriday(date) {
-  (0, _index.default)(1, arguments);
-  return (0, _index2.default)((0, _index3.default)(date), 5);
+  (0, _index2.default)(1, arguments);
+  return (0, _index.default)(date, 5);
 }
 
 module.exports = exports.default;
@@ -21037,11 +21086,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = nextMonday;
 
-var _index = _interopRequireDefault(__nccwpck_require__(2063));
+var _index = _interopRequireDefault(__nccwpck_require__(6771));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
-
-var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21063,8 +21110,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * //=> Mon Mar 23 2020 00:00:00
  */
 function nextMonday(date) {
-  (0, _index.default)(1, arguments);
-  return (0, _index2.default)((0, _index3.default)(date), 1);
+  (0, _index2.default)(1, arguments);
+  return (0, _index.default)(date, 1);
 }
 
 module.exports = exports.default;
@@ -21082,11 +21129,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = nextSaturday;
 
-var _index = _interopRequireDefault(__nccwpck_require__(2063));
+var _index = _interopRequireDefault(__nccwpck_require__(6771));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
-
-var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21108,8 +21153,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * //=> Sat Mar 28 2020 00:00:00
  */
 function nextSaturday(date) {
-  (0, _index.default)(1, arguments);
-  return (0, _index2.default)((0, _index3.default)(date), 6);
+  (0, _index2.default)(1, arguments);
+  return (0, _index.default)(date, 6);
 }
 
 module.exports = exports.default;
@@ -21127,11 +21172,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = nextSunday;
 
-var _index = _interopRequireDefault(__nccwpck_require__(2063));
+var _index = _interopRequireDefault(__nccwpck_require__(6771));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
-
-var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21153,8 +21196,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * //=> Sun Mar 29 2020 00:00:00
  */
 function nextSunday(date) {
-  (0, _index.default)(1, arguments);
-  return (0, _index2.default)((0, _index3.default)(date), 0);
+  (0, _index2.default)(1, arguments);
+  return (0, _index.default)(date, 0);
 }
 
 module.exports = exports.default;
@@ -21172,11 +21215,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = nextThursday;
 
-var _index = _interopRequireDefault(__nccwpck_require__(2063));
+var _index = _interopRequireDefault(__nccwpck_require__(6771));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
-
-var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21198,8 +21239,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * //=> Thur Mar 26 2020 00:00:00
  */
 function nextThursday(date) {
-  (0, _index.default)(1, arguments);
-  return (0, _index2.default)((0, _index3.default)(date), 4);
+  (0, _index2.default)(1, arguments);
+  return (0, _index.default)(date, 4);
 }
 
 module.exports = exports.default;
@@ -21217,11 +21258,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = nextTuesday;
 
-var _index = _interopRequireDefault(__nccwpck_require__(2063));
+var _index = _interopRequireDefault(__nccwpck_require__(6771));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
-
-var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21243,8 +21282,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * //=> Tue Mar 24 2020 00:00:00
  */
 function nextTuesday(date) {
-  (0, _index.default)(1, arguments);
-  return (0, _index2.default)((0, _index3.default)(date), 2);
+  (0, _index2.default)(1, arguments);
+  return (0, _index.default)(date, 2);
 }
 
 module.exports = exports.default;
@@ -21262,11 +21301,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = nextWednesday;
 
-var _index = _interopRequireDefault(__nccwpck_require__(2063));
+var _index = _interopRequireDefault(__nccwpck_require__(6771));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(6771));
-
-var _index3 = _interopRequireDefault(__nccwpck_require__(6477));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21288,8 +21325,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * //=> Wed Mar 25 2020 00:00:00
  */
 function nextWednesday(date) {
-  (0, _index.default)(1, arguments);
-  return (0, _index2.default)((0, _index3.default)(date), 3);
+  (0, _index2.default)(1, arguments);
+  return (0, _index.default)(date, 3);
 }
 
 module.exports = exports.default;
@@ -22454,7 +22491,7 @@ var parsers = {
       date.setUTCHours(dayPeriodEnumToHours(value), 0, 0, 0);
       return date;
     },
-    incompatibleTokens: ['b', 'B', 'H', 'K', 'k', 't', 'T']
+    incompatibleTokens: ['b', 'B', 'H', 'k', 't', 'T']
   },
   // AM, PM, midnight
   b: {
@@ -22496,7 +22533,7 @@ var parsers = {
       date.setUTCHours(dayPeriodEnumToHours(value), 0, 0, 0);
       return date;
     },
-    incompatibleTokens: ['a', 'B', 'H', 'K', 'k', 't', 'T']
+    incompatibleTokens: ['a', 'B', 'H', 'k', 't', 'T']
   },
   // in the morning, in the afternoon, in the evening, at night
   B: {
@@ -22632,7 +22669,7 @@ var parsers = {
 
       return date;
     },
-    incompatibleTokens: ['a', 'b', 'h', 'H', 'k', 't', 'T']
+    incompatibleTokens: ['h', 'H', 'k', 't', 'T']
   },
   // Hour [1-24]
   k: {
@@ -23027,7 +23064,7 @@ var unescapedLatinCharacterRegExp = /[a-zA-Z]/;
  * |                                 |     | tt      | ...                               | 2     |
  * | Fraction of second              |  30 | S       | 0, 1, ..., 9                      |       |
  * |                                 |     | SS      | 00, 01, ..., 99                   |       |
- * |                                 |     | SSS     | 000, 0001, ..., 999               |       |
+ * |                                 |     | SSS     | 000, 001, ..., 999                |       |
  * |                                 |     | SSSS    | ...                               | 2     |
  * | Milliseconds timestamp          |  20 | T       | 512969520900                      |       |
  * |                                 |     | TT      | ...                               | 2     |
@@ -23414,23 +23451,14 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = parseISO;
 
-var _index = _interopRequireDefault(__nccwpck_require__(1985));
+var _index = __nccwpck_require__(5756);
 
 var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
+var _index3 = _interopRequireDefault(__nccwpck_require__(1985));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var MILLISECONDS_IN_HOUR = 3600000;
-var MILLISECONDS_IN_MINUTE = 60000;
-var DEFAULT_ADDITIONAL_DIGITS = 2;
-var patterns = {
-  dateTimeDelimiter: /[T ]/,
-  timeZoneDelimiter: /[Z ]/i,
-  timezone: /([Z+-].*)$/
-};
-var dateRegex = /^-?(?:(\d{3})|(\d{2})(?:-?(\d{2}))?|W(\d{2})(?:-?(\d{1}))?|)$/;
-var timeRegex = /^(\d{2}(?:[.,]\d*)?)(?::?(\d{2}(?:[.,]\d*)?))?(?::?(\d{2}(?:[.,]\d*)?))?$/;
-var timezoneRegex = /^([+-])(\d{2})(?::?(\d{2}))?$/;
 /**
  * @name parseISO
  * @category Common Helpers
@@ -23479,20 +23507,19 @@ var timezoneRegex = /^([+-])(\d{2})(?::?(\d{2}))?$/;
  *
  * @example
  * // Convert string '2014-02-11T11:30:30' to date:
- * var result = parseISO('2014-02-11T11:30:30')
+ * const result = parseISO('2014-02-11T11:30:30')
  * //=> Tue Feb 11 2014 11:30:30
  *
  * @example
  * // Convert string '+02014101' to date,
  * // if the additional number of digits in the extended year format is 1:
- * var result = parseISO('+02014101', { additionalDigits: 1 })
+ * const result = parseISO('+02014101', { additionalDigits: 1 })
  * //=> Fri Apr 11 2014 00:00:00
  */
-
 function parseISO(argument, dirtyOptions) {
   (0, _index2.default)(1, arguments);
   var options = dirtyOptions || {};
-  var additionalDigits = options.additionalDigits == null ? DEFAULT_ADDITIONAL_DIGITS : (0, _index.default)(options.additionalDigits);
+  var additionalDigits = options.additionalDigits == null ? 2 : (0, _index3.default)(options.additionalDigits);
 
   if (additionalDigits !== 2 && additionalDigits !== 1 && additionalDigits !== 0) {
     throw new RangeError('additionalDigits must be 0, 1 or 2');
@@ -23510,7 +23537,7 @@ function parseISO(argument, dirtyOptions) {
     date = parseDate(parseYearResult.restDateString, parseYearResult.year);
   }
 
-  if (isNaN(date) || !date) {
+  if (!date || isNaN(date.getTime())) {
     return new Date(NaN);
   }
 
@@ -23521,7 +23548,7 @@ function parseISO(argument, dirtyOptions) {
   if (dateStrings.time) {
     time = parseTime(dateStrings.time);
 
-    if (isNaN(time) || time === null) {
+    if (isNaN(time)) {
       return new Date(NaN);
     }
   }
@@ -23548,6 +23575,15 @@ function parseISO(argument, dirtyOptions) {
   return new Date(timestamp + time + offset);
 }
 
+var patterns = {
+  dateTimeDelimiter: /[T ]/,
+  timeZoneDelimiter: /[Z ]/i,
+  timezone: /([Z+-].*)$/
+};
+var dateRegex = /^-?(?:(\d{3})|(\d{2})(?:-?(\d{2}))?|W(\d{2})(?:-?(\d{1}))?|)$/;
+var timeRegex = /^(\d{2}(?:[.,]\d*)?)(?::?(\d{2}(?:[.,]\d*)?))?(?::?(\d{2}(?:[.,]\d*)?))?$/;
+var timezoneRegex = /^([+-])(\d{2})(?::?(\d{2}))?$/;
+
 function splitDateString(dateString) {
   var dateStrings = {};
   var array = dateString.split(patterns.dateTimeDelimiter);
@@ -23559,7 +23595,6 @@ function splitDateString(dateString) {
   }
 
   if (/:/.test(array[0])) {
-    dateStrings.date = null;
     timeString = array[0];
   } else {
     dateStrings.date = array[0];
@@ -23590,22 +23625,24 @@ function parseYear(dateString, additionalDigits) {
   var captures = dateString.match(regex); // Invalid ISO-formatted year
 
   if (!captures) return {
-    year: null
+    year: NaN,
+    restDateString: ''
   };
-  var year = captures[1] && parseInt(captures[1]);
-  var century = captures[2] && parseInt(captures[2]);
+  var year = captures[1] ? parseInt(captures[1]) : null;
+  var century = captures[2] ? parseInt(captures[2]) : null; // either year or century is null, not both
+
   return {
-    year: century == null ? year : century * 100,
+    year: century === null ? year : century * 100,
     restDateString: dateString.slice((captures[1] || captures[2]).length)
   };
 }
 
 function parseDate(dateString, year) {
   // Invalid ISO-formatted year
-  if (year === null) return null;
+  if (year === null) return new Date(NaN);
   var captures = dateString.match(dateRegex); // Invalid ISO-formatted string
 
-  if (!captures) return null;
+  if (!captures) return new Date(NaN);
   var isWeekDate = !!captures[4];
   var dayOfYear = parseDateUnit(captures[1]);
   var month = parseDateUnit(captures[2]) - 1;
@@ -23637,7 +23674,7 @@ function parseDateUnit(value) {
 
 function parseTime(timeString) {
   var captures = timeString.match(timeRegex);
-  if (!captures) return null; // Invalid ISO-formatted time
+  if (!captures) return NaN; // Invalid ISO-formatted time
 
   var hours = parseTimeUnit(captures[1]);
   var minutes = parseTimeUnit(captures[2]);
@@ -23647,7 +23684,7 @@ function parseTime(timeString) {
     return NaN;
   }
 
-  return hours * MILLISECONDS_IN_HOUR + minutes * MILLISECONDS_IN_MINUTE + seconds * 1000;
+  return hours * _index.millisecondsInHour + minutes * _index.millisecondsInMinute + seconds * 1000;
 }
 
 function parseTimeUnit(value) {
@@ -23666,7 +23703,7 @@ function parseTimezone(timezoneString) {
     return NaN;
   }
 
-  return sign * (hours * MILLISECONDS_IN_HOUR + minutes * MILLISECONDS_IN_MINUTE);
+  return sign * (hours * _index.millisecondsInHour + minutes * _index.millisecondsInMinute);
 }
 
 function dayOfISOWeekYear(isoWeekYear, week, day) {
@@ -23683,7 +23720,7 @@ function dayOfISOWeekYear(isoWeekYear, week, day) {
 var daysInMonths = [31, null, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 function isLeapYearIndex(year) {
-  return year % 400 === 0 || year % 4 === 0 && year % 100;
+  return year % 400 === 0 || year % 4 === 0 && year % 100 !== 0;
 }
 
 function validateDate(year, month, date) {
@@ -26404,11 +26441,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.default = subBusinessDays;
 
-var _index = _interopRequireDefault(__nccwpck_require__(1985));
+var _index = _interopRequireDefault(__nccwpck_require__(1727));
 
-var _index2 = _interopRequireDefault(__nccwpck_require__(1727));
+var _index2 = _interopRequireDefault(__nccwpck_require__(2063));
 
-var _index3 = _interopRequireDefault(__nccwpck_require__(2063));
+var _index3 = _interopRequireDefault(__nccwpck_require__(1985));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26427,13 +26464,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  * @example
  * // Substract 10 business days from 1 September 2014:
- * var result = subBusinessDays(new Date(2014, 8, 1), 10)
+ * const result = subBusinessDays(new Date(2014, 8, 1), 10)
  * //=> Mon Aug 18 2014 00:00:00 (skipped weekend days)
  */
 function subBusinessDays(dirtyDate, dirtyAmount) {
-  (0, _index3.default)(2, arguments);
-  var amount = (0, _index.default)(dirtyAmount);
-  return (0, _index2.default)(dirtyDate, -amount);
+  (0, _index2.default)(2, arguments);
+  var amount = (0, _index3.default)(dirtyAmount);
+  return (0, _index.default)(dirtyDate, -amount);
 }
 
 module.exports = exports.default;
