@@ -1,6 +1,6 @@
 name: Update npm Dependencies after Dependabot package upgrade
 on:
-  pull_request_target:
+  pull_request:
     branches:
       - dependabot/npm_and_yarn/**
 
