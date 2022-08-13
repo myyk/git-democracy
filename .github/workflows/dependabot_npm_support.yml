@@ -7,6 +7,9 @@ on:
     branches:
       - dependabot/npm_and_yarn/**
 
+permissions:
+  contents: write
+
 jobs:
   run:
     name: Run npm install
@@ -28,7 +31,7 @@ jobs:
           commit_message="Bump ${branch//dependabot\/npm_and_yarn\// } npm packages%0A%0A[dependabot skip]"
           echo ::set-output name=commit_message::$commit_message
 
-      - uses: stefanzweifel/git-auto-commit-action@v4.1.1
+      - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           branch: ${{ github.head_ref }}
           commit_message: ${{ steps.generate_commit_message.outputs.commit_message }}
