@@ -7,6 +7,13 @@ on: # rebuild any PRs and main branch changes
     branches:
       - main
       - 'releases/*'
+  workflow_run: #since this workflow won't trigger otherwise
+    types:
+      - completed
+    workflows:
+      - 'Update npm Dependencies after Dependabot package upgrade'
+    branches:
+      - dependabot/npm_and_yarn/**
 
 jobs:
   build: # make sure build/ci work properly
