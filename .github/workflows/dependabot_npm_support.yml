@@ -42,7 +42,7 @@ jobs:
           # add `[dependabot skip]` prefix so Dependabot force pushes any rebases over our changes triggering the action again
           commit_message="Bump ${branch//dependabot\/npm_and_yarn\// } npm packages%0A%0A[dependabot skip]"
           echo ::set-output name=commit_message::$commit_message
-
+      
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           branch: ${{ github.head_ref }}
