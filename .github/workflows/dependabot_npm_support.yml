@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  run:
+  update:
     name: Run npm install
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -48,4 +48,19 @@ jobs:
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           branch: ${{ github.head_ref }}
           commit_message: ${{ steps.generate_commit_message.outputs.commit_message }}
+  test:
+    runs-on: ubuntu-latest
+    needs: update
+    steps:
+      - uses: ./.github/workflows/reusable_ci.yml
+  commit:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: ./.github/workflows/reusable_ci.yml
+      - name: Merge me!
+        uses: ridedott/merge-me-action@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          PRESET: DEPENDABOT_MINOR
 
