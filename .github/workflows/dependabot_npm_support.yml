@@ -34,7 +34,7 @@ jobs:
       - run: |
           yarn install
       - run: |
-          INPUT_TOKEN=${{ github.token }} yarn run all
+          INPUT_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} yarn run all
 
       - name: Generate Commit Message
         id: generate_commit_message
@@ -49,25 +49,4 @@ jobs:
         with:
           branch: ${{ github.head_ref }}
           commit_message: ${{ steps.generate_commit_message.outputs.commit_message }}
-
-  test:
-    runs-on: ubuntu-latest
-    needs: update
-    steps: 
-      - uses: actions/checkout@v3
-      - uses: ./
-        with:
-          repository: myyk/git-democracy
-          payloadAction: opened # this is overriden so that this can work when triggered by other PRs for their CIs
-          issueNumber: 71 # this is a permenant PR left for testing
-
-  commit:
-    runs-on: ubuntu-latest
-    needs: test
-    steps:
-      - name: Merge me!
-        uses: ridedott/merge-me-action@v2
-        with:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          PRESET: DEPENDABOT_MINOR
 
