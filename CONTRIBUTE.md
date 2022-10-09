@@ -1,3 +1,10 @@
+# How to setup local development
+## If using nix
+1. Install [nix](https://nixos.org/download.html)
+2. `nix-env -i direnv`
+3. [hook to your shell](https://direnv.net/docs/hook.html) 
+4. `direnv allow .`
+
 # How to publish an update
 
 1. Create new branch.
