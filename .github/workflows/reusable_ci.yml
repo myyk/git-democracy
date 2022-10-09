@@ -1,9 +1,17 @@
 on:
   workflow_call:
+    inputs:
+      working-dir:
+        required: true
+        type: string
 
 jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-dir }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
