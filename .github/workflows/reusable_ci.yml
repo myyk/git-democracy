@@ -4,7 +4,6 @@ on:
 jobs:
   build: # make sure build/ci work properly
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -22,7 +21,10 @@ jobs:
       - run: |
           yarn install
       - run: |
-          INPUT_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} yarn run all
+          yarn run all
+        env:
+          INPUT_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps: 

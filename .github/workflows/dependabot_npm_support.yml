@@ -34,7 +34,9 @@ jobs:
       - run: |
           yarn install
       - run: |
-          INPUT_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} yarn run all
+          yarn run all
+        env:
+          INPUT_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       - name: Generate Commit Message
         id: generate_commit_message
