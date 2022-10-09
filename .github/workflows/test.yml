@@ -3,10 +3,12 @@ on: # rebuild any PRs and main branch changes
   pull_request:
     branches:
       - '**'
+      - '!dependabot/npm_and_yarn/**'
   push:
     branches:
       - main
       - 'releases/*'
+      - '!dependabot/npm_and_yarn/**'
 
 jobs:
   run-ci: # make sure build/ci work properly
