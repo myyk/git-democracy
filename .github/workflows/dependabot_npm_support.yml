@@ -23,7 +23,7 @@ jobs:
 
       - name: Get yarn cache
         id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v3
         with:
@@ -43,8 +43,8 @@ jobs:
           branch=${GITHUB_REF#refs/heads/}
           # add `[dependabot skip]` prefix so Dependabot force pushes any rebases over our changes triggering the action again
           commit_message="Bump ${branch//dependabot\/npm_and_yarn\// } npm packages%0A%0A[dependabot skip]"
-          echo ::set-output name=commit_message::$commit_message
-      
+          run: echo "commit_message=$commit_message" >> $GITHUB_OUTPUT
+  
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           branch: ${{ github.head_ref }}
