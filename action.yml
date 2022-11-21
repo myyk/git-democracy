@@ -17,7 +17,7 @@ inputs:
     description: "URL of github server. You shouldn't need to set this manually."
     default: ${{ github.server_url }}
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
 branding:
   icon: 'thumbs-up'
