@@ -2,12 +2,11 @@ name: 'ci'
 on: # rebuild any PRs and main branch changes
   pull_request:
     branches-ignore:
-      - 'dependabot/npm_and_yarn/**'
+      - 'dependabot/**'
   push:
     branches:
       - main
       - 'releases/*'
-      - '!dependabot/npm_and_yarn/**'
 
 jobs:
   run-ci: # make sure build/ci work properly
