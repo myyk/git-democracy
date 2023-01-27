@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }} # Replace github.token with PAT (personal access token) if you need to trigger a new workflow. https://git.io/JcHD9
+          token: ${{ github.token }} # Replace github.token with PAT (personal access token) if you need to trigger a new workflow. https://git.io/JcHD9
       - name: Use Node.js v16.x
         uses: actions/setup-node@v3
         with:
