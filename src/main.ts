@@ -279,4 +279,9 @@ export async function run(): Promise<void> {
   }
 }
 
-run()
+try {
+  run()
+} catch (error: any) {
+  core.error(error.stack)
+  core.setFailed(`error while running action: ${error}`)
+}

@@ -397,7 +397,13 @@ function run() {
     });
 }
 exports.run = run;
-run();
+try {
+    run();
+}
+catch (error) {
+    core.error(error.stack);
+    core.setFailed(`error while running action: ${error}`);
+}
 
 
 /***/ }),
