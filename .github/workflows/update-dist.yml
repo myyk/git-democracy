@@ -26,7 +26,7 @@ jobs:
         run: yarn install --immutable
       - name: Update the dist directory
         run: |
-          yarn run all
+          INPUT_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} yarn run all
           if [[ $(git status -s -- dist | wc -l) -gt 0 ]]; then
             git add dist
             git config --local user.email "action@github.com"
