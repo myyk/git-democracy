@@ -22,7 +22,7 @@ jobs:
       - run: |
           yarn install
       - run: |
-          INPUT_TOKEN=${{ secrets.PERSONAL_ACCESS_TOKEN }} yarn run all
+          yarn run all
   test: # make sure the action works on a clean machine without building
     runs-on: ubuntu-latest
     steps: 
