@@ -231,7 +231,7 @@ export async function run(): Promise<void> {
 
     switch (inputs.payloadAction) {
       case 'opened':
-        startOrUpdate(
+        await startOrUpdate(
           octokit,
           owner,
           repo,
@@ -243,7 +243,7 @@ export async function run(): Promise<void> {
         )
         break
       case 'reopened':
-        restart(
+        await restart(
           octokit,
           owner,
           repo,
@@ -255,7 +255,7 @@ export async function run(): Promise<void> {
         )
         break
       case 'synchronize':
-        restart(
+        await restart(
           octokit,
           owner,
           repo,
@@ -267,7 +267,14 @@ export async function run(): Promise<void> {
         )
         break
       case 'closed':
-        close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed')
+        await close(
+          octokit,
+          owner,
+          repo,
+          issueNumber,
+          badgeText,
+          'Voting is closed'
+        )
         break
     }
 

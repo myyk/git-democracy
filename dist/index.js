@@ -375,16 +375,16 @@ function run() {
             const badgeText = 'Current Voting Result';
             switch (inputs.payloadAction) {
                 case 'opened':
-                    startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
+                    yield startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
                     break;
                 case 'reopened':
-                    restart(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
+                    yield restart(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
                     break;
                 case 'synchronize':
-                    restart(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
+                    yield restart(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
                     break;
                 case 'closed':
-                    close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed');
+                    yield close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed');
                     break;
             }
             // Get the JSON webhook payload for the event that triggered the workflow
