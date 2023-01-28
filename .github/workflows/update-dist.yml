@@ -6,11 +6,16 @@ on:
     types:
       - labeled # for initial execution
       - synchronize # to support `@dependabot recreate` command
+
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   run-ncc:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    if: contains(github.event.pull_request.labels.*.name, 'dependencies')
+    if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -34,3 +39,8 @@ jobs:
             git commit -m "chore: sync the dependency update to the /dist dir"
             git push origin HEAD
           fi
+      - name: Enable auto-merge for Dependabot PRs
+        run: gh pr merge --auto --rebase "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
