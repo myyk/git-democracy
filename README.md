@@ -28,6 +28,22 @@ with the default settings.
 
 ## Usage
 
+### Requirement: Repo Settings
+
+This Github action requires the ability to read/write comments on Pull Requests (Issues api).
+
+#### Enable through Settings UI
+
+Under `Settings` > `Actions` > `General` (ex: `https://github.com/<org>/<repo>/settings/actions`)
+
+![actions general settings](https://user-images.githubusercontent.com/1266923/235630498-3e920bb8-a9bc-4e4e-bf7d-a4f6d97985f2.png "Settings to change")
+
+#### Enable through Finegrain settings
+
+Follow documentation here: https://docs.github.com/actions/reference/authentication-in-a-workflow#modifying-the-permissions-for-the-github_token
+
+(Please contribute if you've done this)
+
 ### Workflow Integration
 
 Create a new workflow in `.github/workflows/` as a new `.yaml` file.
