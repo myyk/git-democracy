@@ -32,4 +32,5 @@ jobs:
         with:
           repository: myyk/git-democracy
           payloadAction: opened # this is overriden so that this can work when triggered by other PRs for their CIs
+          configPath: .github/workflows
           issueNumber: 71 # this is a permenant PR left for testing

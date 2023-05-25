@@ -82,7 +82,10 @@ new workflow is selectable in the UI.
 
 The configurations should be in the workflow definition's folder to get protections from being run with different configurations from a pull requester (with using `pull_request_target` trigger).
 
-The default location is to be in the same directory as the action's definition. This only works with composite actions.
+The default location is to be in the same directory as the action's definition for composite actions. For everything else, the location must be specified manually using the `configPath` parameter.
+
+    with:
+      configPath: .github/workflows
 
 #### Voting
 
