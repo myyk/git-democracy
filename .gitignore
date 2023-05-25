@@ -1,6 +1,6 @@
-# Yarn not using Zero-Installs
-.pnp.*
-.yarn/
+# Yarn using Zero-Installs
+.yarn/*
+!.yarn/cache
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
