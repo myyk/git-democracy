@@ -1,6 +1,9 @@
 {
-    "recommendations": [
-        "cschleiden.vscode-github-actions",
-        "ms-vscode-remote.remote-containers"
-    ]
+  "recommendations": [
+    "cschleiden.vscode-github-actions",
+    "ms-vscode-remote.remote-containers",
+    "arcanis.vscode-zipfs",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
+  ]
 }
