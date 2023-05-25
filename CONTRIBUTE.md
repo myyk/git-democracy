@@ -1,9 +1,19 @@
 # How to setup local development
-## If using nix
+## If using dev containers
+1. Setup all prereqs for [DevContainers](https://code.visualstudio.com/docs/devcontainers/containers#_getting-started)
+1. Assuming you're using VSCode with `ms-vscode-remote.remote-containers` plugin.
+1. Allow it to open the workplace in the container.
+
+## If using gitpod (not recommeneded)
+1. Open repo in gitpod.
+1. ...
+1. Profit.
+
+## If using nix (not recommeneded)
 1. Install [nix](https://nixos.org/download.html)
-2. `nix-env -i direnv`
-3. [hook to your shell](https://direnv.net/docs/hook.html) 
-4. `direnv allow .`
+1. `nix-env -i direnv`
+1. [hook to your shell](https://direnv.net/docs/hook.html) 
+1. `direnv allow .`
 
 # How to publish an update
 
