@@ -207,6 +207,7 @@ export async function run(): Promise<void> {
       payloadAction: core.getInput('payloadAction')
         ? core.getInput('payloadAction')
         : github.context.payload.action,
+      configPath: core.getInput('configPath'),
       issueNumber: core.getInput('issueNumber'),
       serverURL: core.getInput('serverURL')
     }
@@ -224,8 +225,10 @@ export async function run(): Promise<void> {
       : github.context.issue.number
     core.info(`issueNumber: ${issueNumber}`)
 
-    const votingConfigPromise = readVotingConfig(`./.voting.yml`)
-    const votersPromise = readVoters(`./.voters.yml`)
+    const votingConfigPromise = readVotingConfig(
+      `${inputs.configPath}/.voting.yml`
+    )
+    const votersPromise = readVoters(`${inputs.configPath}/.voters.yml`)
 
     const badgeText = 'Current Voting Result'
 

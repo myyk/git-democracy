@@ -80,6 +80,10 @@ new workflow is selectable in the UI.
 
 ### Configuration
 
+The configurations should be in the workflow definition's folder to get protections from being run with different configurations from a pull requester (with using `pull_request_target` trigger).
+
+The default location is to be in the same directory as the action's definition. This only works with composite actions.
+
 #### Voting
 
 The action expects a `.voting.yml` defining the rules of voting.

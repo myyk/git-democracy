@@ -35420,6 +35420,7 @@ function run() {
                 payloadAction: core.getInput('payloadAction')
                     ? core.getInput('payloadAction')
                     : github.context.payload.action,
+                configPath: core.getInput('configPath'),
                 issueNumber: core.getInput('issueNumber'),
                 serverURL: core.getInput('serverURL')
             };
@@ -35433,8 +35434,8 @@ function run() {
                 ? Number(inputs.issueNumber)
                 : github.context.issue.number;
             core.info(`issueNumber: ${issueNumber}`);
-            const votingConfigPromise = (0, config_1.readVotingConfig)(`./.voting.yml`);
-            const votersPromise = (0, voters_1.readVoters)(`./.voters.yml`);
+            const votingConfigPromise = (0, config_1.readVotingConfig)(`${inputs.configPath}/.voting.yml`);
+            const votersPromise = (0, voters_1.readVoters)(`${inputs.configPath}/.voters.yml`);
             const badgeText = 'Current Voting Result';
             switch (inputs.payloadAction) {
                 case 'opened':
