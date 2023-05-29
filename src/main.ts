@@ -14,7 +14,7 @@ import {
   commentToCreatedAt,
   commentToId,
   createVotingCommentBody,
-  findOrCreateVotingComment,
+  findOrRecreateVotingComment,
   findVotingComment,
   updateVotingComment
 } from './comments'
@@ -50,7 +50,7 @@ async function startOrUpdateHelper(
     votingConfigPromise
   )
 
-  const comment = findOrCreateVotingComment(
+  const comment = findOrRecreateVotingComment(
     octokit,
     owner,
     repo,
@@ -161,44 +161,6 @@ async function close(
   )
 }
 
-async function restart(
-  octokit: Octokit,
-  owner: string,
-  repo: string,
-  serverURL: string,
-  issueNumber: number,
-  badgeText: string,
-  votersPromise: Promise<Voters>,
-  votingConfigPromise: Promise<Config>
-): Promise<void> {
-  // update the prior vote before closing it and starting a new one.
-  await startOrUpdateHelper(
-    octokit,
-    owner,
-    repo,
-    serverURL,
-    issueNumber,
-    badgeText,
-    votersPromise,
-    votingConfigPromise
-  )
-
-  // close the prior vote
-  await close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed')
-
-  // create a new vote the same way as in for 'opened' events
-  await startOrUpdate(
-    octokit,
-    owner,
-    repo,
-    serverURL,
-    issueNumber,
-    badgeText,
-    votersPromise,
-    votingConfigPromise
-  )
-}
-
 export async function run(): Promise<void> {
   try {
     const inputs = {
@@ -234,31 +196,9 @@ export async function run(): Promise<void> {
 
     switch (inputs.payloadAction) {
       case 'opened':
-        await startOrUpdate(
-          octokit,
-          owner,
-          repo,
-          inputs.serverURL,
-          issueNumber,
-          badgeText,
-          votersPromise,
-          votingConfigPromise
-        )
-        break
       case 'reopened':
-        await restart(
-          octokit,
-          owner,
-          repo,
-          inputs.serverURL,
-          issueNumber,
-          badgeText,
-          votersPromise,
-          votingConfigPromise
-        )
-        break
       case 'synchronize':
-        await restart(
+        await startOrUpdate(
           octokit,
           owner,
           repo,

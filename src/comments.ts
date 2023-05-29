@@ -60,7 +60,7 @@ export async function findVotingComment(
   return new Comment(comment)
 }
 
-export async function findOrCreateVotingComment(
+export async function findOrRecreateVotingComment(
   octokit: Octokit,
   owner: string,
   repo: string,
@@ -75,17 +75,22 @@ export async function findOrCreateVotingComment(
     issueNumber,
     bodyIncludes
   )
-  if (!comment) {
-    return createVotingComment(
-      octokit,
+
+  if (comment?.id) {
+    await octokit.rest.issues.deleteComment({
       owner,
       repo,
-      issueNumber,
-      await createCommentBody
-    )
+      comment_id: comment?.id
+    })
   }
 
-  return comment
+  return createVotingComment(
+    octokit,
+    owner,
+    repo,
+    issueNumber,
+    await createCommentBody
+  )
 }
 
 export async function createVotingComment(

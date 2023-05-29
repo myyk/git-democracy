@@ -35102,7 +35102,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.commentToCreatedAt = exports.commentToId = exports.closeVotingComment = exports.createVotingCommentBody = exports.updateVotingComment = exports.createVotingComment = exports.findOrCreateVotingComment = exports.findVotingComment = exports.Comment = void 0;
+exports.commentToCreatedAt = exports.commentToId = exports.closeVotingComment = exports.createVotingCommentBody = exports.updateVotingComment = exports.createVotingComment = exports.findOrRecreateVotingComment = exports.findVotingComment = exports.Comment = void 0;
 const core = __importStar(__nccwpck_require__(4735));
 const reactions_1 = __nccwpck_require__(1983);
 const util_1 = __nccwpck_require__(3837);
@@ -35140,16 +35140,20 @@ function findVotingComment(octokit, owner, repo, issueNumber, bodyIncludes) {
     });
 }
 exports.findVotingComment = findVotingComment;
-function findOrCreateVotingComment(octokit, owner, repo, issueNumber, bodyIncludes, createCommentBody) {
+function findOrRecreateVotingComment(octokit, owner, repo, issueNumber, bodyIncludes, createCommentBody) {
     return __awaiter(this, void 0, void 0, function* () {
         const comment = yield findVotingComment(octokit, owner, repo, issueNumber, bodyIncludes);
-        if (!comment) {
-            return createVotingComment(octokit, owner, repo, issueNumber, yield createCommentBody);
+        if (comment === null || comment === void 0 ? void 0 : comment.id) {
+            yield octokit.rest.issues.deleteComment({
+                owner,
+                repo,
+                comment_id: comment === null || comment === void 0 ? void 0 : comment.id
+            });
         }
-        return comment;
+        return createVotingComment(octokit, owner, repo, issueNumber, yield createCommentBody);
     });
 }
-exports.findOrCreateVotingComment = findOrCreateVotingComment;
+exports.findOrRecreateVotingComment = findOrRecreateVotingComment;
 function createVotingComment(octokit, owner, repo, issueNumber, body) {
     return __awaiter(this, void 0, void 0, function* () {
         const { data: comment } = yield octokit.rest.issues.createComment({
@@ -35366,7 +35370,7 @@ function startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badge
             numVoters: 0,
             voteStartedAt: null
         }), votingConfigPromise);
-        const comment = (0, comments_1.findOrCreateVotingComment)(octokit, owner, repo, issueNumber, badgeText, createCommentBody);
+        const comment = (0, comments_1.findOrRecreateVotingComment)(octokit, owner, repo, issueNumber, badgeText, createCommentBody);
         const commentID = (0, comments_1.commentToId)(comment);
         core.info(`commentId: ${yield commentID}`);
         const voters = yield votersPromise;
@@ -35401,16 +35405,6 @@ function close(octokit, owner, repo, issueNumber, badgeText, closedVotingBodyTag
         yield (0, comments_1.closeVotingComment)(octokit, owner, repo, comment, badgeText, closedVotingBodyTag);
     });
 }
-function restart(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // update the prior vote before closing it and starting a new one.
-        yield startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
-        // close the prior vote
-        yield close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed');
-        // create a new vote the same way as in for 'opened' events
-        yield startOrUpdate(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
-    });
-}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -35439,13 +35433,9 @@ function run() {
             const badgeText = 'Current Voting Result';
             switch (inputs.payloadAction) {
                 case 'opened':
-                    yield startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
-                    break;
                 case 'reopened':
-                    yield restart(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
-                    break;
                 case 'synchronize':
-                    yield restart(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
+                    yield startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
                     break;
                 case 'closed':
                     yield close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed');
