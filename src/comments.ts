@@ -189,9 +189,3 @@ export async function closeVotingComment(
 export async function commentToId(commit: Promise<Comment>): Promise<number> {
   return (await commit).id
 }
-
-export async function commentToCreatedAt(
-  commit: Promise<Comment>
-): Promise<Date> {
-  return (await commit).createdAt
-}

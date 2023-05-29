@@ -11,7 +11,6 @@ import {
 } from './reactions'
 import {
   closeVotingComment,
-  commentToCreatedAt,
   commentToId,
   createVotingCommentBody,
   findOrRecreateVotingComment,
@@ -72,10 +71,22 @@ async function startOrUpdateHelper(
     issueNumber
   )
 
+  // TODO: could consolidate this call as it's used elsewhere
+  const pullRequest = await octokit.rest.pulls.get({
+    owner,
+    repo,
+    pull_number: issueNumber
+  })
+
+  const updateTime = pullRequest.data?.head?.repo?.pushed_at
+  if (!updateTime) {
+    return Promise.reject(new Error("There's no head commit uploaded"))
+  }
+
   const votesPromise = weightedVoteTotaling(
     reactionCountsPromise,
     votersPromise,
-    commentToCreatedAt(comment)
+    Promise.resolve(new Date(updateTime))
   )
   const errorMessage = await evaluateVote(votingConfigPromise, votesPromise)
 

@@ -52,6 +52,7 @@ export async function readReactionsCounts(
     }
 
     // add the author since they cannot review their own PR in Github
+    // TODO: could consolidate this call as it's used elsewhere
     const pullRequest = await octokit.rest.pulls.get({
       owner,
       repo,

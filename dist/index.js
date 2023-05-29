@@ -35102,7 +35102,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.commentToCreatedAt = exports.commentToId = exports.closeVotingComment = exports.createVotingCommentBody = exports.updateVotingComment = exports.createVotingComment = exports.findOrRecreateVotingComment = exports.findVotingComment = exports.Comment = void 0;
+exports.commentToId = exports.closeVotingComment = exports.createVotingCommentBody = exports.updateVotingComment = exports.createVotingComment = exports.findOrRecreateVotingComment = exports.findVotingComment = exports.Comment = void 0;
 const core = __importStar(__nccwpck_require__(4735));
 const reactions_1 = __nccwpck_require__(1983);
 const util_1 = __nccwpck_require__(3837);
@@ -35220,12 +35220,6 @@ function commentToId(commit) {
     });
 }
 exports.commentToId = commentToId;
-function commentToCreatedAt(commit) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return (yield commit).createdAt;
-    });
-}
-exports.commentToCreatedAt = commentToCreatedAt;
 
 
 /***/ }),
@@ -35363,6 +35357,7 @@ const comments_1 = __nccwpck_require__(2652);
 const voting_1 = __nccwpck_require__(5586);
 const util_1 = __nccwpck_require__(3837);
 function startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
+    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         const createCommentBody = (0, comments_1.createVotingCommentBody)(serverURL, owner, repo, github.context.ref, badgeText, Promise.resolve({
             [reactions_1.forIt]: 0,
@@ -35376,7 +35371,17 @@ function startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badge
         const voters = yield votersPromise;
         core.info(`voters: ${(0, util_1.inspect)(voters)}`);
         const reactionCountsPromise = (0, reactions_1.readReactionsCounts)(octokit, owner, repo, issueNumber);
-        const votesPromise = (0, reactions_1.weightedVoteTotaling)(reactionCountsPromise, votersPromise, (0, comments_1.commentToCreatedAt)(comment));
+        // TODO: could consolidate this call as it's used elsewhere
+        const pullRequest = yield octokit.rest.pulls.get({
+            owner,
+            repo,
+            pull_number: issueNumber
+        });
+        const updateTime = (_c = (_b = (_a = pullRequest.data) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.repo) === null || _c === void 0 ? void 0 : _c.pushed_at;
+        if (!updateTime) {
+            return Promise.reject(new Error("There's no head commit uploaded"));
+        }
+        const votesPromise = (0, reactions_1.weightedVoteTotaling)(reactionCountsPromise, votersPromise, Promise.resolve(new Date(updateTime)));
         const errorMessage = yield (0, voting_1.evaluateVote)(votingConfigPromise, votesPromise);
         // Write summary to issue comment.
         yield (0, comments_1.updateVotingComment)(octokit, owner, repo, commentID, (0, comments_1.createVotingCommentBody)(serverURL, owner, repo, github.context.ref, badgeText, votesPromise, votingConfigPromise));
@@ -35544,6 +35549,7 @@ function readReactionsCounts(octokit, owner, repo, issueNumber) {
                         }
                     }
                     // add the author since they cannot review their own PR in Github
+                    // TODO: could consolidate this call as it's used elsewhere
                     const pullRequest = yield octokit.rest.pulls.get({
                         owner,
                         repo,
