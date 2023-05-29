@@ -16,15 +16,13 @@ before letting a pull request be mergeable.
 ## How it works
 
 When a Pull Request is made to your repository's main branch, a new comment is
-posted by the action on the PR automatically as a place for :thumbsup:/
-:thumbsdown: votes to be cast.
+posted by the action that shows the status of the vote (which will generally be a not passing vote).
 
-Only configured voters are counted. Votes are counted when the action is rerun
-by manual rerunning it. Failed votes will list reasons why the vote failed in
+Approvals or Requesting Changes on the Pull Request is the mechanism to cast a vote. Although, only
+configured voters are counted. Failed votes will list the reasons why the vote failed in
 the action's error messaging.
 
-When a Pull Request is update, it will clear the voting and restart the vote
-with the default settings.
+When a Pull Request is update, it will clear the vote as the Pull Request reviews are cleared.
 
 ## Usage
 
