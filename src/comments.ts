@@ -60,7 +60,7 @@ export async function findVotingComment(
   return new Comment(comment)
 }
 
-export async function findOrCreateVotingComment(
+export async function findOrRecreateVotingComment(
   octokit: Octokit,
   owner: string,
   repo: string,
@@ -75,17 +75,22 @@ export async function findOrCreateVotingComment(
     issueNumber,
     bodyIncludes
   )
-  if (!comment) {
-    return createVotingComment(
-      octokit,
+
+  if (comment?.id) {
+    await octokit.rest.issues.deleteComment({
       owner,
       repo,
-      issueNumber,
-      await createCommentBody
-    )
+      comment_id: comment?.id
+    })
   }
 
-  return comment
+  return createVotingComment(
+    octokit,
+    owner,
+    repo,
+    issueNumber,
+    await createCommentBody
+  )
 }
 
 export async function createVotingComment(
@@ -136,7 +141,7 @@ export async function createVotingCommentBody(
   const acceptanceCriteria = await acceptanceCriteriaPromise
   let commentBody = `
 **${bodyIncludes}** ![Voting](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
-Vote on this comment with 👍 or 👎.
+Vote on this by posting a PR with approval or needs changes.
 
 Vote Summary:
   ${votes[forIt]} 👍
@@ -183,9 +188,4 @@ export async function closeVotingComment(
 
 export async function commentToId(commit: Promise<Comment>): Promise<number> {
   return (await commit).id
-}
-export async function commentToCreatedAt(
-  commit: Promise<Comment>
-): Promise<Date> {
-  return (await commit).createdAt
 }

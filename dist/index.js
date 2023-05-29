@@ -35102,7 +35102,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.commentToCreatedAt = exports.commentToId = exports.closeVotingComment = exports.createVotingCommentBody = exports.updateVotingComment = exports.createVotingComment = exports.findOrCreateVotingComment = exports.findVotingComment = exports.Comment = void 0;
+exports.commentToId = exports.closeVotingComment = exports.createVotingCommentBody = exports.updateVotingComment = exports.createVotingComment = exports.findOrRecreateVotingComment = exports.findVotingComment = exports.Comment = void 0;
 const core = __importStar(__nccwpck_require__(4735));
 const reactions_1 = __nccwpck_require__(1983);
 const util_1 = __nccwpck_require__(3837);
@@ -35140,16 +35140,20 @@ function findVotingComment(octokit, owner, repo, issueNumber, bodyIncludes) {
     });
 }
 exports.findVotingComment = findVotingComment;
-function findOrCreateVotingComment(octokit, owner, repo, issueNumber, bodyIncludes, createCommentBody) {
+function findOrRecreateVotingComment(octokit, owner, repo, issueNumber, bodyIncludes, createCommentBody) {
     return __awaiter(this, void 0, void 0, function* () {
         const comment = yield findVotingComment(octokit, owner, repo, issueNumber, bodyIncludes);
-        if (!comment) {
-            return createVotingComment(octokit, owner, repo, issueNumber, yield createCommentBody);
+        if (comment === null || comment === void 0 ? void 0 : comment.id) {
+            yield octokit.rest.issues.deleteComment({
+                owner,
+                repo,
+                comment_id: comment === null || comment === void 0 ? void 0 : comment.id
+            });
         }
-        return comment;
+        return createVotingComment(octokit, owner, repo, issueNumber, yield createCommentBody);
     });
 }
-exports.findOrCreateVotingComment = findOrCreateVotingComment;
+exports.findOrRecreateVotingComment = findOrRecreateVotingComment;
 function createVotingComment(octokit, owner, repo, issueNumber, body) {
     return __awaiter(this, void 0, void 0, function* () {
         const { data: comment } = yield octokit.rest.issues.createComment({
@@ -35182,7 +35186,7 @@ function createVotingCommentBody(serverURL, owner, repo, ref, bodyIncludes, vote
         const acceptanceCriteria = yield acceptanceCriteriaPromise;
         let commentBody = `
 **${bodyIncludes}** ![Voting](${serverURL}/${owner}/${repo}/workflows/Voting/badge.svg?branch=${ref})
-Vote on this comment with 👍 or 👎.
+Vote on this by posting a PR with approval or needs changes.
 
 Vote Summary:
   ${votes[reactions_1.forIt]} 👍
@@ -35216,12 +35220,6 @@ function commentToId(commit) {
     });
 }
 exports.commentToId = commentToId;
-function commentToCreatedAt(commit) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return (yield commit).createdAt;
-    });
-}
-exports.commentToCreatedAt = commentToCreatedAt;
 
 
 /***/ }),
@@ -35359,6 +35357,7 @@ const comments_1 = __nccwpck_require__(2652);
 const voting_1 = __nccwpck_require__(5586);
 const util_1 = __nccwpck_require__(3837);
 function startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
+    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         const createCommentBody = (0, comments_1.createVotingCommentBody)(serverURL, owner, repo, github.context.ref, badgeText, Promise.resolve({
             [reactions_1.forIt]: 0,
@@ -35366,13 +35365,23 @@ function startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badge
             numVoters: 0,
             voteStartedAt: null
         }), votingConfigPromise);
-        const comment = (0, comments_1.findOrCreateVotingComment)(octokit, owner, repo, issueNumber, badgeText, createCommentBody);
+        const comment = (0, comments_1.findOrRecreateVotingComment)(octokit, owner, repo, issueNumber, badgeText, createCommentBody);
         const commentID = (0, comments_1.commentToId)(comment);
         core.info(`commentId: ${yield commentID}`);
         const voters = yield votersPromise;
         core.info(`voters: ${(0, util_1.inspect)(voters)}`);
-        const reactionCountsPromise = (0, reactions_1.readReactionsCounts)(octokit, owner, repo, commentID);
-        const votesPromise = (0, reactions_1.weightedVoteTotaling)(reactionCountsPromise, votersPromise, (0, comments_1.commentToCreatedAt)(comment));
+        const reactionCountsPromise = (0, reactions_1.readReactionsCounts)(octokit, owner, repo, issueNumber);
+        // TODO: could consolidate this call as it's used elsewhere
+        const pullRequest = yield octokit.rest.pulls.get({
+            owner,
+            repo,
+            pull_number: issueNumber
+        });
+        const updateTime = (_c = (_b = (_a = pullRequest.data) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.repo) === null || _c === void 0 ? void 0 : _c.pushed_at;
+        if (!updateTime) {
+            return Promise.reject(new Error("There's no head commit uploaded"));
+        }
+        const votesPromise = (0, reactions_1.weightedVoteTotaling)(reactionCountsPromise, votersPromise, Promise.resolve(new Date(updateTime)));
         const errorMessage = yield (0, voting_1.evaluateVote)(votingConfigPromise, votesPromise);
         // Write summary to issue comment.
         yield (0, comments_1.updateVotingComment)(octokit, owner, repo, commentID, (0, comments_1.createVotingCommentBody)(serverURL, owner, repo, github.context.ref, badgeText, votesPromise, votingConfigPromise));
@@ -35401,16 +35410,6 @@ function close(octokit, owner, repo, issueNumber, badgeText, closedVotingBodyTag
         yield (0, comments_1.closeVotingComment)(octokit, owner, repo, comment, badgeText, closedVotingBodyTag);
     });
 }
-function restart(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise) {
-    return __awaiter(this, void 0, void 0, function* () {
-        // update the prior vote before closing it and starting a new one.
-        yield startOrUpdateHelper(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
-        // close the prior vote
-        yield close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed');
-        // create a new vote the same way as in for 'opened' events
-        yield startOrUpdate(octokit, owner, repo, serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
-    });
-}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -35420,6 +35419,7 @@ function run() {
                 payloadAction: core.getInput('payloadAction')
                     ? core.getInput('payloadAction')
                     : github.context.payload.action,
+                configPath: core.getInput('configPath'),
                 issueNumber: core.getInput('issueNumber'),
                 serverURL: core.getInput('serverURL')
             };
@@ -35433,18 +35433,14 @@ function run() {
                 ? Number(inputs.issueNumber)
                 : github.context.issue.number;
             core.info(`issueNumber: ${issueNumber}`);
-            const votingConfigPromise = (0, config_1.readVotingConfig)(`./.voting.yml`);
-            const votersPromise = (0, voters_1.readVoters)(`./.voters.yml`);
+            const votingConfigPromise = (0, config_1.readVotingConfig)(`${inputs.configPath}/.voting.yml`);
+            const votersPromise = (0, voters_1.readVoters)(`${inputs.configPath}/.voters.yml`);
             const badgeText = 'Current Voting Result';
             switch (inputs.payloadAction) {
                 case 'opened':
-                    yield startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
-                    break;
                 case 'reopened':
-                    yield restart(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
-                    break;
                 case 'synchronize':
-                    yield restart(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
+                    yield startOrUpdate(octokit, owner, repo, inputs.serverURL, issueNumber, badgeText, votersPromise, votingConfigPromise);
                     break;
                 case 'closed':
                     yield close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed');
@@ -35508,57 +35504,74 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.weightedVoteTotaling = exports.readReactionsCounts = exports.readReactionsCountsFromSummary = exports.againstIt = exports.forIt = void 0;
+exports.weightedVoteTotaling = exports.readReactionsCounts = exports.againstIt = exports.forIt = void 0;
 const core = __importStar(__nccwpck_require__(4735));
 const util_1 = __nccwpck_require__(3837);
 exports.forIt = '+1';
 exports.againstIt = '-1';
+const approved = 'APPROVED';
+const changesRequested = 'CHANGES_REQUESTED';
 // These are summarized reactions which is nice and simple but not useful if we
 // need to limit voters in some way to only registered voters.
-function readReactionsCountsFromSummary(octokit, owner, repo, promisedCommentId) {
+function readReactionsCounts(octokit, owner, repo, issueNumber) {
+    var _a, e_1, _b, _c;
+    var _d, _e;
     return __awaiter(this, void 0, void 0, function* () {
-        const commentId = yield promisedCommentId;
-        const { data } = yield octokit.rest.issues.getComment({
-            owner,
-            repo,
-            comment_id: commentId
-        });
-        core.info(`data: ${(0, util_1.inspect)(data)}`);
-        const dataWithReactions = data; // eslint-disable-line @typescript-eslint/no-explicit-any
-        const reactions = dataWithReactions['reactions'];
-        core.info(`reactions: ${(0, util_1.inspect)(reactions)}`);
-        return {
-            [exports.forIt]: reactions[exports.forIt],
-            [exports.againstIt]: reactions[exports.againstIt],
-            numVoters: 0,
-            voteStartedAt: null // We cannot know here
-        };
-    });
-}
-exports.readReactionsCountsFromSummary = readReactionsCountsFromSummary;
-// These are summarized reactions which is nice and simple but not useful if we
-// need to limit voters in some way to only registered voters.
-function readReactionsCounts(octokit, owner, repo, promisedCommentId) {
-    var _a;
-    return __awaiter(this, void 0, void 0, function* () {
-        const commentId = yield promisedCommentId;
-        const data = yield octokit.paginate(octokit.rest.reactions.listForIssueComment, {
-            owner,
-            repo,
-            comment_id: commentId
-        });
-        core.info(`listForIssueComment data: ${(0, util_1.inspect)(data)}`);
-        const votingData = data.filter(next => next.content === exports.forIt || next.content === exports.againstIt);
+        // Iterate over the reviews and separate approvals and disapprovals
         const result = new Map();
-        for (const { user, content } of votingData) {
-            if (user != null) {
-                const login = user.login;
-                const vote = reactionToNumber(content);
-                const priorTotal = (_a = result.get(login)) !== null && _a !== void 0 ? _a : 0;
-                const total = priorTotal + vote;
-                result.set(login, total);
+        try {
+            // Fetch all reviews for the pull request
+            for (var _f = true, _g = __asyncValues(octokit.paginate.iterator(octokit.rest.pulls.listReviews, {
+                owner,
+                repo,
+                pull_number: issueNumber
+            })), _h; _h = yield _g.next(), _a = _h.done, !_a;) {
+                _c = _h.value;
+                _f = false;
+                try {
+                    const response = _c;
+                    for (const review of response.data) {
+                        const login = (_d = review.user) === null || _d === void 0 ? void 0 : _d.login;
+                        if (login !== null) {
+                            core.info('not counting vote of null user');
+                        }
+                        else {
+                            const vote = pullRequestReviewStateToNumber(review.state);
+                            result.set(login, vote);
+                        }
+                    }
+                    // add the author since they cannot review their own PR in Github
+                    // TODO: could consolidate this call as it's used elsewhere
+                    const pullRequest = yield octokit.rest.pulls.get({
+                        owner,
+                        repo,
+                        pull_number: issueNumber
+                    });
+                    const pullRequestAuthor = (_e = pullRequest.data.user) === null || _e === void 0 ? void 0 : _e.login;
+                    if (pullRequestAuthor) {
+                        core.info(`Counting PR author as a +1 vote: ${pullRequestAuthor}`);
+                        result.set(pullRequestAuthor, pullRequestReviewStateToNumber(approved));
+                    }
+                }
+                finally {
+                    _f = true;
+                }
             }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (!_f && !_a && (_b = _g.return)) yield _b.call(_g);
+            }
+            finally { if (e_1) throw e_1.error; }
         }
         core.info(`readReactionsCounts: ${(0, util_1.inspect)(result)}`);
         return result;
@@ -35594,11 +35607,11 @@ function weightedVoteTotaling(promisedUserReactions, promisedVoters, promisedVot
     });
 }
 exports.weightedVoteTotaling = weightedVoteTotaling;
-function reactionToNumber(reaction) {
-    if (reaction === exports.forIt) {
+function pullRequestReviewStateToNumber(state) {
+    if (state === approved) {
         return 1;
     }
-    else if (reaction === exports.againstIt) {
+    else if (state === changesRequested) {
         return -1;
     }
     else {

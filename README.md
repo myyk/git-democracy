@@ -32,6 +32,8 @@ with the default settings.
 
 This Github action requires the ability to read/write comments on Pull Requests (Issues api).
 
+All potential voters will need to be able to post Pull Request reviews, this should be safe after you have integrated `git-democracy` as it will be what blocks merge approvals.
+
 #### Enable through Settings UI
 
 Under `Settings` > `Actions` > `General` (ex: `https://github.com/<org>/<repo>/settings/actions`)
@@ -60,7 +62,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Evaluate vote
-        uses: myyk/git-democracy@v1
+        uses: myyk/git-democracy@v2
 ```
 
 The name of the workflow must be `Voting` to match the badge that will be
@@ -79,6 +81,13 @@ new workflow. It may need a little time after running the action before the
 new workflow is selectable in the UI.
 
 ### Configuration
+
+The configurations should be in the workflow definition's folder to get protections from being run with different configurations from a pull requester (with using `pull_request_target` trigger).
+
+The default location is to be in the same directory as the action's definition for composite actions. For everything else, the location must be specified manually using the `configPath` parameter.
+
+    with:
+      configPath: .github/workflows
 
 #### Voting
 
@@ -118,3 +127,13 @@ jienormous: 1
 ## Sample Project
 
 An example of a fully wired up project: https://github.com/myyk/git-democracy-example
+
+# Migration from v1 to v2 guide
+
+Please do not use `v1` tag as it is not secure since a pull requester could overwrite your `.voters.yml` and `.voting.yml` files.
+
+Easy upgrade steps:
+
+1. Move your `.voters.yml` and `.voting.yml` files into your `.github/workflows/` directory somewhere.
+1. Make sure all your voters are also Pull Requesters in your repo/org/account settings.
+1. Update `uses: myyk/git-democracy@v1` -> `uses: myyk/git-democracy@v2`

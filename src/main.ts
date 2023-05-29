@@ -11,10 +11,9 @@ import {
 } from './reactions'
 import {
   closeVotingComment,
-  commentToCreatedAt,
   commentToId,
   createVotingCommentBody,
-  findOrCreateVotingComment,
+  findOrRecreateVotingComment,
   findVotingComment,
   updateVotingComment
 } from './comments'
@@ -50,7 +49,7 @@ async function startOrUpdateHelper(
     votingConfigPromise
   )
 
-  const comment = findOrCreateVotingComment(
+  const comment = findOrRecreateVotingComment(
     octokit,
     owner,
     repo,
@@ -69,13 +68,25 @@ async function startOrUpdateHelper(
     octokit,
     owner,
     repo,
-    commentID
+    issueNumber
   )
+
+  // TODO: could consolidate this call as it's used elsewhere
+  const pullRequest = await octokit.rest.pulls.get({
+    owner,
+    repo,
+    pull_number: issueNumber
+  })
+
+  const updateTime = pullRequest.data?.head?.repo?.pushed_at
+  if (!updateTime) {
+    return Promise.reject(new Error("There's no head commit uploaded"))
+  }
 
   const votesPromise = weightedVoteTotaling(
     reactionCountsPromise,
     votersPromise,
-    commentToCreatedAt(comment)
+    Promise.resolve(new Date(updateTime))
   )
   const errorMessage = await evaluateVote(votingConfigPromise, votesPromise)
 
@@ -161,44 +172,6 @@ async function close(
   )
 }
 
-async function restart(
-  octokit: Octokit,
-  owner: string,
-  repo: string,
-  serverURL: string,
-  issueNumber: number,
-  badgeText: string,
-  votersPromise: Promise<Voters>,
-  votingConfigPromise: Promise<Config>
-): Promise<void> {
-  // update the prior vote before closing it and starting a new one.
-  await startOrUpdateHelper(
-    octokit,
-    owner,
-    repo,
-    serverURL,
-    issueNumber,
-    badgeText,
-    votersPromise,
-    votingConfigPromise
-  )
-
-  // close the prior vote
-  await close(octokit, owner, repo, issueNumber, badgeText, 'Voting is closed')
-
-  // create a new vote the same way as in for 'opened' events
-  await startOrUpdate(
-    octokit,
-    owner,
-    repo,
-    serverURL,
-    issueNumber,
-    badgeText,
-    votersPromise,
-    votingConfigPromise
-  )
-}
-
 export async function run(): Promise<void> {
   try {
     const inputs = {
@@ -207,6 +180,7 @@ export async function run(): Promise<void> {
       payloadAction: core.getInput('payloadAction')
         ? core.getInput('payloadAction')
         : github.context.payload.action,
+      configPath: core.getInput('configPath'),
       issueNumber: core.getInput('issueNumber'),
       serverURL: core.getInput('serverURL')
     }
@@ -224,38 +198,18 @@ export async function run(): Promise<void> {
       : github.context.issue.number
     core.info(`issueNumber: ${issueNumber}`)
 
-    const votingConfigPromise = readVotingConfig(`./.voting.yml`)
-    const votersPromise = readVoters(`./.voters.yml`)
+    const votingConfigPromise = readVotingConfig(
+      `${inputs.configPath}/.voting.yml`
+    )
+    const votersPromise = readVoters(`${inputs.configPath}/.voters.yml`)
 
     const badgeText = 'Current Voting Result'
 
     switch (inputs.payloadAction) {
       case 'opened':
-        await startOrUpdate(
-          octokit,
-          owner,
-          repo,
-          inputs.serverURL,
-          issueNumber,
-          badgeText,
-          votersPromise,
-          votingConfigPromise
-        )
-        break
       case 'reopened':
-        await restart(
-          octokit,
-          owner,
-          repo,
-          inputs.serverURL,
-          issueNumber,
-          badgeText,
-          votersPromise,
-          votingConfigPromise
-        )
-        break
       case 'synchronize':
-        await restart(
+        await startOrUpdate(
           octokit,
           owner,
           repo,

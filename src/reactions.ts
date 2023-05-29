@@ -16,34 +16,10 @@ export interface Reactions {
   voteStartedAt: Date | null
 }
 
+const approved = 'APPROVED'
+const changesRequested = 'CHANGES_REQUESTED'
+
 type UserReactions = Map<string, number>
-
-// These are summarized reactions which is nice and simple but not useful if we
-// need to limit voters in some way to only registered voters.
-export async function readReactionsCountsFromSummary(
-  octokit: Octokit,
-  owner: string,
-  repo: string,
-  promisedCommentId: Promise<number>
-): Promise<Reactions> {
-  const commentId = await promisedCommentId
-  const {data} = await octokit.rest.issues.getComment({
-    owner,
-    repo,
-    comment_id: commentId
-  })
-
-  core.info(`data: ${inspect(data)}`)
-  const dataWithReactions: any = data // eslint-disable-line @typescript-eslint/no-explicit-any
-  const reactions = dataWithReactions['reactions']
-  core.info(`reactions: ${inspect(reactions)}`)
-  return {
-    [forIt]: reactions[forIt],
-    [againstIt]: reactions[againstIt],
-    numVoters: 0, // We cannot know here, so just set to 0
-    voteStartedAt: null // We cannot know here
-  }
-}
 
 // These are summarized reactions which is nice and simple but not useful if we
 // need to limit voters in some way to only registered voters.
@@ -51,32 +27,42 @@ export async function readReactionsCounts(
   octokit: Octokit,
   owner: string,
   repo: string,
-  promisedCommentId: Promise<number>
+  issueNumber: number
 ): Promise<UserReactions> {
-  const commentId = await promisedCommentId
-  const data = await octokit.paginate(
-    octokit.rest.reactions.listForIssueComment,
+  // Iterate over the reviews and separate approvals and disapprovals
+  const result = new Map<string, number>()
+
+  // Fetch all reviews for the pull request
+  for await (const response of octokit.paginate.iterator(
+    octokit.rest.pulls.listReviews,
     {
       owner,
       repo,
-      comment_id: commentId
+      pull_number: issueNumber
     }
-  )
+  )) {
+    for (const review of response.data) {
+      const login = review.user?.login
+      if (login !== null) {
+        core.info('not counting vote of null user')
+      } else {
+        const vote = pullRequestReviewStateToNumber(review.state)
+        result.set(login, vote)
+      }
+    }
 
-  core.info(`listForIssueComment data: ${inspect(data)}`)
-  const votingData = data.filter(
-    next => next.content === forIt || next.content === againstIt
-  )
+    // add the author since they cannot review their own PR in Github
+    // TODO: could consolidate this call as it's used elsewhere
+    const pullRequest = await octokit.rest.pulls.get({
+      owner,
+      repo,
+      pull_number: issueNumber
+    })
 
-  const result = new Map<string, number>()
-  for (const {user, content} of votingData) {
-    if (user != null) {
-      const login = user.login
-      const vote = reactionToNumber(content)
-
-      const priorTotal = result.get(login) ?? 0
-      const total = priorTotal + vote
-      result.set(login, total)
+    const pullRequestAuthor = pullRequest.data.user?.login
+    if (pullRequestAuthor) {
+      core.info(`Counting PR author as a +1 vote: ${pullRequestAuthor}`)
+      result.set(pullRequestAuthor, pullRequestReviewStateToNumber(approved))
     }
   }
 
@@ -116,10 +102,10 @@ export async function weightedVoteTotaling(
   }
 }
 
-function reactionToNumber(reaction: string): number {
-  if (reaction === forIt) {
+function pullRequestReviewStateToNumber(state: string): number {
+  if (state === approved) {
     return 1
-  } else if (reaction === againstIt) {
+  } else if (state === changesRequested) {
     return -1
   } else {
     return 0
