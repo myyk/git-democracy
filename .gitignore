@@ -105,4 +105,5 @@ Thumbs.db
 
 # Ignore built ts files
 __tests__/runner/*
+__tests__/*.test.js
 lib/**/*

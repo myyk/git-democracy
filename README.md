@@ -32,6 +32,8 @@ with the default settings.
 
 This Github action requires the ability to read/write comments on Pull Requests (Issues api).
 
+All potential voters will need to be able to post Pull Request reviews, this should be safe after you have integrated `git-democracy` as it will be what blocks merge approvals.
+
 #### Enable through Settings UI
 
 Under `Settings` > `Actions` > `General` (ex: `https://github.com/<org>/<repo>/settings/actions`)

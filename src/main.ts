@@ -69,7 +69,7 @@ async function startOrUpdateHelper(
     octokit,
     owner,
     repo,
-    commentID
+    issueNumber
   )
 
   const votesPromise = weightedVoteTotaling(
