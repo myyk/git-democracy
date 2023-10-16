@@ -56358,36 +56358,31 @@ function readReactionsCounts(octokit, owner, repo, issueNumber) {
                 owner,
                 repo,
                 pull_number: issueNumber
-            })), _h; _h = yield _g.next(), _a = _h.done, !_a;) {
+            })), _h; _h = yield _g.next(), _a = _h.done, !_a; _f = true) {
                 _c = _h.value;
                 _f = false;
-                try {
-                    const response = _c;
-                    for (const review of response.data) {
-                        const login = (_d = review.user) === null || _d === void 0 ? void 0 : _d.login;
-                        if (login !== null) {
-                            core.info('not counting vote of null user');
-                        }
-                        else {
-                            const vote = pullRequestReviewStateToNumber(review.state);
-                            result.set(login, vote);
-                        }
+                const response = _c;
+                for (const review of response.data) {
+                    const login = (_d = review.user) === null || _d === void 0 ? void 0 : _d.login;
+                    if (login !== null) {
+                        core.info('not counting vote of null user');
                     }
-                    // add the author since they cannot review their own PR in Github
-                    // TODO: could consolidate this call as it's used elsewhere
-                    const pullRequest = yield octokit.rest.pulls.get({
-                        owner,
-                        repo,
-                        pull_number: issueNumber
-                    });
-                    const pullRequestAuthor = (_e = pullRequest.data.user) === null || _e === void 0 ? void 0 : _e.login;
-                    if (pullRequestAuthor) {
-                        core.info(`Counting PR author as a +1 vote: ${pullRequestAuthor}`);
-                        result.set(pullRequestAuthor, pullRequestReviewStateToNumber(approved));
+                    else {
+                        const vote = pullRequestReviewStateToNumber(review.state);
+                        result.set(login, vote);
                     }
                 }
-                finally {
-                    _f = true;
+                // add the author since they cannot review their own PR in Github
+                // TODO: could consolidate this call as it's used elsewhere
+                const pullRequest = yield octokit.rest.pulls.get({
+                    owner,
+                    repo,
+                    pull_number: issueNumber
+                });
+                const pullRequestAuthor = (_e = pullRequest.data.user) === null || _e === void 0 ? void 0 : _e.login;
+                if (pullRequestAuthor) {
+                    core.info(`Counting PR author as a +1 vote: ${pullRequestAuthor}`);
+                    result.set(pullRequestAuthor, pullRequestReviewStateToNumber(approved));
                 }
             }
         }
