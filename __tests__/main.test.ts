@@ -13,7 +13,6 @@ let inputs = {
 test('test runs', () => {
   // make sure to run with `INPUT_TOKEN=your-token yarn run test`
   // Example on mocking patterns: https://github.com/actions/checkout/blob/master/__test__/input-helper.test.ts
-  process.env['INPUT_REPOSITORY'] = 'myyk/git-democracy'
 
   const octokit = new GitHub({
     auth: process.env['INPUT_TOKEN'] as string
