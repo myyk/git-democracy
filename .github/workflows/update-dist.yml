@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 15
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
           token: ${{ github.token }} # Replace github.token with PAT (personal access token) if you need to trigger a new workflow. https://git.io/JcHD9
