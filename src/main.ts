@@ -186,6 +186,11 @@ export async function run(): Promise<void> {
     }
     core.info(`Inputs: ${inspect(inputs)}`)
 
+    if (!inputs.configPath) {
+      // TODO: Please someone help me understand why this was the only way to get this default to work
+      inputs.configPath = './.github/workflows'
+    }
+
     const [owner, repo] = inputs.repository.split('/')
     core.info(`repository: ${owner}/${repo}`)
 

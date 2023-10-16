@@ -7,7 +7,6 @@ import {run} from '../src/main'
 let inputs = {
   token: process.env['INPUT_TOKEN'],
   repository: 'myyk/git-democracy',
-  configPath: './.github/workflows'
 } as any
 
 test('test runs', () => {
