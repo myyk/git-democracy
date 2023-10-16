@@ -6,7 +6,7 @@ import {run} from '../src/main'
 // Inputs for mock @actions/core
 let inputs = {
   token: process.env['INPUT_TOKEN'],
-  repository: 'myyk/git-democracy',
+  repository: 'myyk/git-democracy'
 } as any
 
 test('test runs', () => {
