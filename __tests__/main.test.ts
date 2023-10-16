@@ -1,6 +1,12 @@
+import * as core from '@actions/core'
 import * as github from '@actions/github'
 import {GitHub} from '@actions/github/lib/utils'
 import {run} from '../src/main'
+
+// Inputs for mock @actions/core
+let inputs = {
+  'configPath': './.github/workflows'
+} as any
 
 test('test runs', () => {
   // make sure to run with `INPUT_TOKEN=your-token yarn run test`
@@ -9,6 +15,11 @@ test('test runs', () => {
 
   const octokit = new GitHub({
     auth: process.env['INPUT_TOKEN'] as string
+  })
+
+  // Mock getInput
+  jest.spyOn(core, 'getInput').mockImplementation((name: string) => {
+    return inputs[name]
   })
 
   // Mock github context
