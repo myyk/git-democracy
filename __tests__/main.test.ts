@@ -5,7 +5,7 @@ import {run} from '../src/main'
 
 // Inputs for mock @actions/core
 let inputs = {
-  'configPath': './.github/workflows'
+  configPath: './.github/workflows'
 } as any
 
 test('test runs', () => {
