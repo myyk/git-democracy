@@ -35346,6 +35346,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(4735));
@@ -35424,6 +35425,10 @@ function run() {
                 serverURL: core.getInput('serverURL')
             };
             core.info(`Inputs: ${(0, util_1.inspect)(inputs)}`);
+            if (!inputs.configPath) {
+                // TODO: Please someone help me understand why this was the only way to get this default to work
+                inputs.configPath = './.github/workflows';
+            }
             const [owner, repo] = inputs.repository.split('/');
             core.info(`repository: ${owner}/${repo}`);
             const octokit = github.getOctokit(inputs.token, {
@@ -35460,8 +35465,9 @@ try {
     run();
 }
 catch (error) {
-    core.error(error.stack);
-    core.setFailed(`error while running action: ${error}`);
+    const err = error;
+    core.error((_a = err.stack) !== null && _a !== void 0 ? _a : 'Unknown error occurred');
+    core.setFailed(`error while running action: ${err}`);
 }
 
 

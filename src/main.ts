@@ -186,6 +186,11 @@ export async function run(): Promise<void> {
     }
     core.info(`Inputs: ${inspect(inputs)}`)
 
+    if (!inputs.configPath) {
+      // TODO: Please someone help me understand why this was the only way to get this default to work
+      inputs.configPath = './.github/workflows'
+    }
+
     const [owner, repo] = inputs.repository.split('/')
     core.info(`repository: ${owner}/${repo}`)
 
@@ -242,7 +247,8 @@ export async function run(): Promise<void> {
 
 try {
   run()
-} catch (error: any) {
-  core.error(error.stack)
-  core.setFailed(`error while running action: ${error}`)
+} catch (error: unknown) {
+  const err = error as Error
+  core.error(err.stack ?? 'Unknown error occurred')
+  core.setFailed(`error while running action: ${err}`)
 }
