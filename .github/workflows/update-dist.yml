@@ -21,10 +21,10 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           token: ${{ github.token }} # Replace github.token with PAT (personal access token) if you need to trigger a new workflow. https://git.io/JcHD9
-      - name: Use Node.js v16.x
+      - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 16.x
+          node-version: 18
           # It is not suggested to cache for the pull_request_target event
           # https://docs.github.com/en/actions/reference/events-that-trigger-workflows#pull_request_target
       - name: Install dependencies
