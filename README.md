@@ -58,7 +58,7 @@ jobs:
   democracy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Evaluate vote
         uses: myyk/git-democracy@v2
 ```
