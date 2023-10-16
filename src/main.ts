@@ -242,7 +242,8 @@ export async function run(): Promise<void> {
 
 try {
   run()
-} catch (error: any) {
-  core.error(error.stack)
-  core.setFailed(`error while running action: ${error}`)
+} catch (error: unknown) {
+  const err = error as Error
+  core.error(err.stack ?? 'Unknown error occurred')
+  core.setFailed(`error while running action: ${err}`)
 }
