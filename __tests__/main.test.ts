@@ -5,6 +5,8 @@ import {run} from '../src/main'
 
 // Inputs for mock @actions/core
 let inputs = {
+  token: process.env['INPUT_TOKEN'],
+  repository: 'myyk/git-democracy',
   configPath: './.github/workflows'
 } as any
 
