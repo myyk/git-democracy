@@ -3678,6 +3678,7 @@ __metadata:
     prettier: ^2.8.8
     ts-jest: ^29.1.0
     typescript: ^5.0.4
+    undici: ^5.26.3
   languageName: unknown
   linkType: soft
 
@@ -6841,7 +6842,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^5.25.4":
+"undici@npm:^5.25.4, undici@npm:^5.26.3":
   version: 5.26.3
   resolution: "undici@npm:5.26.3"
   dependencies:
