@@ -32,7 +32,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@actions/github", "npm:6.0.0"],\
             ["@types/jest", "npm:29.5.6"],\
             ["@types/js-yaml", "npm:4.0.8"],\
-            ["@types/node", "npm:20.8.6"],\
+            ["@types/node", "npm:20.8.7"],\
             ["@typescript-eslint/eslint-plugin", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:6.8.0"],\
             ["@typescript-eslint/parser", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:6.8.0"],\
             ["@vercel/ncc", "npm:0.38.0"],\
@@ -1927,10 +1927,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "HARD"\
         }],\
-        ["npm:20.8.6", {\
-          "packageLocation": "./.yarn/cache/@types-node-npm-20.8.6-856e50b60a-ccfb7ac482.zip/node_modules/@types/node/",\
+        ["npm:20.8.7", {\
+          "packageLocation": "./.yarn/cache/@types-node-npm-20.8.7-a09c56cd33-2173c0c03d.zip/node_modules/@types/node/",\
           "packageDependencies": [\
-            ["@types/node", "npm:20.8.6"],\
+            ["@types/node", "npm:20.8.7"],\
             ["undici-types", "npm:5.25.3"]\
           ],\
           "linkType": "HARD"\
@@ -4866,7 +4866,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@actions/github", "npm:6.0.0"],\
             ["@types/jest", "npm:29.5.6"],\
             ["@types/js-yaml", "npm:4.0.8"],\
-            ["@types/node", "npm:20.8.6"],\
+            ["@types/node", "npm:20.8.7"],\
             ["@typescript-eslint/eslint-plugin", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:6.8.0"],\
             ["@typescript-eslint/parser", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:6.8.0"],\
             ["@vercel/ncc", "npm:0.38.0"],\
