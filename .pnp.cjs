@@ -30,7 +30,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@actions/core", "npm:1.10.0"],\
             ["@actions/github", "npm:6.0.0"],\
-            ["@types/jest", "npm:29.5.5"],\
+            ["@types/jest", "npm:29.5.6"],\
             ["@types/js-yaml", "npm:4.0.8"],\
             ["@types/node", "npm:20.8.6"],\
             ["@typescript-eslint/eslint-plugin", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:6.8.0"],\
@@ -1875,10 +1875,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@types/jest", [\
-        ["npm:29.5.5", {\
-          "packageLocation": "./.yarn/cache/@types-jest-npm-29.5.5-cc0df7a171-56e55cde99.zip/node_modules/@types/jest/",\
+        ["npm:29.5.6", {\
+          "packageLocation": "./.yarn/cache/@types-jest-npm-29.5.6-fa191e2675-fa13a27bd1.zip/node_modules/@types/jest/",\
           "packageDependencies": [\
-            ["@types/jest", "npm:29.5.5"],\
+            ["@types/jest", "npm:29.5.6"],\
             ["expect", "npm:29.5.0"],\
             ["pretty-format", "npm:29.5.0"]\
           ],\
@@ -4254,7 +4254,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["eslint-plugin-jest", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:27.4.2"],\
             ["@types/eslint", null],\
-            ["@types/jest", "npm:29.5.5"],\
+            ["@types/jest", "npm:29.5.6"],\
             ["@types/typescript-eslint__eslint-plugin", null],\
             ["@typescript-eslint/eslint-plugin", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:6.8.0"],\
             ["@typescript-eslint/utils", "virtual:cf96e46a4526125c164c579bea3628bccb249a35c3c1dbb03d983de3ea404aa9ec12288acd51518a9fd8ba4b1fe79d33af0f2565dc82421201e0ea0f6755aaff#npm:5.59.7"],\
@@ -4877,7 +4877,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["git-democracy", "workspace:."],\
             ["@actions/core", "npm:1.10.0"],\
             ["@actions/github", "npm:6.0.0"],\
-            ["@types/jest", "npm:29.5.5"],\
+            ["@types/jest", "npm:29.5.6"],\
             ["@types/js-yaml", "npm:4.0.8"],\
             ["@types/node", "npm:20.8.6"],\
             ["@typescript-eslint/eslint-plugin", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:6.8.0"],\
@@ -8063,7 +8063,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/babel-jest", null],\
             ["@types/babel__core", null],\
             ["@types/esbuild", null],\
-            ["@types/jest", "npm:29.5.5"],\
+            ["@types/jest", "npm:29.5.6"],\
             ["@types/jest__types", null],\
             ["@types/typescript", null],\
             ["babel-jest", null],\
