@@ -1457,7 +1457,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^6.0.0, @typescript-eslint/parser@npm:^6.7.5":
+"@typescript-eslint/parser@npm:^6.0.0":
   version: 6.7.5
   resolution: "@typescript-eslint/parser@npm:6.7.5"
   dependencies:
@@ -1472,6 +1472,24 @@ __metadata:
     typescript:
       optional: true
   checksum: 63f988c1c87697bd20487933be952b97f7a5f2a9977f505af671c7d49367fc01ca508817576646caa937c15cc0a0ef1e86adff9111eb19df8b489e7436d10620
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/parser@npm:^6.8.0":
+  version: 6.8.0
+  resolution: "@typescript-eslint/parser@npm:6.8.0"
+  dependencies:
+    "@typescript-eslint/scope-manager": 6.8.0
+    "@typescript-eslint/types": 6.8.0
+    "@typescript-eslint/typescript-estree": 6.8.0
+    "@typescript-eslint/visitor-keys": 6.8.0
+    debug: ^4.3.4
+  peerDependencies:
+    eslint: ^7.0.0 || ^8.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10d7a3ae383fee5a5cba9541c72e23d6ab01cca6b414a62b44dacb5ebc15c80b80aa6c105b6469d3795f2f8514ae2499c069cd2d9dcac61f3db9ef6c7a75e080
   languageName: node
   linkType: hard
 
@@ -3641,7 +3659,7 @@ __metadata:
     "@types/js-yaml": ^4.0.7
     "@types/node": ^20.8.6
     "@typescript-eslint/eslint-plugin": ^6.8.0
-    "@typescript-eslint/parser": ^6.7.5
+    "@typescript-eslint/parser": ^6.8.0
     "@vercel/ncc": ^0.38.0
     date-fns: ^2.30.0
     eslint: ^8.51.0
