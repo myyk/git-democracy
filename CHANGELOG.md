@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/myyk/git-democracy/compare/v2.2.0...v2.2.1) (2023-10-24)
+
+
+### Bug Fixes
+
+* prettier 3 ([#880](https://github.com/myyk/git-democracy/issues/880)) ([ca81144](https://github.com/myyk/git-democracy/commit/ca81144fc08d9839b93aa59b416f6014fe168ddf))
+
 ## [2.2.0](https://github.com/myyk/git-democracy/compare/v2.1.0...v2.2.0) (2023-10-16)
 
 
