@@ -4,8 +4,14 @@ updates:
     directory: /
     schedule:
       interval: daily
+    commit-message:
+      # Prefix all commit messages with "deps: " to conform with release-please
+      prefix: "deps"
 
   - package-ecosystem: npm
     directory: /
     schedule:
       interval: daily
+    commit-message:
+      # Prefix all commit messages with "deps: " to conform with release-please
+      prefix: "deps"
