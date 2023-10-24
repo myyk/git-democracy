@@ -35,7 +35,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node", "npm:20.8.7"],\
             ["@typescript-eslint/eslint-plugin", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:6.9.0"],\
             ["@typescript-eslint/parser", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:6.8.0"],\
-            ["@vercel/ncc", "npm:0.38.0"],\
+            ["@vercel/ncc", "npm:0.38.1"],\
             ["date-fns", "npm:2.30.0"],\
             ["eslint", "npm:8.52.0"],\
             ["eslint-plugin-escompat", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:3.4.0"],\
@@ -2508,10 +2508,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@vercel/ncc", [\
-        ["npm:0.38.0", {\
-          "packageLocation": "./.yarn/cache/@vercel-ncc-npm-0.38.0-6dfbe77067-859af1b1dc.zip/node_modules/@vercel/ncc/",\
+        ["npm:0.38.1", {\
+          "packageLocation": "./.yarn/cache/@vercel-ncc-npm-0.38.1-529f6837ea-a522bb44c2.zip/node_modules/@vercel/ncc/",\
           "packageDependencies": [\
-            ["@vercel/ncc", "npm:0.38.0"],\
+            ["@vercel/ncc", "npm:0.38.1"],\
             ["node-gyp", "npm:9.3.1"]\
           ],\
           "linkType": "HARD"\
@@ -4976,7 +4976,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/node", "npm:20.8.7"],\
             ["@typescript-eslint/eslint-plugin", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:6.9.0"],\
             ["@typescript-eslint/parser", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:6.8.0"],\
-            ["@vercel/ncc", "npm:0.38.0"],\
+            ["@vercel/ncc", "npm:0.38.1"],\
             ["date-fns", "npm:2.30.0"],\
             ["eslint", "npm:8.52.0"],\
             ["eslint-plugin-escompat", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:3.4.0"],\
