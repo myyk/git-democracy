@@ -53,7 +53,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:3.0.3"],\
             ["ts-jest", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:29.1.1"],\
             ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"],\
-            ["undici", "npm:5.26.5"]\
+            ["undici", "npm:5.27.0"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -4942,7 +4942,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:3.0.3"],\
             ["ts-jest", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:29.1.1"],\
             ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"],\
-            ["undici", "npm:5.26.5"]\
+            ["undici", "npm:5.27.0"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -8368,10 +8368,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "HARD"\
         }],\
-        ["npm:5.26.5", {\
-          "packageLocation": "./.yarn/cache/undici-npm-5.26.5-746ebb5daf-79c95df5f2.zip/node_modules/undici/",\
+        ["npm:5.27.0", {\
+          "packageLocation": "./.yarn/cache/undici-npm-5.27.0-5584e17534-3acad25bfe.zip/node_modules/undici/",\
           "packageDependencies": [\
-            ["undici", "npm:5.26.5"],\
+            ["undici", "npm:5.27.0"],\
             ["@fastify/busboy", "npm:2.0.0"]\
           ],\
           "linkType": "HARD"\
