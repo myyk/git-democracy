@@ -35,7 +35,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.9.0",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^6.10.0",
+    "@typescript-eslint/parser": "^6.11.0",
     "@vercel/ncc": "^0.38.1",
     "eslint": "^8.53.0",
     "eslint-plugin-escompat": "^3.4.0",
