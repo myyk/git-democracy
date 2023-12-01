@@ -53,7 +53,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:3.1.0"],\
             ["ts-jest", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:29.1.1"],\
             ["typescript", "patch:typescript@npm%3A5.3.2#~builtin<compat/typescript>::version=5.3.2&hash=29ae49"],\
-            ["undici", "npm:5.27.2"]\
+            ["undici", "npm:5.28.2"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -2287,7 +2287,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["is-glob", "npm:4.0.3"],\
             ["semver", "npm:7.5.4"],\
             ["ts-api-utils", "virtual:78cab041d602161f84b4f8a9a42b4189d86b84865a88f85e4fc3a3f0a2fc0fac16cab4f92c2427a51cd5401326313e1012ea8d696a5eedcfdeb13e67a59b4852#npm:1.0.3"],\
-            ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\
+            ["typescript", "patch:typescript@npm%3A5.3.2#~builtin<compat/typescript>::version=5.3.2&hash=29ae49"]\
           ],\
           "packagePeers": [\
             "@types/typescript",\
@@ -4994,7 +4994,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["prettier", "npm:3.1.0"],\
             ["ts-jest", "virtual:7cdd4807f03b0096667604de65902957c9591f1ca03b6f3cf9e1ca73b9a8c6f73ed4a29bfdb721485e3985b720359f08bb514f1150c5d1221cceef4d28f5f7b9#npm:29.1.1"],\
             ["typescript", "patch:typescript@npm%3A5.3.2#~builtin<compat/typescript>::version=5.3.2&hash=29ae49"],\
-            ["undici", "npm:5.27.2"]\
+            ["undici", "npm:5.28.2"]\
           ],\
           "linkType": "SOFT"\
         }]\
@@ -8427,10 +8427,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "HARD"\
         }],\
-        ["npm:5.27.2", {\
-          "packageLocation": "./.yarn/cache/undici-npm-5.27.2-141c109c0a-22bbdd7637.zip/node_modules/undici/",\
+        ["npm:5.28.2", {\
+          "packageLocation": "./.yarn/cache/undici-npm-5.28.2-35e326d9a1-f9e9335803.zip/node_modules/undici/",\
           "packageDependencies": [\
-            ["undici", "npm:5.27.2"],\
+            ["undici", "npm:5.28.2"],\
             ["@fastify/busboy", "npm:2.0.0"]\
           ],\
           "linkType": "HARD"\
