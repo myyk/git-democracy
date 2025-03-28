@@ -3771,7 +3771,7 @@ __metadata:
     prettier: ^3.1.0
     ts-jest: ^29.1.1
     typescript: ^5.3.2
-    undici: ^5.27.2
+    undici: ^7.6.0
   languageName: unknown
   linkType: soft
 
@@ -6824,12 +6824,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^5.27.2":
-  version: 5.27.2
-  resolution: "undici@npm:5.27.2"
-  dependencies:
-    "@fastify/busboy": ^2.0.0
-  checksum: 22bbdd763798700979986546d70072b67223189353d2a811efa9c6e44476161a0d1781ffe24115221f69a1b344b95d5926bd39a6eb760a2cd8804781cec0c5eb
+"undici@npm:^7.6.0":
+  version: 7.6.0
+  resolution: "undici@npm:7.6.0"
+  checksum: 1cbf281c579b9f6d33c513eea1379a53aaf06770f41159240e4c1b5e6ef8b980a2f1843a1853798f396123aef076c16f9836c094abb204cb0b814410d6096bb9
   languageName: node
   linkType: hard
 
