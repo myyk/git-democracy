@@ -2287,7 +2287,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["is-glob", "npm:4.0.3"],\
             ["semver", "npm:7.5.4"],\
             ["ts-api-utils", "virtual:78cab041d602161f84b4f8a9a42b4189d86b84865a88f85e4fc3a3f0a2fc0fac16cab4f92c2427a51cd5401326313e1012ea8d696a5eedcfdeb13e67a59b4852#npm:1.0.3"],\
-            ["typescript", "patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"]\
+            ["typescript", "patch:typescript@npm%3A5.3.2#~builtin<compat/typescript>::version=5.3.2&hash=29ae49"]\
           ],\
           "packagePeers": [\
             "@types/typescript",\
@@ -3049,10 +3049,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["brace-expansion", [\
-        ["npm:1.1.11", {\
-          "packageLocation": "./.yarn/cache/brace-expansion-npm-1.1.11-fb95eb05ad-faf34a7bb0.zip/node_modules/brace-expansion/",\
+        ["npm:1.1.12", {\
+          "packageLocation": "./.yarn/cache/brace-expansion-npm-1.1.12-329e9ad7a1-12cb6d6310.zip/node_modules/brace-expansion/",\
           "packageDependencies": [\
-            ["brace-expansion", "npm:1.1.11"],\
+            ["brace-expansion", "npm:1.1.12"],\
             ["balanced-match", "npm:1.0.2"],\
             ["concat-map", "npm:0.0.1"]\
           ],\
@@ -6787,7 +6787,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./.yarn/cache/minimatch-npm-3.1.2-9405269906-c154e56640.zip/node_modules/minimatch/",\
           "packageDependencies": [\
             ["minimatch", "npm:3.1.2"],\
-            ["brace-expansion", "npm:1.1.11"]\
+            ["brace-expansion", "npm:1.1.12"]\
           ],\
           "linkType": "HARD"\
         }],\
