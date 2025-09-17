@@ -1361,12 +1361,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.9.3":
-  version: 20.9.3
-  resolution: "@types/node@npm:20.9.3"
+"@types/node@npm:^24.5.1":
+  version: 24.5.1
+  resolution: "@types/node@npm:24.5.1"
   dependencies:
-    undici-types: ~5.26.4
-  checksum: 0cfbfd2a8bd18acc75aa4d7685c7dcf56344f48addd4041d306dc194f3132f8014d56fd49fcb26bcdf400b883f9527e5e2beaf52dfce029cef15c69b8ed2e72a
+    undici-types: ~7.12.0
+  checksum: 0ebce62e3eb4c429cb2111e36cc9e1036b264a740e79550ae2ae7ebe4ad396ede5c2ff4b574ee001c617136a1fd8895eb3ea4419d9485ae86a6306bbf684bc7a
   languageName: node
   linkType: hard
 
@@ -3750,7 +3750,7 @@ __metadata:
     "@actions/github": ^6.0.0
     "@types/jest": ^29.5.9
     "@types/js-yaml": ^4.0.9
-    "@types/node": ^20.9.3
+    "@types/node": ^24.5.1
     "@typescript-eslint/eslint-plugin": ^6.11.0
     "@typescript-eslint/parser": ^6.12.0
     "@vercel/ncc": ^0.38.1
@@ -6808,10 +6808,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~5.26.4":
-  version: 5.26.5
-  resolution: "undici-types@npm:5.26.5"
-  checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
+"undici-types@npm:~7.12.0":
+  version: 7.12.0
+  resolution: "undici-types@npm:7.12.0"
+  checksum: 4ad2770b92835757eee6416e8518972d83fc77286c11af81d368a55578d9e4f7ab1b8a3b13c304b0e25a400583e66f3c58464a051f8b5c801ab5d092da13903e
   languageName: node
   linkType: hard
 
